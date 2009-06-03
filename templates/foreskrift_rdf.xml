@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:dct="http://purl.org/dc/terms/"
+    xmlns:dces="http://purl.org/dc/elements/1.1/"
+    xmlns="http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#">
+    <Myndighetsforeskrift rdf:about="{{foreskrift.get_rinfo_uri}}">
+        <forfattningssamling rdf:resource="{{foreskrift.forfattningssamling.identifierare}}"/>
+        <fsNummer>{{foreskrift.fsnummer}}</fsNummer>
+        <dct:title xml:lang="sv">{{foreskrift.titel}}</dct:title>
+        <utfardandedatum rdf:datatype="http://www.w3.org/2001/XMLSchema#date">{{foreskrift.utfardandedag|date}}</utfardandedatum>
+        <ikrafttradandedatum rdf:datatype="http://www.w3.org/2001/XMLSchema#date">{{foreskrift.ikrafttradandedag|date}}</ikrafttradandedatum>
+        <utkomFranTryck rdf:datatype="http://www.w3.org/2001/XMLSchema#date">{{foreskrift.utkom_fran_tryck|date}}</utkomFranTryck>
+        <dct:publisher rdf:resource="{{publisher_uri}}"/>
+        {% if foreskrift.andrar %}
+        <andrar rdf:resource="{{foreskrift.andrar.get_rinfo_uri}}"/>{% endif %}
+        {% if foreskrift.celexnummer %}
+        <genomforDirektiv rdf:resource="http://rinfo.lagrummet.se/ext/eur-lex/{{foreskrift.celexnummer}}"/>{% endif %}
+        {% for bemyndigande in foreskrift.bemyndigandeparagrafer.all %}
+        <bemyndigande rdf:parseType="Resource">
+            <dct:isPartOf rdf:resource="http://rinfo.lagrummet.se/publ/sfs/{{bemyndigande.sfsnummer}}"/>
+            <paragrafnummer>{{bemyndigande.paragrafnummer}}</paragrafnummer>
+        </bemyndigande>{% endfor %}
+        {% for amnesord in foreskrift.amnesord.all %}
+        <dces:subject xml:lang="sv">{{amnesord.titel}}</dces:subject>{% endfor %}
+    </Myndighetsforeskrift>
+</rdf:RDF>

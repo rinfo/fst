@@ -1,0 +1,18 @@
+{% if deleted %}
+    <at:deleted-entry ref="{{entry_id}}" when="{{deleted}}"/>
+{% else %}
+    <entry>
+        <id>{{entry_id}}</id>
+        <updated>{{updated}}</updated>
+        <published>{{published}}</published>
+        <title>{{title}}</title>
+        <summary>{{summary|default_if_none:""}}</summary>
+        <content src="{{content_src|safe}}"
+            type="application/pdf"
+            le:md5="{{content_md5}}"/>
+        <link rel="alternate"
+            href="{{rdf_href}}"
+            type="application/rdf+xml"
+            length="{{rdf_length}}" le:md5="{{rdf_md5}}"/>
+    </entry>
+{% endif %}

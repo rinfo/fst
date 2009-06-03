@@ -1,0 +1,103 @@
+body {
+   border-width: 0px;
+   padding: 0px;
+   margin: 0px;
+   font-size: 90%;
+   width: 100%;
+   min-width: 600px;
+   background-color: #e7e7de;
+   font-family: Georgia, Verdana, sans-serif;
+}
+
+table tr td {
+    text-align:left;
+    vertical-align: top;
+}
+
+table tr th {
+    text-align:left;
+    font-weight:bold;
+    vertical-align: top;
+}
+
+.header{
+   width: 73%;
+   left: 13.5%
+}
+.colmask{
+   width: 73%;
+   left: 13.5%
+}
+.colleft{ right: 76%}
+.col1 {
+   width: 74%;
+   left: 101%
+}
+.col2{
+   width: 22%;
+   left: 3%
+}
+.footer {
+   width: 73%;
+   left: 13.5%
+}
+.header{
+   clear: both;
+   float: left;
+   position: relative;
+   border-bottom: #000 1px solid;
+   background-color: #deebff;
+   min-height: 90px;
+}
+p.logo {
+    clear:both;
+    margin: 1em 1em;
+}
+.colmask{
+   clear: both;
+   float: left;
+   overflow: hidden;
+   position: relative;
+   background: #ffffff;
+   min-height:500px;
+}
+.colleft{
+   float: left;
+   width: 100%;
+   position: relative;
+   background: #ffffff
+}
+.col1{
+   padding: 0px 0px 1em 0px;
+   overflow: hidden;
+   float: left;
+   position: relative;
+   background: #ffffff
+}
+.col2{
+   padding: 0px 0px 1em 0px;
+   overflow: hidden;
+   float: left;
+   position: relative;
+   background: #ffffff
+}
+.footer{
+   clear: both;
+   float: left;
+   position: relative;
+   border-top: #000 1px solid;
+   background-color: #fff;
+   text-align:center;
+   color: #666;
+}
+.bottom{
+   clear: both;
+   width: 100%;
+   float: left;
+   position: relative;
+   background-color: #e7e7de
+}
+
+ul li {
+    margin: 0 0 0.5em 0;
+}

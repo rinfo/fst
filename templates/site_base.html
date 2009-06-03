@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>{% block title %}{% endblock %}</title>
+        <link rel="stylesheet" href="/static/screen.css" type="text/css" />
+        <link rel="alternate" type="application/atom+xml" href="/feed/" title="Exempelmyndighetens författningssamling" />
+    </head>
+    <body>
+        <div class="bottom">
+            <div class="header"><p class="logo">Exempelmyndigheten</p></div>
+            <div class="colmask">
+                <div class="colleft">
+                    <div class="col1">
+                        {% block content %}{% endblock %}
+                    </div>
+                    <div class="col2">
+                        <h2>Meny</h2>
+                        <ul id="menu">
+                            <li><a href="/">Startsida</a></li>
+                            <li><a href="/amnesord/">Lista föreskrifter utifrån ämnesord</a></li>
+                            <li><a href="/artal/">Lista föreskrifter per ikraftträdandeår</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+                <p>Denna exempelapplikation är en del av <a href="http://rinfoprojektet.wordpress.com/">utvecklingsprojektet för rättsinformationssystemet</a>. Läs mer om applikationen och hämta källkoden på <a href="http://code.google.com/p/rinfo-foreskriftshantering/">Google code</a>.</p>                
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"
+    xmlns:le="http://purl.org/atompub/link-extensions/1.0"
+    xmlns:at="http://purl.org/atompub/tombstones/1.0"
+    xml:lang="sv">
+    <id>{{feed_uri}}</id>
+    <title>{{feed_title}}</title>
+    <updated>{{last_updated}}</updated>
+    <author>
+        <name>{{feed_contact_name}}</name>
+        <uri>{{feed_contact_url}}</uri>
+        <email>{{feed_contact_email}}</email>
+    </author>
+    <link href="{{rinfo_site_url}}/feed/" rel="self"/>
+
+    {% for entry in entries %}
+{{entry.to_entryxml}}
+    {% endfor %}
+</feed>
