@@ -101,5 +101,5 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.admin',
-    'lagrumsapp.rinfo',
+    'rinfo-foreskriftshantering.rinfo',
 )

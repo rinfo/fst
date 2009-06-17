@@ -153,7 +153,7 @@ class Myndighetsforeskrift(models.Model):
     @models.permalink
     def get_absolute_url(self): 
         """Genererar webbplatsens länk till denna post."""
-        return ('lagrumsapp.rinfo.views.foreskrift',
+        return ('rinfo-foreskriftshantering.rinfo.views.foreskrift',
                 [str(self.forfattningssamling.kortnamn), str(self.fsnummer)])
 
     def get_rinfo_uri(self):

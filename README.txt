@@ -50,6 +50,12 @@ med RINFO.
 7. Installera databasschemat:
     $ python manage.py syncdb   
 
+Om det inträffade ett fel behöver du eventuellt justera miljövariablen
+PYTHONPATH så att den inkluderar katalogen i vilken rinfo-foreksriftshantering
+ligger i. Om filerna till applikationen ligger i
+c:\projekt\rinfo-foreksriftshantering behöver du lägga till c:\projekt i
+PYTHONPATH.
+
 Efter information att tabeller skapas skall du få en fråga om du vill skapa
 en 'superuser'. Svara ja på frågan och ange information om användaren.
 

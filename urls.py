@@ -17,22 +17,22 @@ urlpatterns = patterns('',
     (r'^dokument/(?P<path>.*)$', 'django.views.static.serve', {'document_root': os.path.join(os.path.dirname(__file__), 'dokument').replace('\\','/')}),
 
     # Startsidan ("/")
-    (r'^$', 'lagrumsapp.rinfo.views.index'),
+    (r'^$', 'rinfo-foreskriftshantering.rinfo.views.index'),
 
     # Enskild föreskrift i RDF-format (t.ex. "/publ/RA-FS/2006:6/rdf"
-    (r'^publ/(?P<fskortnamn>.*)/(?P<fsnummer>.*)/rdf$', 'lagrumsapp.rinfo.views.foreskrift_rdf'),
+    (r'^publ/(?P<fskortnamn>.*)/(?P<fsnummer>.*)/rdf$', 'rinfo-foreskriftshantering.rinfo.views.foreskrift_rdf'),
 
     # Enskild föreskrift (t.ex. "/publ/RA-FS/2006:6"
-    (r'^publ/(?P<fskortnamn>.*)/(?P<fsnummer>.*)/$', 'lagrumsapp.rinfo.views.foreskrift'),
+    (r'^publ/(?P<fskortnamn>.*)/(?P<fsnummer>.*)/$', 'rinfo-foreskriftshantering.rinfo.views.foreskrift'),
 
     # Indelade per ämnesord ("/amnesord/")
-    (r'^amnesord/$', 'lagrumsapp.rinfo.views.amnesord'),
+    (r'^amnesord/$', 'rinfo-foreskriftshantering.rinfo.views.amnesord'),
 
     # Indelade per ikraftträdandeår ("/artal/")
-    (r'^artal/$', 'lagrumsapp.rinfo.views.artal'),
+    (r'^artal/$', 'rinfo-foreskriftshantering.rinfo.views.artal'),
 
     # Atom-feed med ändringar i författningssamlingen
-    (r'^feed/$', 'lagrumsapp.rinfo.views.atomfeed'),
+    (r'^feed/$', 'rinfo-foreskriftshantering.rinfo.views.atomfeed'),
 
     # Slå på administrationsgränssnitt
     (r'^admin/(.*)', admin.site.root),
