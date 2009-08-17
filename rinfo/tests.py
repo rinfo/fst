@@ -37,12 +37,25 @@ class RinfoTestCase(TestCase):
         self.assertContains(response, "<dces:subject xml:lang=\"sv\">Administration</dces:subject>")
 
 
-    # Verifiera att publicerad föreskrift har metadata i RDF-format
+    # Verifiera att publicerad föreskrift har information om relation till EG-direktiv
     def test_egdirektiv(self):
         response = self.client.get('/publ/EXFS/2009:1/rdf')
         self.failUnlessEqual(response.status_code, 200)
         self.assertEqual(response['content-type'], 'application/rdf+xml; charset=utf-8')
         self.assertContains(response, "<genomforDirektiv rdf:resource=\"http://rinfo.lagrummet.se/ext/eur-lex/31979L0409\"/>")
+
+    # Verifiera att publicerad föreskrift 2009:2 har information om omtryck
+    def test_omtryck(self):
+        response = self.client.get('/publ/EXFS/2009:2/rdf')
+        self.failUnlessEqual(response.status_code, 200)
+        self.assertEqual(response['content-type'], 'application/rdf+xml; charset=utf-8')
+        self.assertContains(response, "<omtryckAv rdf:resource=\"http://rinfo.lagrummet.se/publ/exfs/2009:1\"/>")
+
+        # och att omtrycksinformation saknas om det inte är ett omtryck
+        response = self.client.get('/publ/EXFS/2009:3/rdf')
+        self.failUnlessEqual(response.status_code, 200)
+        self.assertEqual(response['content-type'], 'application/rdf+xml; charset=utf-8')
+        self.assertNotContains(response, "<omtryckAv")
 
 
     # Verifiera att feed kan läsas och att den innehåller tre <entry>-poster

@@ -131,7 +131,7 @@ class Myndighetsforeskrift(models.Model):
     dokument=models.FileField(u"PDF-version av föreskrift",
             upload_to="dokument", 
             blank=False, 
-            help_text="""Se till att dokumentet är i PDF/A format.""")
+            help_text="""Se till att dokumentet är i PDF-format.""")
 
     # Koppling till ämnesord
     amnesord=models.ManyToManyField(Amnesord, blank=True, verbose_name=u"ämnesord")
@@ -141,6 +141,10 @@ class Myndighetsforeskrift(models.Model):
     # man skall inte kunna ändra en ändringsföreskrift).
     andrar = models.ForeignKey("self", null=True, blank=True, 
             related_name="andringar", limit_choices_to={'andrar': None}, verbose_name=u"Ändrar")
+
+    # Anger om föreskriften är ett omtryck
+    omtryck = models.BooleanField(u"Är omtryck", null=True, blank=True,
+            help_text="""Anger om denna föreskrift är ett omtryck.""")
 
     # Ett CELEX-nummer för ett EG-direktiv som denna föreskrift helt eller
     # delvis genomför.

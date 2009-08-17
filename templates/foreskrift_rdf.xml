@@ -12,7 +12,10 @@
         <utkomFranTryck rdf:datatype="http://www.w3.org/2001/XMLSchema#date">{{foreskrift.utkom_fran_tryck|date}}</utkomFranTryck>
         <dct:publisher rdf:resource="{{publisher_uri}}"/>
         {% if foreskrift.andrar %}
-        <andrar rdf:resource="{{foreskrift.andrar.get_rinfo_uri}}"/>{% endif %}
+        <andrar rdf:resource="{{foreskrift.andrar.get_rinfo_uri}}"/>
+        {% if foreskrift.omtryck %}
+        <omtryckAv rdf:resource="{{foreskrift.andrar.get_rinfo_uri}}"/>{% endif %}
+        {% endif %}
         {% if foreskrift.celexnummer %}
         <genomforDirektiv rdf:resource="http://rinfo.lagrummet.se/ext/eur-lex/{{foreskrift.celexnummer}}"/>{% endif %}
         {% for bemyndigande in foreskrift.bemyndigandeparagrafer.all %}
