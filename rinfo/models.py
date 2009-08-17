@@ -143,12 +143,21 @@ class Myndighetsforeskrift(models.Model):
             related_name="andringar", limit_choices_to={'andrar': None}, verbose_name=u"Ändrar")
 
     # Anger om föreskriften är ett omtryck
-    omtryck = models.BooleanField(u"Är omtryck", null=True, blank=True,
+    omtryck = models.BooleanField(u"Är omtryck", default=False, null=False, blank=True,
             help_text="""Anger om denna föreskrift är ett omtryck.""")
 
     # Ett CELEX-nummer för ett EG-direktiv som denna föreskrift helt eller
     # delvis genomför.
     celexnummer=models.CharField("Genomför EG-direktiv", max_length=10, blank=True, help_text="T.ex. <em>31979L0409</em>")
+
+    def typ(self):
+        """Typ av dokument i klartext; Myndighetsföreskrift, Ändringsförfattning, Ändringsförfattning (omtryck)"""
+        typtext = u"Myndighetsföreskrift"
+        if self.andrar:
+            typtext = u"Ändringsförfattning"
+            if self.omtryck:
+                typtext = u"Ändringsförfattning (omtryck)"
+        return typtext
 
     def ikrafttradandear(self):
         """Returnera bara årtalet från ikraftträdandedagen."""

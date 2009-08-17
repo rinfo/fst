@@ -16,9 +16,9 @@ class AmnesordAdmin(admin.ModelAdmin):
     search_fields = ('titel', 'beskrivning',)
        
 class MyndighetsforeskriftAdmin(admin.ModelAdmin):
-    list_display = ('fsnummer', 'titel','utfardandedag', 'ikrafttradandedag', 'utkom_fran_tryck')
-    list_filter = ('utfardandedag',)
-    ordering = ('fsnummer', 'titel')
+    list_display = ('fsnummer', 'titel','utfardandedag', 'ikrafttradandedag', 'utkom_fran_tryck', 'typ')
+    list_filter = ('utfardandedag', 'ikrafttradandedag')
+    ordering = ('-utfardandedag', 'titel')
     search_fields = ('titel', 'fsnummer',)
 
     def save_model(self, request, obj, form, change):
