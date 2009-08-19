@@ -3,13 +3,33 @@ from django.test import TestCase
 import rinfo.models
 from xml.dom.minidom import parse, parseString
 import hashlib
+import os
+import shutil
 
 class RinfoTestCase(TestCase):
     # Ladda exempeldata från rinfo/fixtures/exempeldata.json innan test startar
     fixtures = ['exempeldata.json']
 
     def setUp(self):
-        pass
+        base = os.path.join(os.path.dirname(__file__))
+        testdocs = os.path.join(base, "../dokument_test")
+
+        # Skapa mapp för testdokument
+        if not os.path.exists(testdocs):
+            os.mkdir(testdocs)
+
+        # Kopiera filer från fixtures till dokument_test
+        shutil.copy(os.path.join(base, "fixtures/EXFS-2009-1.pdf"), testdocs)
+        shutil.copy(os.path.join(base, "fixtures/EXFS-2009-1-bilaga.pdf"), testdocs)
+        shutil.copy(os.path.join(base, "fixtures/EXFS-2009-2.pdf"), testdocs)
+        shutil.copy(os.path.join(base, "fixtures/EXFS-2009-3.pdf"), testdocs)
+
+    def tearDown(self):
+        base = os.path.join(os.path.dirname(__file__))
+        testdocs = os.path.join(base, "../dokument_test")
+
+        # Släng testfiler
+        shutil.rmtree(testdocs)
 
     # Verifiera att startsidan kan läsas och att den visar de tre
     # exempelföreskrifterna

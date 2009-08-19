@@ -14,5 +14,9 @@
             href="{{rdf_href}}"
             type="application/rdf+xml"
             length="{{rdf_length}}" le:md5="{{rdf_md5}}"/>
+        {% if enclosure_href %}<link rel="enclosure"
+            href="{{enclosure_href}}"
+            type="application/pdf"
+            length="{{enclosure_length}}" le:md5="{{enclosure_md5}}"/>{% endif %}
     </entry>
 {% endif %}

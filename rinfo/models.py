@@ -150,6 +150,13 @@ class Myndighetsforeskrift(models.Model):
     # delvis genomför.
     celexnummer=models.CharField("Genomför EG-direktiv", max_length=10, blank=True, help_text="T.ex. <em>31979L0409</em>")
 
+    # Eventuell bilaga till föreskriften i PDF.
+    bilaga=models.FileField(u"Bilaga",
+            upload_to="dokument", 
+            blank=True, 
+            null=True,
+            help_text="""Se till att dokumentet är i PDF-format och att filen är korrekt namngiven.""")
+
     def typ(self):
         """Typ av dokument i klartext; Myndighetsföreskrift, Ändringsförfattning, Ändringsförfattning (omtryck)"""
         typtext = u"Myndighetsföreskrift"
@@ -208,8 +215,17 @@ class AtomEntry(models.Model):
     deleted=models.DateTimeField(blank=True, null=True)
     title=models.TextField(blank=False)
     summary=models.TextField(blank=True, null=True)
+
+    # Information om föreskriftsdokumentet
     content_src=models.CharField(max_length=512, blank=True, null=True)
     content_md5=models.CharField(max_length=32, blank=False)
+
+    # Ev bilageinformation
+    enclosure_href=models.CharField(max_length=512, blank=True, null=True)
+    enclosure_md5=models.CharField(max_length=32, blank=True, null=True)
+    enclosure_length=models.PositiveIntegerField(blank=True, null=True)
+    
+    # RDF-data för denna post
     rdf_href=models.CharField(max_length=512, blank=True, null=True)
     rdf_length=models.PositiveIntegerField()
     rdf_md5=models.CharField(max_length=32, blank=False)
@@ -231,6 +247,9 @@ class AtomEntry(models.Model):
             'rdf_href': self.rdf_href, 
             'rdf_length': self.rdf_length, 
             'rdf_md5': self.rdf_md5, 
+            'enclosure_href': self.enclosure_href, 
+            'enclosure_length': self.enclosure_length, 
+            'enclosure_md5': self.enclosure_md5, 
             'rinfo_base_uri': settings.RINFO_BASE_URI,
             'rinfo_site_url': settings.RINFO_SITE_URL})
         return template.render(context)

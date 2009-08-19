@@ -46,12 +46,21 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
             # Kan inte hitta AtomEntry för denna föreskrift. Därmed är det en ny post.
             pass
 
-        # Beräkna md5 för dokumentbilagan
+        # Beräkna md5 för dokumentet
         md5=hashlib.md5()
         md5.update(open(obj.dokument.path, 'rb').read())
         dokument_md5=md5.hexdigest()
 
-        # OCh för metadataposten i RDF-format
+        # ...och för eventuell bilaga
+        bilaga_md5 = ""
+        bilaga_length = 0
+        if obj.bilaga:
+            md5=hashlib.md5()
+            md5.update(open(obj.bilaga.path, 'rb').read())
+            bilaga_md5=md5.hexdigest()
+            bilaga_length = len(open(obj.bilaga.path, 'rb').read())
+
+        # ...och för metadataposten i RDF-format
         md5=hashlib.md5()
         rdfxml=obj.to_rdfxml()
         md5.update(rdfxml.encode("utf-8"))
@@ -65,12 +74,17 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
                 entry_id=obj.get_rinfo_uri(),
                 content_md5=dokument_md5,
                 content_src="/" + obj.dokument.url,
+                enclosure_href=("/" + obj.bilaga.url) if obj.bilaga else None,
+                enclosure_length=bilaga_length if obj.bilaga else None,
+                enclosure_md5=bilaga_md5 if obj.bilaga else None,
                 rdf_href=obj.get_absolute_url() + "rdf",
                 rdf_length=len(rdfxml),
                 rdf_md5=rdf_md5)
 
         # Spara AtomEntry för denna aktivitet
         entry.save()
+
+        print entry.to_entryxml()
 
 
 
