@@ -220,10 +220,11 @@ class AtomEntry(models.Model):
     content_src=models.CharField(max_length=512, blank=True, null=True)
     content_md5=models.CharField(max_length=32, blank=False)
 
-    # Ev bilageinformation
+    # Eventuell bilageinformation
     enclosure_href=models.CharField(max_length=512, blank=True, null=True)
     enclosure_md5=models.CharField(max_length=32, blank=True, null=True)
     enclosure_length=models.PositiveIntegerField(blank=True, null=True)
+    enclosure_filename=models.CharField(max_length=512, blank=True, null=True)
     
     # RDF-data för denna post
     rdf_href=models.CharField(max_length=512, blank=True, null=True)
@@ -250,6 +251,7 @@ class AtomEntry(models.Model):
             'enclosure_href': self.enclosure_href, 
             'enclosure_length': self.enclosure_length, 
             'enclosure_md5': self.enclosure_md5, 
+            'enclosure_filename': self.enclosure_filename, 
             'rinfo_base_uri': settings.RINFO_BASE_URI,
             'rinfo_site_url': settings.RINFO_SITE_URL})
         return template.render(context)

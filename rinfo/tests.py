@@ -91,6 +91,7 @@ class RinfoTestCase(TestCase):
         NS_ATOM="http://www.w3.org/2005/Atom"
         NS_ATOMLE="http://purl.org/atompub/link-extensions/1.0"
 
+        # Hämta atom-feeden
         response = self.client.get('/feed/')
         self.failUnlessEqual(response.status_code, 200)
 

@@ -8,6 +8,8 @@
 <p class="type">{{foreskrift.typ}}</p>
 
 <p class="download"><a href="/{{foreskrift.dokument.url}}">Ladda ner {{foreskrift.fsnummer}} som PDF</a></p>
+{% if foreskrift.bilaga %}
+<p class="download"><a href="/{{foreskrift.bilaga.url}}">Ladda ner bilaga som PDF</a></p>{% endif %}
 
     <table class="fsdata">
         <tr>

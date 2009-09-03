@@ -126,10 +126,11 @@
             "published": "2009-04-30 14:20:46", 
             "rdf_href": "/publ/EXFS/2009:1/rdf", 
             "rdf_length": 1415, 
-            "rdf_md5": "fadd0a990d608e0658511fb9745a5702", 
+            "rdf_md5": "417ed842e5af9ed9086a74a765dabd0a", 
             "summary": null, 
             "title": "F\u00f6reskrift om administration hos statliga myndigheter", 
             "updated": "2009-04-30 14:20:46"
+
         }, 
         "model": "rinfo.atomentry", 
         "pk": 1

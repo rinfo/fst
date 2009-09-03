@@ -5,6 +5,7 @@ import hashlib
 from datetime import datetime
 from django.core.files import File
 from django.conf import settings
+from os import path
 
 class ForfattningssamlingAdmin(admin.ModelAdmin):
     list_display = ('titel', 'kortnamn', 'identifierare')
@@ -54,11 +55,13 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
         # ...och för eventuell bilaga
         bilaga_md5 = ""
         bilaga_length = 0
+        bilaga_filename = ""
         if obj.bilaga:
             md5=hashlib.md5()
             md5.update(open(obj.bilaga.path, 'rb').read())
             bilaga_md5=md5.hexdigest()
             bilaga_length = len(open(obj.bilaga.path, 'rb').read())
+            bilaga_filename = path.basename(obj.bilaga.path)
 
         # ...och för metadataposten i RDF-format
         md5=hashlib.md5()
@@ -77,6 +80,7 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
                 enclosure_href=("/" + obj.bilaga.url) if obj.bilaga else None,
                 enclosure_length=bilaga_length if obj.bilaga else None,
                 enclosure_md5=bilaga_md5 if obj.bilaga else None,
+                enclosure_filename=bilaga_filename if obj.bilaga else None,
                 rdf_href=obj.get_absolute_url() + "rdf",
                 rdf_length=len(rdfxml),
                 rdf_md5=rdf_md5)

@@ -17,6 +17,7 @@
         {% if enclosure_href %}<link rel="enclosure"
             href="{{enclosure_href}}"
             type="application/pdf"
+            rae:filename="{{enclosure_filename}}"
             length="{{enclosure_length}}" le:md5="{{enclosure_md5}}"/>{% endif %}
     </entry>
 {% endif %}

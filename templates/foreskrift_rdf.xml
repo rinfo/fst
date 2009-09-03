@@ -25,5 +25,7 @@
         </bemyndigande>{% endfor %}
         {% for amnesord in foreskrift.amnesord.all %}
         <dces:subject xml:lang="sv">{{amnesord.titel}}</dces:subject>{% endfor %}
+        {% if foreskrift.bilaga %}
+        <bilaga rdf:resource="{{foreskrift.get_rinfo_uri}}/bilaga/{{foreskrift.filename}}"/>{% endif %}
     </Myndighetsforeskrift>
 </rdf:RDF>
