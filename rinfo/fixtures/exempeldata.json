@@ -1,6 +1,30 @@
 [
     {
         "fields": {
+            "celexnummer": "31979L0409", 
+            "titel": ""
+        }, 
+        "model": "rinfo.celexreferens", 
+        "pk": 1
+    }, 
+    {
+        "fields": {
+            "celexnummer": "32001L0400", 
+            "titel": ""
+        }, 
+        "model": "rinfo.celexreferens", 
+        "pk": 2
+    }, 
+    {
+        "fields": {
+            "celexnummer": "32008L0300", 
+            "titel": "R\u00e5dets dokument om XYZ"
+        }, 
+        "model": "rinfo.celexreferens", 
+        "pk": 3
+    }, 
+    {
+        "fields": {
             "identifierare": "http://test.lagrummet.se/serie/fs/exfs", 
             "kortnamn": "EXFS", 
             "titel": "Exempelmyndighetens f\u00f6rfattningssamling"
@@ -60,7 +84,9 @@
             "bemyndigandeparagrafer": [
                 1
             ], 
-            "celexnummer": "31979L0409", 
+            "celexreferenser": [
+                1
+            ], 
             "dokument": "dokument/EXFS-2009-1.pdf", 
             "forfattningssamling": 1, 
             "fsnummer": "2009:1", 
@@ -81,6 +107,11 @@
             "omtryck": true, 
             "bemyndigandeparagrafer": [
                 1
+            ], 
+            "celexreferenser": [
+                1, 
+                2, 
+                3
             ], 
             "dokument": "dokument/EXFS-2009-2.pdf", 
             "forfattningssamling": 1, 
@@ -126,7 +157,7 @@
             "published": "2009-04-30 14:20:46", 
             "rdf_href": "/publ/EXFS/2009:1/rdf", 
             "rdf_length": 1415, 
-            "rdf_md5": "417ed842e5af9ed9086a74a765dabd0a", 
+            "rdf_md5": "442dcd5ec2f3b628e5895440693ef34d", 
             "summary": null, 
             "title": "F\u00f6reskrift om administration hos statliga myndigheter", 
             "updated": "2009-04-30 14:20:46"

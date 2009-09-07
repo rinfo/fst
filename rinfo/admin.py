@@ -1,6 +1,6 @@
 # coding=utf-8
 from django.contrib import admin
-from rinfo.models import Amnesord, Forfattningssamling, Myndighetsforeskrift, Bemyndigandeparagraf, AtomEntry
+from rinfo.models import *
 import hashlib
 from datetime import datetime
 from django.core.files import File
@@ -10,6 +10,11 @@ from os import path
 class ForfattningssamlingAdmin(admin.ModelAdmin):
     list_display = ('titel', 'kortnamn', 'identifierare')
     ordering = ('titel',)
+
+class CelexReferensAdmin(admin.ModelAdmin):
+    list_display = ('celexnummer', 'titel')
+    ordering = ('celexnummer',)
+    search_fields = ('celexnummer', 'titel')
 
 class AmnesordAdmin(admin.ModelAdmin):
     list_display = ('titel', 'beskrivning')
@@ -94,6 +99,7 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
 
 # Registrera adminklasserna
 admin.site.register(Amnesord, AmnesordAdmin)
+admin.site.register(CelexReferens, CelexReferensAdmin)
 admin.site.register(Forfattningssamling, ForfattningssamlingAdmin)
 admin.site.register(Myndighetsforeskrift, MyndighetsforeskriftAdmin)
 admin.site.register(Bemyndigandeparagraf)

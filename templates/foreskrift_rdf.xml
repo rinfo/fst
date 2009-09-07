@@ -16,8 +16,9 @@
         {% if foreskrift.omtryck %}
         <omtryckAv rdf:resource="{{foreskrift.andrar.get_rinfo_uri}}"/>{% endif %}
         {% endif %}
-        {% if foreskrift.celexnummer %}
-        <genomforDirektiv rdf:resource="http://rinfo.lagrummet.se/ext/eur-lex/{{foreskrift.celexnummer}}"/>{% endif %}
+        {% if foreskrift.celexreferenser.all %}
+        {% for referens in foreskrift.celexreferenser.all %}
+        <genomforDirektiv rdf:resource="http://rinfo.lagrummet.se/ext/eur-lex/{{referens.celexnummer}}"/>{% endfor %}{% endif %}
         {% for bemyndigande in foreskrift.bemyndigandeparagrafer.all %}
         <bemyndigande rdf:parseType="Resource">
             <dct:isPartOf rdf:resource="http://rinfo.lagrummet.se/publ/sfs/{{bemyndigande.sfsnummer}}"/>

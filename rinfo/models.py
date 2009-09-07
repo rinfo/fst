@@ -44,6 +44,31 @@ class Forfattningssamling(models.Model):
 
 
 
+class CelexReferens(models.Model):
+    """Modell för referenser till t.ex. EG-direktiv"""
+
+    # Dokumentetes officiella titel. Möjlighet att lämna blank i detta exempel.
+    titel=models.TextField(help_text="Titel", blank=True)
+
+    celexnummer=models.CharField(
+            max_length=255, 
+            unique=True, 
+            help_text="Celexnummer, t.ex. <em>31979L0409</em>")
+
+    def __unicode__(self):
+        if len(self.titel.strip()) > 0:
+            return self.titel
+        else:
+            return self.celexnummer
+
+    # Inställningar för etiketter i administrationsgränssnittet.
+    class Meta:
+        verbose_name=u"EG-rättsreferens"
+        verbose_name_plural=u"EG-rättsreferenser"
+
+
+
+
 class Amnesord(models.Model):
     """Modell för ämnesord."""
 
@@ -146,9 +171,9 @@ class Myndighetsforeskrift(models.Model):
     omtryck = models.BooleanField(u"Är omtryck", default=False, null=False, blank=True,
             help_text="""Anger om denna föreskrift är ett omtryck.""")
 
-    # Ett CELEX-nummer för ett EG-direktiv som denna föreskrift helt eller
-    # delvis genomför.
-    celexnummer=models.CharField("Genomför EG-direktiv", max_length=10, blank=True, help_text="T.ex. <em>31979L0409</em>")
+    # Referenser till EG-direktiv som denna föreskrift helt eller delvis genomför.
+    celexreferenser=models.ManyToManyField(CelexReferens,
+            blank=True, verbose_name=u"Bidrar till att genomföra EG-direktiv", related_name="foreskrifter")
 
     # Eventuell bilaga till föreskriften i PDF.
     bilaga=models.FileField(u"Bilaga",

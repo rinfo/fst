@@ -86,21 +86,23 @@ class RinfoTestCase(TestCase):
         self.assertContains(response, "<entry>", 3)
 
 
-    # Verifiera att checksumma för rdf-metadata angiven i atomfeed är korrekt
-    def test_rdfmd5_from_feed(self):
+    # Verifiera att checksumma för rdf-metadata angiven i atomentry är korrekt
+    def test_rdfmd5(self):
         NS_ATOM="http://www.w3.org/2005/Atom"
         NS_ATOMLE="http://purl.org/atompub/link-extensions/1.0"
 
-        # Hämta atom-feeden
+        # Hämta atom-entry för dokument
         response = self.client.get('/feed/')
         self.failUnlessEqual(response.status_code, 200)
 
         # Hämta md5-summa för entry för föreskrift 2009:1
         dom=parseString(response.content)
         avlast_md5=""
+        
         for link in dom.getElementsByTagNameNS(NS_ATOM, 'link'):
             if link.getAttribute("href")=="/publ/EXFS/2009:1/rdf":
                 avlast_md5=link.getAttributeNS(NS_ATOMLE, "md5")
+                
 
         # Jämför avläst md5summa med egenberäknad
         response = self.client.get('/publ/EXFS/2009:1/rdf')

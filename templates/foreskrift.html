@@ -40,10 +40,10 @@
             <td>{% for ord in foreskrift.amnesord.all %}{{ord.titel}}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
         </tr>
         {% endif %}
-        {% if foreskrift.celexnummer %}
+        {% if foreskrift.celexreferenser.all %}
         <tr>
-            <th scope="row">Genomför direktiv</th>
-            <td><a href="http://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=CELEX:{{foreskrift.celexnummer}}:SV:HTML">{{foreskrift.celexnummer}}</a></td>
+            <th scope="row">Relaterade EG-direktiv</th>
+            <td><ul>{% for referens in foreskrift.celexreferenser.all %}<li><a href="http://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=CELEX:{{referens.celexnummer}}:SV:HTML">{{referens}}</a></li>{% endfor %}</ul></td>
         </tr>
         {% endif %}
         {% if foreskrift.andrar %}
