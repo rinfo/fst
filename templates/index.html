@@ -9,13 +9,13 @@
     {% if senaste_myndighetsforeskrifter %}
     <table class="foreskrifter">
         <tr>
-            <th>Utfärdad</th>
+            <th>Beslutad</th>
             <th>Föreskrift</th>
             <th>Typ</th>
         </tr>
         {% for foreskrift in senaste_myndighetsforeskrifter %}
         <tr>
-            <td>{{foreskrift.utfardandedag}}</td>
+            <td>{{foreskrift.beslutad}}</td>
             <td><a href="{{foreskrift.get_absolute_url}}">{{foreskrift.fsnummer}} {{foreskrift.titel}}</a></td>
             <td>{{foreskrift.typ}}</td>
         </tr>

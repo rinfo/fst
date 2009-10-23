@@ -17,7 +17,7 @@
         {% if enclosure_href %}<link rel="enclosure"
             href="{{enclosure_href}}"
             type="application/pdf"
-            rae:filename="{{enclosure_filename}}"
+            dct:isFormatOf="{{enclosure_uri}}"
             length="{{enclosure_length}}" le:md5="{{enclosure_md5}}"/>{% endif %}
     </entry>
 {% endif %}

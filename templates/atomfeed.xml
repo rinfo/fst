@@ -3,6 +3,7 @@
     xmlns:le="http://purl.org/atompub/link-extensions/1.0"
     xmlns:at="http://purl.org/atompub/tombstones/1.0"
     xmlns:rae="http://rinfo.lagrummet.se/ns/2009/09/atom-extensions#"
+    xmlns:dct="http://purl.org/dc/terms/"    
     xml:lang="sv">
     <id>{{feed_uri}}</id>
     <title>{{feed_title}}</title>

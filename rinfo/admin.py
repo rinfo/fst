@@ -22,9 +22,9 @@ class AmnesordAdmin(admin.ModelAdmin):
     search_fields = ('titel', 'beskrivning',)
        
 class MyndighetsforeskriftAdmin(admin.ModelAdmin):
-    list_display = ('fsnummer', 'titel','utfardandedag', 'ikrafttradandedag', 'utkom_fran_tryck', 'typ')
-    list_filter = ('utfardandedag', 'ikrafttradandedag')
-    ordering = ('-utfardandedag', 'titel')
+    list_display = ('fsnummer', 'titel','beslutad', 'ikrafttradandedag', 'utkom_fran_tryck', 'typ')
+    list_filter = ('beslutad', 'ikrafttradandedag')
+    ordering = ('-beslutad', 'titel')
     search_fields = ('titel', 'fsnummer',)
 
     def save_model(self, request, obj, form, change):
@@ -60,13 +60,14 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
         # ...och för eventuell bilaga
         bilaga_md5 = ""
         bilaga_length = 0
-        bilaga_filename = ""
+        bilaga_uri = ""
+
         if obj.bilaga:
             md5=hashlib.md5()
             md5.update(open(obj.bilaga.path, 'rb').read())
             bilaga_md5=md5.hexdigest()
             bilaga_length = len(open(obj.bilaga.path, 'rb').read())
-            bilaga_filename = path.basename(obj.bilaga.path)
+            bilaga_uri = obj.get_rinfo_uri() + "#bilaga-1"
 
         # ...och för metadataposten i RDF-format
         md5=hashlib.md5()
@@ -85,16 +86,13 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
                 enclosure_href=("/" + obj.bilaga.url) if obj.bilaga else None,
                 enclosure_length=bilaga_length if obj.bilaga else None,
                 enclosure_md5=bilaga_md5 if obj.bilaga else None,
-                enclosure_filename=bilaga_filename if obj.bilaga else None,
+                enclosure_uri=bilaga_uri if obj.bilaga else None,
                 rdf_href=obj.get_absolute_url() + "rdf",
                 rdf_length=len(rdfxml),
                 rdf_md5=rdf_md5)
 
         # Spara AtomEntry för denna aktivitet
         entry.save()
-
-        print entry.to_entryxml()
-
 
 
 # Registrera adminklasserna
@@ -103,3 +101,4 @@ admin.site.register(CelexReferens, CelexReferensAdmin)
 admin.site.register(Forfattningssamling, ForfattningssamlingAdmin)
 admin.site.register(Myndighetsforeskrift, MyndighetsforeskriftAdmin)
 admin.site.register(Bemyndigandeparagraf)
+admin.site.register(AtomEntry)

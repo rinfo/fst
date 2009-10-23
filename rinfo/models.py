@@ -135,7 +135,7 @@ class Myndighetsforeskrift(models.Model):
             unique=True, blank=False, help_text="T.ex. <em>2006:6</em>")
 
     # Utfärdandedatum, t.ex. 2007-02-09 
-    utfardandedag=models.DateField("Utfärdandedag", blank=False)
+    beslutad=models.DateField("Beslutad", blank=False)
 
     # Ikraftträdandedatum, t.ex. 2007-02-01
     ikrafttradandedag=models.DateField("Ikraftträdandedag", blank=False)
@@ -175,12 +175,16 @@ class Myndighetsforeskrift(models.Model):
     celexreferenser=models.ManyToManyField(CelexReferens,
             blank=True, verbose_name=u"Bidrar till att genomföra EG-direktiv", related_name="foreskrifter")
 
-    # Eventuell bilaga till föreskriften i PDF.
-    bilaga=models.FileField(u"Bilaga",
+    # Eventuell bilaga till föreskriften
+    bilaga_titel=models.CharField("Bilaga - titel", max_length=512, blank=True, null=True, help_text="""T.ex. <em>Bilaga 1</em>""")
+
+    # Bilage fil (om blank förutsätts bilagan vara en del av föreskriftsdokumentet)
+    bilaga=models.FileField(u"Bilagefil",
             upload_to="dokument", 
             blank=True, 
             null=True,
-            help_text="""Se till att dokumentet är i PDF-format och att filen är korrekt namngiven.""")
+            help_text="""Om ingen fil anges förutsätts bilagan vara en del av föreskriftsdokumentet.""")
+
 
     def typ(self):
         """Typ av dokument i klartext; Myndighetsföreskrift, Ändringsförfattning, Ändringsförfattning (omtryck)"""
@@ -249,7 +253,7 @@ class AtomEntry(models.Model):
     enclosure_href=models.CharField(max_length=512, blank=True, null=True)
     enclosure_md5=models.CharField(max_length=32, blank=True, null=True)
     enclosure_length=models.PositiveIntegerField(blank=True, null=True)
-    enclosure_filename=models.CharField(max_length=512, blank=True, null=True)
+    enclosure_uri=models.CharField(max_length=512, blank=True, null=True)
     
     # RDF-data för denna post
     rdf_href=models.CharField(max_length=512, blank=True, null=True)
@@ -276,7 +280,7 @@ class AtomEntry(models.Model):
             'enclosure_href': self.enclosure_href, 
             'enclosure_length': self.enclosure_length, 
             'enclosure_md5': self.enclosure_md5, 
-            'enclosure_filename': self.enclosure_filename, 
+            'enclosure_uri': self.enclosure_uri, 
             'rinfo_base_uri': settings.RINFO_BASE_URI,
             'rinfo_site_url': settings.RINFO_SITE_URL})
         return template.render(context)

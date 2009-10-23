@@ -7,7 +7,7 @@
         <forfattningssamling rdf:resource="{{foreskrift.forfattningssamling.identifierare}}"/>
         <fsNummer>{{foreskrift.fsnummer}}</fsNummer>
         <dct:title xml:lang="sv">{{foreskrift.titel}}</dct:title>
-        <utfardandedatum rdf:datatype="http://www.w3.org/2001/XMLSchema#date">{{foreskrift.utfardandedag|date}}</utfardandedatum>
+        <beslutsdatum rdf:datatype="http://www.w3.org/2001/XMLSchema#date">{{foreskrift.beslutad|date}}</beslutsdatum>
         <ikrafttradandedatum rdf:datatype="http://www.w3.org/2001/XMLSchema#date">{{foreskrift.ikrafttradandedag|date}}</ikrafttradandedatum>
         <utkomFranTryck rdf:datatype="http://www.w3.org/2001/XMLSchema#date">{{foreskrift.utkom_fran_tryck|date}}</utkomFranTryck>
         <dct:publisher rdf:resource="{{publisher_uri}}"/>
@@ -20,13 +20,20 @@
         {% for referens in foreskrift.celexreferenser.all %}
         <genomforDirektiv rdf:resource="http://rinfo.lagrummet.se/ext/eur-lex/{{referens.celexnummer}}"/>{% endfor %}{% endif %}
         {% for bemyndigande in foreskrift.bemyndigandeparagrafer.all %}
-        <bemyndigande rdf:parseType="Resource">
-            <dct:isPartOf rdf:resource="http://rinfo.lagrummet.se/publ/sfs/{{bemyndigande.sfsnummer}}"/>
-            <paragrafnummer>{{bemyndigande.paragrafnummer}}</paragrafnummer>
-        </bemyndigande>{% endfor %}
+        <bemyndigande>
+            <Forfattningsreferens>
+                <angerGrundforfattning rdf:resource="http://rinfo.lagrummet.se/publ/sfs/{{bemyndigande.sfsnummer}}"/>
+                <angerParagrafnummer>{{bemyndigande.paragrafnummer}}</angerParagrafnummer>
+            </Forfattningsreferens>
+       </bemyndigande>{% endfor %}
         {% for amnesord in foreskrift.amnesord.all %}
         <dces:subject xml:lang="sv">{{amnesord.titel}}</dces:subject>{% endfor %}
-        {% if foreskrift.bilaga %}
-        <bilaga rdf:resource="{{foreskrift.get_rinfo_uri}}/bilaga/{{foreskrift.filename}}"/>{% endif %}
+        {% if foreskrift.bilaga_titel %}
+        <bilaga>
+            <rdf:Description rdf:about="{{foreskrift.get_rinfo_uri}}#bilaga-1">
+                <dct:title>{{foreskrift.bilaga_titel}}</dct:title>
+            </rdf:Description>
+        </bilaga>
+        {% endif %}
     </Myndighetsforeskrift>
 </rdf:RDF>
