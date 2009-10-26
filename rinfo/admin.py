@@ -67,7 +67,7 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
             md5.update(open(obj.bilaga.path, 'rb').read())
             bilaga_md5=md5.hexdigest()
             bilaga_length = len(open(obj.bilaga.path, 'rb').read())
-            bilaga_uri = obj.get_rinfo_uri() + "#bilaga-1"
+            bilaga_uri = obj.get_rinfo_uri() + "#bilaga_1"
 
         # ...och för metadataposten i RDF-format
         md5=hashlib.md5()

@@ -30,7 +30,7 @@
         <dces:subject xml:lang="sv">{{amnesord.titel}}</dces:subject>{% endfor %}
         {% if foreskrift.bilaga_titel %}
         <bilaga>
-            <rdf:Description rdf:about="{{foreskrift.get_rinfo_uri}}#bilaga-1">
+            <rdf:Description rdf:about="{{foreskrift.get_rinfo_uri}}#bilaga_1">
                 <dct:title>{{foreskrift.bilaga_titel}}</dct:title>
             </rdf:Description>
         </bilaga>
