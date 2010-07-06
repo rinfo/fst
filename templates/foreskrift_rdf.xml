@@ -5,10 +5,13 @@
     xmlns="http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#">
     <Myndighetsforeskrift rdf:about="{{foreskrift.get_rinfo_uri}}">
         <forfattningssamling rdf:resource="{{foreskrift.forfattningssamling.identifierare}}"/>
-        <fsNummer>{{foreskrift.fsnummer}}</fsNummer>
         <dct:title xml:lang="sv">{{foreskrift.titel}}</dct:title>
-        <beslutsdatum rdf:datatype="http://www.w3.org/2001/XMLSchema#date">{{foreskrift.beslutad|date}}</beslutsdatum>
-        <ikrafttradandedatum rdf:datatype="http://www.w3.org/2001/XMLSchema#date">{{foreskrift.ikrafttradandedag|date}}</ikrafttradandedatum>
+        <dct:identifier>{{foreskrift.identifierare}}</dct:identifier>
+        <arsutgava>{{foreskrift.arsutgava}}</arsutgava>
+        <lopnummer>{{foreskrift.lopnummer}}</lopnummer>
+
+        <beslutsdatum rdf:datatype="http://www.w3.org/2001/XMLSchema#date">{{foreskrift.beslutsdatum|date}}</beslutsdatum>
+        <ikrafttradandedatum rdf:datatype="http://www.w3.org/2001/XMLSchema#date">{{foreskrift.ikrafttradandedatum|date}}</ikrafttradandedatum>
         <utkomFranTryck rdf:datatype="http://www.w3.org/2001/XMLSchema#date">{{foreskrift.utkom_fran_tryck|date}}</utkomFranTryck>
         <dct:publisher rdf:resource="{{publisher_uri}}"/>
         {% if foreskrift.andrar %}

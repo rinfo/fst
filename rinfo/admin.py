@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 from django.contrib import admin
 from rinfo.models import *
 import hashlib
@@ -22,10 +22,10 @@ class AmnesordAdmin(admin.ModelAdmin):
     search_fields = ('titel', 'beskrivning',)
        
 class MyndighetsforeskriftAdmin(admin.ModelAdmin):
-    list_display = ('fsnummer', 'titel','beslutad', 'ikrafttradandedag', 'utkom_fran_tryck', 'typ')
-    list_filter = ('beslutad', 'ikrafttradandedag')
-    ordering = ('-beslutad', 'titel')
-    search_fields = ('titel', 'fsnummer',)
+    list_display = ('identifierare', 'arsutgava', 'lopnummer', 'titel','beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck', 'typ')
+    list_filter = ('beslutsdatum', 'ikrafttradandedatum')
+    ordering = ('-beslutsdatum', 'titel')
+    search_fields = ('titel', 'identifierare',)
 
     def save_model(self, request, obj, form, change):
         """Se till att AtomEntry-objekt skaps i samband med att

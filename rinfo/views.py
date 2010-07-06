@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 import datetime
@@ -12,32 +12,32 @@ def index(request):
 
     #Senast utgivna (då de utkom från tryck)
     senaste_myndighetsforeskrifter = Myndighetsforeskrift.objects.all().order_by("-utkom_fran_tryck")[:10]
-    
+
     return render_to_response('index.html', locals())
 
 
-def foreskrift_rdf(request, fskortnamn, fsnummer):
+def foreskrift_rdf(request, fskortnamn, arsutgava, lopnummer):
     """Visa RDF-data för enskild föreskrift i författningssamling."""
 
     # Hämta författningssamlingen
     fs = Forfattningssamling.objects.get(kortnamn=fskortnamn)
-
     # Hämta föreskriften
-    foreskrift = Myndighetsforeskrift.objects.get(fsnummer=fsnummer, forfattningssamling=fs)
+    identifierare = "%s %s:%s" % (fskortnamn, arsutgava, lopnummer)
+    foreskrift = Myndighetsforeskrift.objects.get(identifierare=identifierare, forfattningssamling=fs)
 
     # Skicka rdf-data för denna post
     return HttpResponse(foreskrift.to_rdfxml(), mimetype="application/rdf+xml; charset=utf-8") 
 
 
 
-def foreskrift(request, fskortnamn, fsnummer):
+def foreskrift(request, fskortnamn, arsutgava, lopnummer):
     """Visa enskild föreskrift i författningssamling."""
 
     # Hämta författningssamlingen
     fs = Forfattningssamling.objects.get(kortnamn=fskortnamn)
-
     # Hämta föreskriften
-    foreskrift = Myndighetsforeskrift.objects.get(fsnummer=fsnummer, forfattningssamling=fs)
+    identifierare = "%s %s:%s" % (fskortnamn, arsutgava, lopnummer)
+    foreskrift = Myndighetsforeskrift.objects.get(identifierare=identifierare, forfattningssamling=fs)
 
     return render_to_response('foreskrift.html', locals())
 
@@ -56,7 +56,7 @@ def amnesord(request):
 def artal(request):
     """Visa föreskrifter indelade efter ikraftträdandeår."""
 
-    foreskrifter = Myndighetsforeskrift.objects.all().order_by("-ikrafttradandedag")
+    foreskrifter = Myndighetsforeskrift.objects.all().order_by("-ikrafttradandedatum")
 
     return render_to_response('per_ar.html', locals())
 

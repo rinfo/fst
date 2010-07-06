@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 from django.conf.urls.defaults import *
 from django.contrib import admin
 import os
@@ -19,10 +19,10 @@ urlpatterns = patterns('',
     (r'^$', 'rinfo-foreskriftshantering.rinfo.views.index'),
 
     # Enskild föreskrift i RDF-format (t.ex. "/publ/RA-FS/2006:6/rdf"
-    (r'^publ/(?P<fskortnamn>.*)/(?P<fsnummer>.*)/rdf$', 'rinfo-foreskriftshantering.rinfo.views.foreskrift_rdf'),
+    (r'^publ/(?P<fskortnamn>.*)/(?P<arsutgava>.*):(?P<lopnummer>.*)/rdf$', 'rinfo-foreskriftshantering.rinfo.views.foreskrift_rdf'),
 
     # Enskild föreskrift (t.ex. "/publ/RA-FS/2006:6"
-    (r'^publ/(?P<fskortnamn>.*)/(?P<fsnummer>.*)/$', 'rinfo-foreskriftshantering.rinfo.views.foreskrift'),
+    (r'^publ/(?P<fskortnamn>.*)/(?P<arsutgava>.*):(?P<lopnummer>.*)/$', 'rinfo-foreskriftshantering.rinfo.views.foreskrift'),
 
     # Indelade per ämnesord ("/amnesord/")
     (r'^amnesord/$', 'rinfo-foreskriftshantering.rinfo.views.amnesord'),

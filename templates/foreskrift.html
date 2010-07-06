@@ -4,25 +4,25 @@
 
 
 {% block content %}
-<h1>{{foreskrift.fsnummer}} {{foreskrift.titel|safe}}</h1>
+<h1>{{foreskrift.identifierare}} {{foreskrift.titel|safe}}</h1>
 <p class="type">{{foreskrift.typ}}</p>
 
-<p class="download"><a href="/{{foreskrift.dokument.url}}">Ladda ner {{foreskrift.fsnummer}} som PDF</a></p>
+<p class="download"><a href="/{{foreskrift.dokument.url}}">Ladda ner {{foreskrift.identifierare}} som PDF</a></p>
 {% if foreskrift.bilaga %}
 <p class="download"><a href="/{{foreskrift.bilaga.url}}">Ladda ner bilaga som PDF</a></p>{% endif %}
 
     <table class="fsdata">
         <tr>
-            <th scope="row">Nummer</th>
-            <td>{{foreskrift.fsnummer}}</td>
+            <th scope="row">Identifierare</th>
+            <td>{{foreskrift.identifierare}}</td>
         </tr>
         <tr>
             <th scope="row">Beslutad</th>
-            <td>{{foreskrift.beslutad}}</td>
+            <td>{{foreskrift.beslutsdatum}}</td>
         </tr>
         <tr>
             <th scope="row">Ikraffträdandedag</th>
-            <td>{{foreskrift.ikrafttradandedag}}</td>
+            <td>{{foreskrift.ikrafttradandedatum}}</td>
         </tr>
         <tr>
             <th scope="row">Utkom från tryck</th>

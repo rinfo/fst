@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 from django.db import models
 from django.db.models import permalink
 from django.template import loader, Context
@@ -107,6 +107,9 @@ class Bemyndigandeparagraf(models.Model):
     paragrafnummer=models.CharField(max_length=10, blank=True,
             help_text="T.ex. <em>12</em>")
 
+    kommentar=models.CharField(max_length=255, blank=True,
+                               help_text="""T.ex. <em>rätt att meddela föreskrifter om notarietjänstgöring och notariemeritering</em>""")
+    
     def __unicode__(self):
         return u"%s (%s) %s" % (self.titel, self.sfsnummer, self.paragrafnummer)
 
@@ -130,15 +133,28 @@ class Myndighetsforeskrift(models.Model):
             help_text="""T.ex. <em>Exempelmyndighetens föreskrifter och
             allmänna råd om arkiv hos statliga myndigheter;</em>""")
 
-    # Författningssamlingsnummer, t.ex. "2006:6"
-    fsnummer=models.CharField("FS-nummer", max_length=10,
-            unique=True, blank=False, help_text="T.ex. <em>2006:6</em>")
+    # Författningssamlingsnummer, t.ex. "2010:1"
+    #fsnummer=models.CharField("FS-nummer", max_length=10,
+    #        unique=True, blank=False, help_text="T.ex. <em>2010:1</em>")
+
+
+    identifierare=models.CharField("Identifierare", max_length=20,
+                                   unique=True, blank=False,
+                                   help_text="T.ex. <em>EXFS 2010:1</em>")
+    
+    arsutgava=models.CharField("Årsutgåva", max_length=13,
+                               unique=False, blank=False,
+                               help_text="T.ex. <em>2010</em>")
+    lopnummer=models.CharField("Löpnummer", max_length=3,
+                               unique=False, blank=False,
+                               help_text="T.ex. <em>1</em>")
+
 
     # Utfärdandedatum, t.ex. 2007-02-09 
-    beslutad=models.DateField("Beslutad", blank=False)
+    beslutsdatum=models.DateField("Beslutsdatum", blank=False)
 
     # Ikraftträdandedatum, t.ex. 2007-02-01
-    ikrafttradandedag=models.DateField("Ikraftträdandedag", blank=False)
+    ikrafttradandedatum=models.DateField("Ikraftträdandedatum", blank=False)
 
     # Utkom från tryck datum, t.ex. 2007-02-09
     utkom_fran_tryck=models.DateField("Utkom från tryck", blank=False)
@@ -203,16 +219,16 @@ class Myndighetsforeskrift(models.Model):
     def get_absolute_url(self): 
         """Genererar webbplatsens länk till denna post."""
         return ('rinfo-foreskriftshantering.rinfo.views.foreskrift',
-                [str(self.forfattningssamling.kortnamn), str(self.fsnummer)])
+                [str(self.forfattningssamling.kortnamn), str(self.arsutgava), str(self.lopnummer)])
 
     def get_rinfo_uri(self):
         """Metod för att skapa rättsinformationssystemets unika identifierare för denna post."""
-        return settings.RINFO_BASE_URI + self.fsnummer
+        return settings.RINFO_BASE_URI + self.arsutgava + ":" + self.lopnummer
 
     # Metod för att returnera textrepresentation av en föreskrift (används i
     # admin-gränssnittets listor)
     def __unicode__(self):
-        return u'%s %s' % (self.fsnummer, self.titel)
+        return u'%s %s' % (self.identifierare, self.titel)
 
     def to_rdfxml(self):
         """Metod för att skapa den standardiserade metadataposten om denna

@@ -17,11 +17,14 @@ funktion eller lämplighet. Se BSD-licensen för mer information om möjligheter
 att använda dig av programkoden. 
 
 Vi är dock tacksamma för feedback och rapporter om eventuella fel. För mer
-information om rättsinformationsprojektet kontakta Peter Krantz, telefon 08-561
+information om rättsinformationsprojektet kontakta Staffan Malmgren, telefon 08-561
 66 921 på Domstolsverket eller besök projektbloggen: 
 
 http://rinfoprojektet.wordpress.com/
 
+Mer information om rättsinformationsprojektet, inklusive specifikationer, finns på:
+
+http://dev.lagrummet.se/dokumentation/
 
 
 Installationsansvisningar
@@ -86,7 +89,7 @@ sätt.
 Om du vill kan du installera medföljande testdata genom att köra följande
 kommande inifrånprojektkatalogen:
 
-    $ django-admin.py loaddata --settings=rinfo-foreskriftshantering.settings 
+    $ python manage.py loaddata --settings=rinfo-foreskriftshantering.settings 
         rinfo\fixtures\exempeldata.json
 
 ...och sedan kopiera över PDF-dokumenten från mappen rinfo/fixtures till mappen

@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 from django.test import TestCase
 import rinfo.models
 from xml.dom.minidom import parse, parseString
@@ -36,16 +36,16 @@ class RinfoTestCase(TestCase):
     def test_startsida(self):
         response = self.client.get('/')
         self.failUnlessEqual(response.status_code, 200)
-        self.assertContains(response, "2009:1 Föreskrift om administration hos statliga myndigheter")
-        self.assertContains(response, "2009:2 Föreskrift om ändring i föreskrift 2009:1 om administration hos statliga myndigheter")
-        self.assertContains(response, "2009:3 Föreskrift om budgetering hos statliga myndigheter")
+        self.assertContains(response, "EXFS 2009:1 Föreskrift om administration hos statliga myndigheter")
+        self.assertContains(response, "EXFS 2009:2 Föreskrift om ändring i föreskrift 2009:1 om administration hos statliga myndigheter")
+        self.assertContains(response, "EXFS 2009:3 Föreskrift om budgetering hos statliga myndigheter")
 
 
     # Verifiera att sidan för en enskild föreskrift visas
     def test_foreskrift(self):
         response = self.client.get('/publ/EXFS/2009:1/')
         self.failUnlessEqual(response.status_code, 200)
-        self.assertContains(response, "<h1>2009:1 Föreskrift om administration hos statliga myndigheter")
+        self.assertContains(response, "<h1>EXFS 2009:1 Föreskrift om administration hos statliga myndigheter")
 
 
     # Verifiera att publicerad föreskrift har metadata i RDF-format
