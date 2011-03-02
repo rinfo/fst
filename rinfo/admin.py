@@ -20,7 +20,7 @@ class AmnesordAdmin(admin.ModelAdmin):
     list_display = ('titel', 'beskrivning')
     ordering = ('titel',)
     search_fields = ('titel', 'beskrivning',)
-       
+
 class MyndighetsforeskriftAdmin(admin.ModelAdmin):
     list_display = ('identifierare', 'arsutgava', 'lopnummer', 'titel','beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck', 'typ')
     list_filter = ('beslutsdatum', 'ikrafttradandedatum')
@@ -39,7 +39,7 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
         obj.save()
 
         # Nu kan vi skapa ett AtomEntry
-        
+
         # Då posten publicerades (nu, om det är en ny post)
         published=datetime.now()
 
@@ -47,15 +47,15 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
         try:
             foreskrift_entries=AtomEntry.objects.filter(foreskrift_id=obj.id).order_by("published")
             if foreskrift_entries:
-                published=foreskrift_entries[0].published 
+                published=foreskrift_entries[0].published
         except AtomEntry.DoesNotExist:
             # Kan inte hitta AtomEntry för denna föreskrift. Därmed är det en ny post.
             pass
 
         # Beräkna md5 för dokumentet
-        md5=hashlib.md5()
+        md5 = hashlib.md5()
         md5.update(open(obj.dokument.path, 'rb').read())
-        dokument_md5=md5.hexdigest()
+        dokument_md5 = md5.hexdigest()
 
         # ...och för eventuell bilaga
         bilaga_md5 = ""
@@ -63,20 +63,20 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
         bilaga_uri = ""
 
         if obj.bilaga:
-            md5=hashlib.md5()
+            md5 = hashlib.md5()
             md5.update(open(obj.bilaga.path, 'rb').read())
-            bilaga_md5=md5.hexdigest()
+            bilaga_md5 = md5.hexdigest()
             bilaga_length = len(open(obj.bilaga.path, 'rb').read())
             bilaga_uri = obj.get_rinfo_uri() + "#bilaga_1"
 
         # ...och för metadataposten i RDF-format
-        md5=hashlib.md5()
-        rdfxml=obj.to_rdfxml()
-        md5.update(rdfxml.encode("utf-8"))
-        rdf_md5=md5.hexdigest()
+        md5 = hashlib.md5()
+        rdfxml_repr = obj.to_rdfxml().encode("utf-8")
+        md5.update(rdfxml_repr)
+        rdf_md5 = md5.hexdigest()
 
         # Skapa AtomEntry-posten
-        entry=AtomEntry(  foreskrift_id=obj.id,
+        entry = AtomEntry(  foreskrift_id=obj.id,
                 title=obj.titel,
                 updated=datetime.now(),
                 published=published,
@@ -88,7 +88,7 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
                 enclosure_md5=bilaga_md5 if obj.bilaga else None,
                 enclosure_uri=bilaga_uri if obj.bilaga else None,
                 rdf_href=obj.get_absolute_url() + "rdf",
-                rdf_length=len(rdfxml),
+                rdf_length=len(rdfxml_repr),
                 rdf_md5=rdf_md5)
 
         # Spara AtomEntry för denna aktivitet
