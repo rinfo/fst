@@ -87,13 +87,15 @@ metadata av olika slag kan fångas upp och presenteras på ett standardiserat
 sätt. 
 
 Om du vill kan du installera medföljande testdata genom att köra följande
-kommande inifrånprojektkatalogen:
+kommando inifrån projektkatalogen:
 
-    $ python manage.py loaddata --settings=rinfo-foreskriftshantering.settings 
-        rinfo\fixtures\exempeldata.json
+    $ python manage.py loaddata --settings=rinfo-foreskriftshantering.settings \
+                                           rinfo/fixtures/exempeldata.json
 
 ...och sedan kopiera över PDF-dokumenten från mappen rinfo/fixtures till mappen
-dokument.
+dokument:
+
+    $ cp rinfo/fixtures/*.pdf dokument/
 
 Alternativt börjar du med att logga in i administrationsgränssnittet och skapa
 lite grunddata (Författningssamling, några ämnesord och bemyndigandeparagrafer).
