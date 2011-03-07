@@ -12,7 +12,7 @@ informationen för potentiella besökare.
 
 Applikationem är byggd på webbramverket Django som ges ut under BSD-licensen.
 Det betyder att du får använda och vidareutveckla koden om du vill, även i
-kommersiella sammanhang, men att den inte kommer med n�gra garantier för
+kommersiella sammanhang, men att den inte kommer med några garantier för
 funktion eller lämplighet. Se BSD-licensen för mer information om möjligheter
 att använda dig av programkoden. 
 
