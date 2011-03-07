@@ -1,28 +1,28 @@
 Om exempelapplikationen
 -----------------------
 
-Syftet med denna exempelapplikation är att illustrera i programkod hur man kan
-implementera de format som rekommenderas av Rättsinformationsprojektet för den
-mest grundläggande nivån av publicering av myndighetsföreskrifter. Tanken är
-inte att tillhandahålla ett färdigt system för rättsinformationshantering.
+Syftet med denna exempelapplikation Ã¤r att illustrera i programkod hur man kan
+implementera de format som rekommenderas av RÃ¤ttsinformationsprojektet fÃ¶r den
+mest grundlÃ¤ggande nivÃ¥n av publicering av myndighetsfÃ¶reskrifter. Tanken Ã¤r
+inte att tillhandahÃ¥lla ett fÃ¤rdigt system fÃ¶r rÃ¤ttsinformationshantering.
 
-Applikationen har två delar; 1) en administrationsdel i vilken man hanterar
-ämnesord, föreskrifter och grunddata och 2) en exempelwebbplats som visar
-informationen för potentiella besökare. 
+Applikationen har tvÃ¥ delar; 1) en administrationsdel i vilken man hanterar
+Ã¤mnesord, fÃ¶reskrifter och grunddata och 2) en exempelwebbplats som visar
+informationen fÃ¶r potentiella besÃ¶kare. 
 
-Applikationem är byggd på webbramverket Django som ges ut under BSD-licensen.
-Det betyder att du får använda och vidareutveckla koden om du vill, även i
-kommersiella sammanhang, men att den inte kommer med några garantier för
-funktion eller lämplighet. Se BSD-licensen för mer information om möjligheter
-att använda dig av programkoden. 
+Applikationem Ã¤r byggd pÃ¥ webbramverket Django som ges ut under BSD-licensen.
+Det betyder att du fÃ¥r anvÃ¤nda och vidareutveckla koden om du vill, Ã¤ven i
+kommersiella sammanhang, men att den inte kommer med nï¿½gra garantier fÃ¶r
+funktion eller lÃ¤mplighet. Se BSD-licensen fÃ¶r mer information om mÃ¶jligheter
+att anvÃ¤nda dig av programkoden. 
 
-Vi är dock tacksamma för feedback och rapporter om eventuella fel. För mer
-information om rättsinformationsprojektet kontakta Staffan Malmgren, telefon 08-561
-66 921 på Domstolsverket eller besök projektbloggen: 
+Vi Ã¤r dock tacksamma fÃ¶r feedback och rapporter om eventuella fel. FÃ¶r mer
+information om rÃ¤ttsinformationsprojektet kontakta Staffan Malmgren, telefon 08-561
+66 921 pÃ¥ Domstolsverket eller besÃ¶k projektbloggen: 
 
 http://rinfoprojektet.wordpress.com/
 
-Mer information om rättsinformationsprojektet, inklusive specifikationer, finns på:
+Mer information om rÃ¤ttsinformationsprojektet, inklusive specifikationer, finns pÃ¥:
 
 http://dev.lagrummet.se/dokumentation/
 
@@ -30,13 +30,13 @@ http://dev.lagrummet.se/dokumentation/
 Installationsansvisningar
 -------------------------
 
-Applikationen är baserad på webbramverket Django
-(http://www.djangoproject.com/) och är skirven i programspråket Python.
+Applikationen ï¿½r baserad pï¿½ webbramverket Django
+(http://www.djangoproject.com/) och ï¿½r skirven i programsprï¿½ket Python.
 
-Rader som börjar med "$" avser kommandon som skall utföras från ett
-terminalfönster).
+Rader som bï¿½rjar med "$" avser kommandon som skall utfï¿½ras frï¿½n ett
+terminalfï¿½nster).
 
-1. Installera programspråket Python 2.6 (Se http://www.python.org/download/).
+1. Installera programsprï¿½ket Python 2.6 (Se http://www.python.org/download/).
 
 2. Installera easy_install/setuptools (Se
 http://pypi.python.org/pypi/setuptools och
@@ -47,82 +47,82 @@ http://peak.telecommunity.com/DevCenter/EasyInstall)
 
 4. Installera Sqllite 3 (Se http://www.sqlite.org/)
 
-6. Öppna filen settings.py och modifiera vid behov de inställningar som börjar
+6. ï¿½ppna filen settings.py och modifiera vid behov de instï¿½llningar som bï¿½rjar
 med RINFO.
 
 7. Installera databasschemat:
     $ python manage.py syncdb   
 
-Om det inträffade ett fel behöver du eventuellt justera miljövariablen
-PYTHONPATH så att den inkluderar katalogen i vilken rinfo-foreksriftshantering
+Om det intrï¿½ffade ett fel behï¿½ver du eventuellt justera miljï¿½variablen
+PYTHONPATH sï¿½ att den inkluderar katalogen i vilken rinfo-foreksriftshantering
 ligger i. Om filerna till applikationen ligger i
-c:\projekt\rinfo-foreksriftshantering behöver du lägga till c:\projekt i
+c:\projekt\rinfo-foreksriftshantering behï¿½ver du lï¿½gga till c:\projekt i
 PYTHONPATH.
 
-Efter information att tabeller skapas skall du få en fråga om du vill skapa
-en 'superuser'. Svara ja på frågan och ange information om användaren.
+Efter information att tabeller skapas skall du fï¿½ en frï¿½ga om du vill skapa
+en 'superuser'. Svara ja pï¿½ frï¿½gan och ange information om anvï¿½ndaren.
 
 8. Starta den inbyggda webbservern:
     $ python manage.py runserver
 
-9. Öppna webbläsaren med följande adress: http://127.0.0.1:8000/
-Exempelwebbplatsen visas. För att redigera innehåll navigera till
-http://127.0.0.1:8000/admin/ och logga in som den användare du skapade i steg 7.
+9. ï¿½ppna webblï¿½saren med fï¿½ljande adress: http://127.0.0.1:8000/
+Exempelwebbplatsen visas. Fï¿½r att redigera innehï¿½ll navigera till
+http://127.0.0.1:8000/admin/ och logga in som den anvï¿½ndare du skapade i steg 7.
 
-10. Verifiera att applikationen är installerad korrekt genom att köra de
+10. Verifiera att applikationen ï¿½r installerad korrekt genom att kï¿½ra de
 automatiska testerna med:
     $ python manage.py test
 
-Får du problem med isntallationen se följande källor:
+Fï¿½r du problem med isntallationen se fï¿½ljande kï¿½llor:
 
 http://docs.djangoproject.com/en/dev/intro/install/
 
 
 
-Nästa steg
+Nï¿½sta steg
 ----------
 
-Applikationen illustrerar hur föreskrifter relateras till varandra och hur
-metadata av olika slag kan fångas upp och presenteras på ett standardiserat
-sätt. 
+Applikationen illustrerar hur fï¿½reskrifter relateras till varandra och hur
+metadata av olika slag kan fï¿½ngas upp och presenteras pï¿½ ett standardiserat
+sï¿½tt. 
 
-Om du vill kan du installera medföljande testdata genom att köra följande
-kommando inifrån projektkatalogen:
+Om du vill kan du installera medfï¿½ljande testdata genom att kï¿½ra fï¿½ljande
+kommando inifrï¿½n projektkatalogen:
 
     $ python manage.py loaddata --settings=rinfo-foreskriftshantering.settings \
                                            rinfo/fixtures/exempeldata.json
 
-...och sedan kopiera över PDF-dokumenten från mappen rinfo/fixtures till mappen
+...och sedan kopiera ï¿½ver PDF-dokumenten frï¿½n mappen rinfo/fixtures till mappen
 dokument:
 
     $ cp rinfo/fixtures/*.pdf dokument/
 
-Alternativt börjar du med att logga in i administrationsgränssnittet och skapa
-lite grunddata (Författningssamling, några ämnesord och bemyndigandeparagrafer).
+Alternativt bï¿½rjar du med att logga in i administrationsgrï¿½nssnittet och skapa
+lite grunddata (Fï¿½rfattningssamling, nï¿½gra ï¿½mnesord och bemyndigandeparagrafer).
 
 
 
 Applikationens delar
 --------------------
 
-Några saker att utgå från:
+Nï¿½gra saker att utgï¿½ frï¿½n:
 
-1. Filen urls.py visar vilka olika typer av länkar som webbplatsen hanterar.
-Varje länkformat är kopplat till en metod i rinfo/views.py. 
+1. Filen urls.py visar vilka olika typer av lï¿½nkar som webbplatsen hanterar.
+Varje lï¿½nkformat ï¿½r kopplat till en metod i rinfo/views.py. 
 
-2. I rinfo/models.py hittar du klasserna för de olika informationsobjekten.
-Klassen Myndighetsforeskrift visar några olika typer av metadata och relationer
+2. I rinfo/models.py hittar du klasserna fï¿½r de olika informationsobjekten.
+Klassen Myndighetsforeskrift visar nï¿½gra olika typer av metadata och relationer
 till andra objekt. 
 
-3. Mallen templates/foreskrift_rdf.xml visar hur en grundläggande metadatapost
-är uppbyggd.
+3. Mallen templates/foreskrift_rdf.xml visar hur en grundlï¿½ggande metadatapost
+ï¿½r uppbyggd.
 
-4. Atomfeeden berättar om förändringar som skett med poster i samlingen. Feeden
-finns på adressen http://127.0.0.1:8000/feed/. Nya poster, uppdateringar av
+4. Atomfeeden berï¿½ttar om fï¿½rï¿½ndringar som skett med poster i samlingen. Feeden
+finns pï¿½ adressen http://127.0.0.1:8000/feed/. Nya poster, uppdateringar av
 poster (skall inte ske om man inte gjort fel tidigare) och radering av poster
-(i händelse av en grov felpublicering) gör att ett AtomEntry-objekt skapas.
-Dessa sammanställs i en feed i templates/atomfeed.xml.
+(i hï¿½ndelse av en grov felpublicering) gï¿½r att ett AtomEntry-objekt skapas.
+Dessa sammanstï¿½lls i en feed i templates/atomfeed.xml.
 
-Eftersom applikationen är baserad på ramverket Django kan det vara bra att
-känna till grunderna om detta. Mer information om Django hittar du här:
+Eftersom applikationen ï¿½r baserad pï¿½ ramverket Django kan det vara bra att
+kï¿½nna till grunderna om detta. Mer information om Django hittar du hï¿½r:
 http://docs.djangoproject.com/en/dev/intro/overview/
