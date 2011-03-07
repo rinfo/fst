@@ -117,7 +117,7 @@ till andra objekt.
 3. Mallen templates/foreskrift_rdf.xml visar hur en grundläggande metadatapost
 är uppbyggd.
 
-4. Atomfeeden ber�ttar om f�r�ndringar som skett med poster i samlingen. Feeden
+4. Atomfeeden berättar om förändringar som skett med poster i samlingen. Feeden
 finns på adressen http://127.0.0.1:8000/feed/. Nya poster, uppdateringar av
 poster (skall inte ske om man inte gjort fel tidigare) och radering av poster
 (i händelse av en grov felpublicering) går att ett AtomEntry-objekt skapas.
