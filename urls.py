@@ -34,5 +34,6 @@ urlpatterns = patterns('',
     (r'^feed/$', 'rinfo-foreskriftshantering.rinfo.views.atomfeed'),
 
     # Slå på administrationsgränssnitt
+    (r'^admin/', include(admin.site.urls)),
     (r'^admin/(.*)', admin.site.root),
 )

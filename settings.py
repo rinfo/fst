@@ -97,6 +97,7 @@ TEMPLATE_DIRS = (
 FILE_CHARSET = 'utf-8'
 
 INSTALLED_APPS = (
+    'django.contrib.sites',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
