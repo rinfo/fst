@@ -213,7 +213,7 @@ class Myndighetsforeskrift(models.Model):
 
     def ikrafttradandear(self):
         """Returnera bara årtalet från ikraftträdandedagen."""
-        return self.ikrafttradandedag.year
+        return self.ikrafttradandedatum.year
 
     @models.permalink
     def get_absolute_url(self): 
