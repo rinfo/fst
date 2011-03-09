@@ -1,0 +1,9 @@
+# Python
+*.pyc
+pip-log.txt
+
+# Django
+*.log
+*.pot
+local_settings.py
+.DS_Store
