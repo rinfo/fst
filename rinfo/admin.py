@@ -78,6 +78,7 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
         # Skapa AtomEntry-posten
         entry = AtomEntry(  foreskrift_id=obj.id,
                 title=obj.titel,
+				summary=obj.sammanfattning,
                 updated=datetime.now(),
                 published=published,
                 entry_id=obj.get_rinfo_uri(),

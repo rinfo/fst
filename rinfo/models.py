@@ -133,6 +133,12 @@ class Myndighetsforeskrift(models.Model):
             help_text="""T.ex. <em>Exempelmyndighetens föreskrifter och
             allmänna råd om arkiv hos statliga myndigheter;</em>""")
 
+    # Sammanfattning
+	sammanfattning=models.CharField(
+           max_length=512, 
+           unique=False, 
+           help_text="""T.ex. <em>Denna föreskrift beskriver allmänna råd om arkiv hos statliga myndigheter</em>""")
+
     # Författningssamlingsnummer, t.ex. "2010:1"
     #fsnummer=models.CharField("FS-nummer", max_length=10,
     #        unique=True, blank=False, help_text="T.ex. <em>2010:1</em>")
