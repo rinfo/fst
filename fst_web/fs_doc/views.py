@@ -2,7 +2,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 import datetime
-from rinfo.models import Myndighetsforeskrift, Forfattningssamling, Amnesord, AtomEntry
+from fst_web.fs_doc.models import Myndighetsforeskrift, Forfattningssamling, Amnesord, AtomEntry
 from django.utils.feedgenerator import rfc3339_date
 from django.conf import settings
 from django.template import loader, Context

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
-from rinfo.models import *
+from fst_web.fs_doc.models import *
 import hashlib
 from datetime import datetime
 from django.core.files import File

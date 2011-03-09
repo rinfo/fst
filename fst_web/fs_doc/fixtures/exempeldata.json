@@ -4,7 +4,7 @@
             "celexnummer": "31979L0409", 
             "titel": ""
         }, 
-        "model": "rinfo.celexreferens", 
+        "model": "fs_doc.celexreferens", 
         "pk": 1
     }, 
     {
@@ -12,7 +12,7 @@
             "celexnummer": "32001L0400", 
             "titel": ""
         }, 
-        "model": "rinfo.celexreferens", 
+        "model": "fs_doc.celexreferens", 
         "pk": 2
     }, 
     {
@@ -20,7 +20,7 @@
             "celexnummer": "32008L0300", 
             "titel": "R\u00e5dets dokument om XYZ"
         }, 
-        "model": "rinfo.celexreferens", 
+        "model": "fs_doc.celexreferens", 
         "pk": 3
     }, 
     {
@@ -29,7 +29,7 @@
             "kortnamn": "EXFS", 
             "titel": "Exempelmyndighetens f\u00f6rfattningssamling"
         }, 
-        "model": "rinfo.forfattningssamling", 
+        "model": "fs_doc.forfattningssamling", 
         "pk": 1
     }, 
     {
@@ -37,7 +37,7 @@
             "beskrivning": "(definition av \u00e4mnesordet administration...)", 
             "titel": "Administration"
         }, 
-        "model": "rinfo.amnesord", 
+        "model": "fs_doc.amnesord", 
         "pk": 1
     }, 
     {
@@ -45,7 +45,7 @@
             "beskrivning": "(definition av \u00e4mnesordet budgetering...)", 
             "titel": "Budgetering"
         }, 
-        "model": "rinfo.amnesord", 
+        "model": "fs_doc.amnesord", 
         "pk": 2
     }, 
     {
@@ -53,7 +53,7 @@
             "beskrivning": "(definition av \u00e4mnesordet centralisering...)", 
             "titel": "Centralisering"
         }, 
-        "model": "rinfo.amnesord", 
+        "model": "fs_doc.amnesord", 
         "pk": 3
     }, 
     {
@@ -62,7 +62,7 @@
             "sfsnummer": "1234:1", 
             "titel": "Exempelf\u00f6rordning"
         }, 
-        "model": "rinfo.bemyndigandeparagraf", 
+        "model": "fs_doc.bemyndigandeparagraf", 
         "pk": 1
     }, 
     {
@@ -71,7 +71,7 @@
             "sfsnummer": "1234:1", 
             "titel": "Exempelf\u00f6rordning"
         }, 
-        "model": "rinfo.bemyndigandeparagraf", 
+        "model": "fs_doc.bemyndigandeparagraf", 
         "pk": 2
     }, 
     {
@@ -97,7 +97,7 @@
             "beslutsdatum": "2009-01-30", 
             "utkom_fran_tryck": "2009-02-01"
         }, 
-        "model": "rinfo.myndighetsforeskrift", 
+        "model": "fs_doc.myndighetsforeskrift", 
         "pk": 1
     }, 
     {
@@ -125,7 +125,7 @@
             "beslutsdatum": "2009-04-01", 
             "utkom_fran_tryck": "2009-04-01"
         }, 
-        "model": "rinfo.myndighetsforeskrift", 
+        "model": "fs_doc.myndighetsforeskrift", 
         "pk": 2
     }, 
     {
@@ -150,7 +150,7 @@
             "beslutsdatum": "2009-04-30", 
             "utkom_fran_tryck": "2009-04-30"
         }, 
-        "model": "rinfo.myndighetsforeskrift", 
+        "model": "fs_doc.myndighetsforeskrift", 
         "pk": 3
     }, 
     {
@@ -158,7 +158,7 @@
             "content_md5": "5c2c3fc272e57cb1f1c5d9d3d1aeec3b", 
             "content_src": "/dokument/EXFS-2009-1.pdf", 
             "deleted": null, 
-            "entry_id": "http://rinfo.lagrummet.se/publ/exfs/2009:1", 
+            "entry_id": "http://fs_doc.lagrummet.se/publ/exfs/2009:1", 
             "foreskrift_id": 1, 
             "published": "2009-04-30 14:20:46", 
             "rdf_href": "/publ/EXFS/2009:1/rdf", 
@@ -169,7 +169,7 @@
             "updated": "2009-04-30 14:20:46"
 
         }, 
-        "model": "rinfo.atomentry", 
+        "model": "fs_doc.atomentry", 
         "pk": 1
     }, 
     {
@@ -177,7 +177,7 @@
             "content_md5": "6becd47ccdc1d4441a7d7d45d2111049", 
             "content_src": "/dokument/EXFS-2009-2.pdf", 
             "deleted": null, 
-            "entry_id": "http://rinfo.lagrummet.se/publ/exfs/2009:2", 
+            "entry_id": "http://fs_doc.lagrummet.se/publ/exfs/2009:2", 
             "foreskrift_id": 2, 
             "published": "2009-04-30 14:21:29", 
             "rdf_href": "/publ/EXFS/2009:2/rdf", 
@@ -187,7 +187,7 @@
             "title": "F\u00f6reskrift om \u00e4ndring i f\u00f6reskrift 2009:1 om administration hos statliga myndigheter", 
             "updated": "2009-04-30 14:21:29"
         }, 
-        "model": "rinfo.atomentry", 
+        "model": "fs_doc.atomentry", 
         "pk": 2
     }, 
     {
@@ -195,7 +195,7 @@
             "content_md5": "38f6775435ee332650f718435ed0c6f9", 
             "content_src": "/dokument/EXFS-2009-3.pdf", 
             "deleted": null, 
-            "entry_id": "http://rinfo.lagrummet.se/publ/exfs/2009:3", 
+            "entry_id": "http://fs_doc.lagrummet.se/publ/exfs/2009:3", 
             "foreskrift_id": 3, 
             "published": "2009-04-30 14:22:04", 
             "rdf_href": "/publ/EXFS/2009:3/rdf", 
@@ -205,7 +205,7 @@
             "title": "F\u00f6reskrift om budgetering hos statliga myndigheter", 
             "updated": "2009-04-30 14:22:04"
         }, 
-        "model": "rinfo.atomentry", 
+        "model": "fs_doc.atomentry", 
         "pk": 3
     }
 ]

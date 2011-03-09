@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.test import TestCase
-import rinfo.models
+import fst_web.fs_doc.models
 from xml.dom.minidom import parse, parseString
 import hashlib
 import os

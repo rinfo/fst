@@ -224,7 +224,7 @@ class Myndighetsforeskrift(models.Model):
     @models.permalink
     def get_absolute_url(self):
         """Genererar webbplatsens länk till denna post."""
-        return ('rinfo-foreskriftshantering.rinfo.views.foreskrift',
+        return ('fst_web.fs_doc.views.foreskrift',
                 [str(self.forfattningssamling.kortnamn), str(self.arsutgava), str(self.lopnummer)])
     
     def get_rinfo_uri(self):
@@ -332,4 +332,4 @@ def create_delete_entry(sender, instance, **kwargs):
     entry.save()
 
 # Koppla upp signalhanteringen
-post_delete.connect(create_delete_entry, sender=Myndighetsforeskrift, dispatch_uid="rinfo.create_delete_signal")
+post_delete.connect(create_delete_entry, sender=Myndighetsforeskrift, dispatch_uid="fst_web.fs_doc.create_delete_signal")

@@ -16,22 +16,22 @@ urlpatterns = patterns('',
     (r'^dokument/(?P<path>.*)$', 'django.views.static.serve', {'document_root': os.path.join(os.path.dirname(__file__), 'dokument').replace('\\','/')}),
 
     # Startsidan ("/")
-    (r'^$', 'rinfo-foreskriftshantering.rinfo.views.index'),
+    (r'^$', 'fst_web.fs_doc.views.index'),
 
     # Enskild föreskrift i RDF-format (t.ex. "/publ/RA-FS/2006:6/rdf"
-    (r'^publ/(?P<fskortnamn>.*)/(?P<arsutgava>.*):(?P<lopnummer>.*)/rdf$', 'rinfo-foreskriftshantering.rinfo.views.foreskrift_rdf'),
+    (r'^publ/(?P<fskortnamn>.*)/(?P<arsutgava>.*):(?P<lopnummer>.*)/rdf$', 'fst_web.fs_doc.views.foreskrift_rdf'),
 
     # Enskild föreskrift (t.ex. "/publ/RA-FS/2006:6"
-    (r'^publ/(?P<fskortnamn>.*)/(?P<arsutgava>.*):(?P<lopnummer>.*)/$', 'rinfo-foreskriftshantering.rinfo.views.foreskrift'),
+    (r'^publ/(?P<fskortnamn>.*)/(?P<arsutgava>.*):(?P<lopnummer>.*)/$', 'fst_web.fs_doc.views.foreskrift'),
 
     # Indelade per ämnesord ("/amnesord/")
-    (r'^amnesord/$', 'rinfo-foreskriftshantering.rinfo.views.amnesord'),
+    (r'^amnesord/$', 'fst_web.fs_doc.views.amnesord'),
 
     # Indelade per ikraftträdandeår ("/artal/")
-    (r'^artal/$', 'rinfo-foreskriftshantering.rinfo.views.artal'),
+    (r'^artal/$', 'fst_web.fs_doc.views.artal'),
 
     # Atom-feed med ändringar i författningssamlingen
-    (r'^feed/$', 'rinfo-foreskriftshantering.rinfo.views.atomfeed'),
+    (r'^feed/$', 'fst_web.fs_doc.views.atomfeed'),
 
     # Slå på administrationsgränssnitt
     (r'^admin/', include(admin.site.urls)),
