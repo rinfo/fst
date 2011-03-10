@@ -67,12 +67,12 @@ def atomfeed(request):
 
     entries = AtomEntry.objects.order_by("-updated")
     last_updated = rfc3339_date(entries[0].updated) if entries else ""
-    feed_uri = settings.RINFO_FEED_URI
-    feed_title = settings.RINFO_FEED_TITLE
-    feed_contact_name = settings.RINFO_FEED_CONTACT_NAME
-    feed_contact_url = settings.RINFO_FEED_CONTACT_URL
-    feed_contact_email = settings.RINFO_FEED_CONTACT_EMAIL
-    rinfo_site_url = settings.RINFO_SITE_URL
+    feed_id = settings.FST_DATASET_URI
+    feed_title = settings.FST_DATASET_TITLE
+    feed_contact_name = settings.FST_ORG_CONTACT_NAME
+    feed_contact_url = settings.FST_ORG_CONTACT_URL
+    feed_contact_email = settings.FST_ORG_CONTACT_EMAIL
+    fst_site_url = settings.FST_SITE_URL
 
     template = loader.get_template('atomfeed.xml')
     context = Context(locals())

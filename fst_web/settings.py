@@ -10,21 +10,6 @@ DATABASE_PASSWORD = ''         # Not used with sqlite3.
 DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
 DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
 
-# Unik identifierare i URI-format för organisationen som utfärdar föreskrifter
-# i denna applikation. Erhålls från rättsinformationsprojektet.
-RINFO_ORG_URI = "http://rinfo.lagrummet.se/org/exempelmyndigheten"
-
-# Första delen av unik identifierare för dokument för denna organisation.
-# Erhålls från rättsinformationsprojektet.
-RINFO_BASE_URI = "http://rinfo.lagrummet.se/publ/exfs/"
-
-# Egenskaper för Atom-feeden
-RINFO_FEED_URI = "tag:exempelmyndigheten.se,2009:rinfo:feed"
-RINFO_FEED_TITLE = u"Exempelmyndighetens författningssamling"
-RINFO_FEED_CONTACT_NAME = u"Erik Exempelson"
-RINFO_FEED_CONTACT_URL = "http://www.exempelmyndigheten.se/"
-RINFO_FEED_CONTACT_EMAIL = "lagrum@exempelmyndigheten.se"
-
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
