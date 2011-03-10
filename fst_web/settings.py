@@ -3,15 +3,6 @@ import os
 
 # Django settings for lagrumsapp project.
 
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
-
-ADMINS = (
-    # ('Your Name', 'your_email@domain.com'),
-)
-
-MANAGERS = ADMINS
-
 DATABASE_ENGINE = 'sqlite3'     # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
 DATABASE_NAME = os.path.join(os.path.dirname(__file__), 'database/lagrumsapp.db').replace('\\','/') #Path to sqlite 3 db-file
 DATABASE_USER = ''             # Not used with sqlite3.
@@ -33,9 +24,6 @@ RINFO_FEED_TITLE = u"Exempelmyndighetens författningssamling"
 RINFO_FEED_CONTACT_NAME = u"Erik Exempelson"
 RINFO_FEED_CONTACT_URL = "http://www.exempelmyndigheten.se/"
 RINFO_FEED_CONTACT_EMAIL = "lagrum@exempelmyndigheten.se"
-
-# Webbplatsens adress och port (utan avslutande '/')
-RINFO_SITE_URL = "http://127.0.0.1:8000"
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -70,9 +58,6 @@ MEDIA_URL = ''
 # Examples: "http://foo.com/media/", "/media/".
 ADMIN_MEDIA_PREFIX = '/media/'
 
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = 'skapa-en-egen-unik-nyckel'
-
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.load_template_source',
@@ -104,3 +89,9 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'fst_web.fs_doc',
 )
+
+try:
+    from local_settings import *
+except ImportError:
+    from demo_settings import *
+
