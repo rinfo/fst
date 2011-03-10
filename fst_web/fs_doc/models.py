@@ -229,7 +229,7 @@ class Myndighetsforeskrift(models.Model):
     
     def get_rinfo_uri(self):
         """Metod för att skapa rättsinformationssystemets unika identifierare för denna post."""
-        return settings.RINFO_BASE_URI + self.arsutgava + ":" + self.lopnummer
+        return settings.FST_PUBL_BASE_URI + self.arsutgava + ":" + self.lopnummer
     
     # Metod för att returnera textrepresentation av en föreskrift (används i
     # admin-gränssnittets listor)
@@ -242,7 +242,7 @@ class Myndighetsforeskrift(models.Model):
         
         template=loader.get_template('foreskrift_rdf.xml')
         context=Context({ 'foreskrift': self, 'publisher_uri':
-            settings.RINFO_ORG_URI, 'rinfo_base_uri': settings.RINFO_BASE_URI})
+            settings.FST_ORG_URI, 'rinfo_base_uri': settings.FST_PUBL_BASE_URI})
         
         return template.render(context)
     
@@ -303,8 +303,8 @@ class AtomEntry(models.Model):
             'enclosure_length': self.enclosure_length,
             'enclosure_md5': self.enclosure_md5,
             'enclosure_uri': self.enclosure_uri,
-            'rinfo_base_uri': settings.RINFO_BASE_URI,
-            'rinfo_site_url': settings.RINFO_SITE_URL})
+            'rinfo_base_uri': settings.FST_PUBL_BASE_URI,
+            'fst_site_url': settings.FST_SITE_URL})
         return template.render(context)
 
 
