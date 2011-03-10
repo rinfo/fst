@@ -49,6 +49,18 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.load_template_source',
 )
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    # Used by default in Django 1.2 (they have to be manually defined when
+    # TEMPLATE_CONTEXT_PROCESSORS is overriden like this):
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.contrib.messages.context_processors.messages",
+    # Project-specific:
+    "fst_web.context_processors.add_request_vars",
+)
+
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

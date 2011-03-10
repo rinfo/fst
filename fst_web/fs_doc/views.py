@@ -1,11 +1,16 @@
 # -*- coding: utf-8 -*-
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
+from django.template import RequestContext
 import datetime
 from fst_web.fs_doc.models import Myndighetsforeskrift, Forfattningssamling, Amnesord, AtomEntry
 from django.utils.feedgenerator import rfc3339_date
 from django.conf import settings
 from django.template import loader, Context
+
+def _response(request, template, context):
+    return render_to_response(template, context, context_instance=RequestContext(request))
+
 
 def index(request):
     """Visa startsidan."""
@@ -13,7 +18,7 @@ def index(request):
     #Senast utgivna (då de utkom från tryck)
     senaste_myndighetsforeskrifter = Myndighetsforeskrift.objects.all().order_by("-utkom_fran_tryck")[:10]
 
-    return render_to_response('index.html', locals())
+    return _response(request, 'index.html', locals())
 
 
 def foreskrift_rdf(request, fskortnamn, arsutgava, lopnummer):
@@ -39,7 +44,7 @@ def foreskrift(request, fskortnamn, arsutgava, lopnummer):
     identifierare = "%s %s:%s" % (fskortnamn, arsutgava, lopnummer)
     foreskrift = Myndighetsforeskrift.objects.get(identifierare=identifierare, forfattningssamling=fs)
 
-    return render_to_response('foreskrift.html', locals())
+    return _response(request, 'foreskrift.html', locals())
 
 
 
@@ -49,7 +54,7 @@ def amnesord(request):
     # Hämta alla ämnesord som har minst en föreskrift kopplad
     amnesord = Amnesord.objects.filter(myndighetsforeskrift__isnull = False).order_by("titel").distinct()
 
-    return render_to_response('per_amnesord.html', locals())
+    return _response(request, 'per_amnesord.html', locals())
 
 
 
@@ -58,7 +63,7 @@ def artal(request):
 
     foreskrifter = Myndighetsforeskrift.objects.all().order_by("-ikrafttradandedatum")
 
-    return render_to_response('per_ar.html', locals())
+    return _response(request, 'per_ar.html', locals())
 
 
 def atomfeed(request):

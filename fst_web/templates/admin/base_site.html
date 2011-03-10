@@ -1,10 +1,9 @@
 {% extends "admin/base.html" %}
-{% load i18n %}
 
-{% block title %}{{ title }} | {% trans 'Exempelmyndighetens lagrum' %}{% endblock %}
+{% block title %}{{ title }} | {{ organization.name_possessive }} lagrum{% endblock %}
 
 {% block branding %}
-<h1 id="site-name">{% trans 'Exempelmyndighetens lagrum' %}</h1>
+<h1 id="site-name">{{ organization.name_possessive }} lagrum</h1>
 {% endblock %}
 
 {% block nav-global %}{% endblock %}
