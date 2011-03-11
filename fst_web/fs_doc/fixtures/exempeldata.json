@@ -1,0 +1,211 @@
+[
+    {
+        "fields": {
+            "celexnummer": "31979L0409", 
+            "titel": ""
+        }, 
+        "model": "fs_doc.celexreferens", 
+        "pk": 1
+    }, 
+    {
+        "fields": {
+            "celexnummer": "32001L0400", 
+            "titel": ""
+        }, 
+        "model": "fs_doc.celexreferens", 
+        "pk": 2
+    }, 
+    {
+        "fields": {
+            "celexnummer": "32008L0300", 
+            "titel": "R\u00e5dets dokument om XYZ"
+        }, 
+        "model": "fs_doc.celexreferens", 
+        "pk": 3
+    }, 
+    {
+        "fields": {
+            "identifierare": "http://test.lagrummet.se/serie/fs/exfs", 
+            "kortnamn": "EXFS", 
+            "titel": "Exempelmyndighetens f\u00f6rfattningssamling"
+        }, 
+        "model": "fs_doc.forfattningssamling", 
+        "pk": 1
+    }, 
+    {
+        "fields": {
+            "beskrivning": "(definition av \u00e4mnesordet administration...)", 
+            "titel": "Administration"
+        }, 
+        "model": "fs_doc.amnesord", 
+        "pk": 1
+    }, 
+    {
+        "fields": {
+            "beskrivning": "(definition av \u00e4mnesordet budgetering...)", 
+            "titel": "Budgetering"
+        }, 
+        "model": "fs_doc.amnesord", 
+        "pk": 2
+    }, 
+    {
+        "fields": {
+            "beskrivning": "(definition av \u00e4mnesordet centralisering...)", 
+            "titel": "Centralisering"
+        }, 
+        "model": "fs_doc.amnesord", 
+        "pk": 3
+    }, 
+    {
+        "fields": {
+            "paragrafnummer": "11", 
+            "sfsnummer": "1234:1", 
+            "titel": "Exempelf\u00f6rordning"
+        }, 
+        "model": "fs_doc.bemyndigandeparagraf", 
+        "pk": 1
+    }, 
+    {
+        "fields": {
+            "paragrafnummer": "13", 
+            "sfsnummer": "1234:1", 
+            "titel": "Exempelf\u00f6rordning"
+        }, 
+        "model": "fs_doc.bemyndigandeparagraf", 
+        "pk": 2
+    }, 
+    {
+        "fields": {
+            "amnesord": [
+                1
+            ], 
+            "andrar": null, 
+            "omtryck": false, 
+            "bemyndigandeparagrafer": [
+                1
+            ], 
+            "celexreferenser": [
+                1
+            ], 
+            "dokument": "dokument/EXFS-2009-1.pdf", 
+            "forfattningssamling": 1, 
+            "identifierare": "EXFS 2009:1",
+            "arsutgava": "2009",
+            "lopnummer": "1",
+            "ikrafttradandedatum": "2009-03-30", 
+            "titel": "F\u00f6reskrift om administration hos statliga myndigheter", 
+            "beslutsdatum": "2009-01-30", 
+            "utkom_fran_tryck": "2009-02-01"
+        }, 
+        "model": "fs_doc.myndighetsforeskrift", 
+        "pk": 1
+    }, 
+    {
+        "fields": {
+            "amnesord": [
+                1
+            ], 
+            "andrar": 1, 
+            "omtryck": true, 
+            "bemyndigandeparagrafer": [
+                1
+            ], 
+            "celexreferenser": [
+                1, 
+                2, 
+                3
+            ], 
+            "dokument": "dokument/EXFS-2009-2.pdf", 
+            "forfattningssamling": 1, 
+            "identifierare": "EXFS 2009:2",
+            "arsutgava": "2009",
+            "lopnummer": "2",
+            "ikrafttradandedatum": "2009-04-01", 
+            "titel": "F\u00f6reskrift om \u00e4ndring i f\u00f6reskrift 2009:1 om administration hos statliga myndigheter", 
+            "beslutsdatum": "2009-04-01", 
+            "utkom_fran_tryck": "2009-04-01"
+        }, 
+        "model": "fs_doc.myndighetsforeskrift", 
+        "pk": 2
+    }, 
+    {
+        "fields": {
+            "amnesord": [
+                1, 
+                2
+            ], 
+            "andrar": 1, 
+            "omtryck": false, 
+            "bemyndigandeparagrafer": [
+                1, 
+                2
+            ], 
+            "dokument": "dokument/EXFS-2009-3.pdf", 
+            "forfattningssamling": 1,
+            "identifierare": "EXFS 2009:3",
+            "arsutgava": "2009",
+            "lopnummer": "3",
+            "ikrafttradandedatum": "2009-04-30", 
+            "titel": "F\u00f6reskrift om budgetering hos statliga myndigheter", 
+            "beslutsdatum": "2009-04-30", 
+            "utkom_fran_tryck": "2009-04-30"
+        }, 
+        "model": "fs_doc.myndighetsforeskrift", 
+        "pk": 3
+    }, 
+    {
+        "fields": {
+            "content_md5": "5c2c3fc272e57cb1f1c5d9d3d1aeec3b", 
+            "content_src": "/dokument/EXFS-2009-1.pdf", 
+            "deleted": null, 
+            "entry_id": "http://fs_doc.lagrummet.se/publ/exfs/2009:1", 
+            "foreskrift_id": 1, 
+            "published": "2009-04-30 14:20:46", 
+            "rdf_href": "/publ/EXFS/2009:1/rdf", 
+            "rdf_length": 1618, 
+            "rdf_md5": "011821896e71932992b9b23c147923e4", 
+            "summary": null, 
+            "title": "F\u00f6reskrift om administration hos statliga myndigheter", 
+            "updated": "2009-04-30 14:20:46"
+
+        }, 
+        "model": "fs_doc.atomentry", 
+        "pk": 1
+    }, 
+    {
+        "fields": {
+            "content_md5": "6becd47ccdc1d4441a7d7d45d2111049", 
+            "content_src": "/dokument/EXFS-2009-2.pdf", 
+            "deleted": null, 
+            "entry_id": "http://fs_doc.lagrummet.se/publ/exfs/2009:2", 
+            "foreskrift_id": 2, 
+            "published": "2009-04-30 14:21:29", 
+            "rdf_href": "/publ/EXFS/2009:2/rdf", 
+            "rdf_length": 2014, 
+            "rdf_md5": "f31856ef7004d49d77fe219cb899399a", 
+            "summary": null, 
+            "title": "F\u00f6reskrift om \u00e4ndring i f\u00f6reskrift 2009:1 om administration hos statliga myndigheter", 
+            "updated": "2009-04-30 14:21:29"
+        }, 
+        "model": "fs_doc.atomentry", 
+        "pk": 2
+    }, 
+    {
+        "fields": {
+            "content_md5": "38f6775435ee332650f718435ed0c6f9", 
+            "content_src": "/dokument/EXFS-2009-3.pdf", 
+            "deleted": null, 
+            "entry_id": "http://fs_doc.lagrummet.se/publ/exfs/2009:3", 
+            "foreskrift_id": 3, 
+            "published": "2009-04-30 14:22:04", 
+            "rdf_href": "/publ/EXFS/2009:3/rdf", 
+            "rdf_length": 1956, 
+            "rdf_md5": "44a85e234a06ec429625600bb8cab6f5", 
+            "summary": null, 
+            "title": "F\u00f6reskrift om budgetering hos statliga myndigheter", 
+            "updated": "2009-04-30 14:22:04"
+        }, 
+        "model": "fs_doc.atomentry", 
+        "pk": 3
+    }
+]

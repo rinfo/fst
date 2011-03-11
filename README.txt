@@ -1,24 +1,24 @@
-Om exempelapplikationen
+Om FST (Föreskriftshantering som tjänst)
 -----------------------
 
-Syftet med denna exempelapplikation är att illustrera i programkod hur man kan
-implementera de format som rekommenderas av Rättsinformationsprojektet för den
-mest grundläggande nivån av publicering av myndighetsföreskrifter. Tanken är
-inte att tillhandahålla ett färdigt system för rättsinformationshantering.
+Syftet med denna applikation är att göra det möjligt för myndigheter att publicera sin information till rättsinformationssystemet genom ett lättanvänt webbgränssnitt. Det passar myndigheter som inte har möjlighet att integrera sin befintliga lösning för publicering av författning med rättsinformationssystemet, eller som saknar ett sådant system överhuvudtaget.
 
-Applikationen har två delar; 1) en administrationsdel i vilken man hanterar
-ämnesord, föreskrifter och grunddata och 2) en exempelwebbplats som visar
-informationen för potentiella besökare. 
+Domstolsverket kommer, som samordningsmyndighet för rättsinformationssystemet, att drifta en instans av systemet för varje myndighet som vill använda det. En myndighet behöver alltså inte själv sätta upp systemet, utan kan använda Domstolsverkets befintliga tjänst (därav systemets namn: "..som tjänst").
 
-Applikationem är byggd på webbramverket Django som ges ut under BSD-licensen.
+Applikationen har tre delar;
+
+1) en administrationsdel i vilken man hanterar föreskrifter, ämnesord och   grundläggande metadata, 
+2) en exempelwebbplats som visar informationen för potentiella besökare, och
+3) publicering av postförteckning, metadata och dokumentinnehåll enligt rättsinformationssystemet angivna standarder.
+
+Applikationen är byggd på webbramverket Django som ges ut under BSD-licensen.
 Det betyder att du får använda och vidareutveckla koden om du vill, även i
 kommersiella sammanhang, men att den inte kommer med några garantier för
 funktion eller lämplighet. Se BSD-licensen för mer information om möjligheter
 att använda dig av programkoden. 
 
 Vi är dock tacksamma för feedback och rapporter om eventuella fel. För mer
-information om rättsinformationsprojektet kontakta Staffan Malmgren, telefon 08-561
-66 921 på Domstolsverket eller besök projektbloggen: 
+information om rättsinformationsprojektet kontakta Staffan Malmgren (staffan.malmgren@dom.se) eller besök projektbloggen: 
 
 http://rinfoprojektet.wordpress.com/
 
@@ -36,7 +36,7 @@ Applikationen är baserad på webbramverket Django
 Rader som börjar med "$" avser kommandon som skall utföras från ett
 terminalfönster).
 
-1. Installera programspråket Python 2.6 (Se http://www.python.org/download/).
+1. Installera programspråket Python 2.6 eller senare (Se http://www.python.org/download/). Python 3.* stöds i dagsläget inte.
 
 2. Installera easy_install/setuptools (Se
 http://pypi.python.org/pypi/setuptools och
@@ -47,33 +47,33 @@ http://peak.telecommunity.com/DevCenter/EasyInstall)
 
 4. Installera Sqllite 3 (Se http://www.sqlite.org/)
 
-6. �ppna filen settings.py och modifiera vid behov de inställningar som börjar
+5. Öppna filen settings.py och modifiera vid behov de inställningar som börjar
 med RINFO.
 
-7. Installera databasschemat:
+6. Installera databasschemat:
     $ python manage.py syncdb   
 
 Om det inträffade ett fel behöver du eventuellt justera miljövariablen
 PYTHONPATH så att den inkluderar katalogen i vilken rinfo-foreksriftshantering
 ligger i. Om filerna till applikationen ligger i
-c:\projekt\rinfo-foreksriftshantering behöver du lägga till c:\projekt i
+c:\projekt\fst behöver du lägga till c:\projekt i
 PYTHONPATH.
 
 Efter information att tabeller skapas skall du få en fråga om du vill skapa
 en 'superuser'. Svara ja på frågan och ange information om användaren.
 
-8. Starta den inbyggda webbservern:
+7. Starta den inbyggda webbservern:
     $ python manage.py runserver
 
-9. Öppna webbläsaren med följande adress: http://127.0.0.1:8000/
+8. Öppna webbläsaren med följande adress: http://127.0.0.1:8000/
 Exempelwebbplatsen visas. För att redigera innehåll navigera till
 http://127.0.0.1:8000/admin/ och logga in som den användare du skapade i steg 7.
 
-10. Verifiera att applikationen är installerad korrekt genom att köra de
+9. Verifiera att applikationen är installerad korrekt genom att köra de
 automatiska testerna med:
     $ python manage.py test
 
-Får du problem med isntallationen se följande källor:
+Får du problem med installationen se följande källor:
 
 http://docs.djangoproject.com/en/dev/intro/install/
 
@@ -89,13 +89,12 @@ sätt.
 Om du vill kan du installera medföljande testdata genom att köra följande
 kommando inifrån projektkatalogen:
 
-    $ python manage.py loaddata --settings=rinfo-foreskriftshantering.settings \
-                                           rinfo/fixtures/exempeldata.json
+    $ python manage.py loaddata --settings=fst_web.settings \
+                                           fs_doc/fixtures/exempeldata.json
 
-...och sedan kopiera över PDF-dokumenten från mappen rinfo/fixtures till mappen
-dokument:
+...och sedan kopiera över PDF-dokumenten från mappen fst_web/fs_doc/fixtures till mappen dokument:
 
-    $ cp rinfo/fixtures/*.pdf dokument/
+    $ cp fs_doc/fixtures/*.pdf dokument/
 
 Alternativt börjar du med att logga in i administrationsgränssnittet och skapa
 lite grunddata (Författningssamling, några ämnesord och bemyndigandeparagrafer).
@@ -110,18 +109,17 @@ Några saker att utgå från:
 1. Filen urls.py visar vilka olika typer av länkar som webbplatsen hanterar.
 Varje länkformat är kopplat till en metod i rinfo/views.py. 
 
-2. I rinfo/models.py hittar du klasserna för de olika informationsobjekten.
+2. I fst_web/models.py hittar du klasserna för de olika informationsobjekten.
 Klassen Myndighetsforeskrift visar några olika typer av metadata och relationer
 till andra objekt. 
 
-3. Mallen templates/foreskrift_rdf.xml visar hur en grundläggande metadatapost
-är uppbyggd.
+3. Mallen fst_web/templates/foreskrift_rdf.xml visar hur en grundläggande metadatapost är uppbyggd.
 
 4. Atomfeeden berättar om förändringar som skett med poster i samlingen. Feeden
 finns på adressen http://127.0.0.1:8000/feed/. Nya poster, uppdateringar av
 poster (skall inte ske om man inte gjort fel tidigare) och radering av poster
 (i händelse av en grov felpublicering) går att ett AtomEntry-objekt skapas.
-Dessa sammanställs i en feed i templates/atomfeed.xml.
+Dessa sammanställs i en feed i fst_web/templates/atomfeed.xml.
 
 Eftersom applikationen är baserad på ramverket Django kan det vara bra att
 känna till grunderna om detta. Mer information om Django hittar du här:

@@ -1,0 +1,65 @@
+{% extends "site_base.html" %}
+
+{% block title %}{{foreskrift.titel}}{% endblock %}
+
+
+{% block content %}
+<h1>{{foreskrift.identifierare}} {{foreskrift.titel|safe}}</h1>
+<p class="type">{{foreskrift.typ}}</p>
+
+<p class="download"><a href="/{{foreskrift.dokument.url}}">Ladda ner {{foreskrift.identifierare}} som PDF</a></p>
+{% if foreskrift.bilaga %}
+<p class="download"><a href="/{{foreskrift.bilaga.url}}">Ladda ner bilaga som PDF</a></p>{% endif %}
+
+    <table class="fsdata">
+        <tr>
+            <th scope="row">Identifierare</th>
+            <td>{{foreskrift.identifierare}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Beslutad</th>
+            <td>{{foreskrift.beslutsdatum}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Ikraffträdandedag</th>
+            <td>{{foreskrift.ikrafttradandedatum}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Utkom från tryck</th>
+            <td>{{foreskrift.utkom_fran_tryck}}</td>
+        </tr>
+        {% if foreskrift.bemyndigandeparagrafer %}
+        <tr>
+            <th scope="row">Bemyndiganden</th>
+            <td>{% for para in foreskrift.bemyndigandeparagrafer.all %}{{para.paragrafnummer}}§ {{para.titel}} ({{para.sfsnummer}}){% if not forloop.last %}, {% endif %}{% endfor %}</td>
+        </tr>
+        {% endif %}
+        {% if foreskrift.amnesord %}
+        <tr>
+            <th scope="row">Ämnesord</th>
+            <td>{% for ord in foreskrift.amnesord.all %}{{ord.titel}}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+        </tr>
+        {% endif %}
+        {% if foreskrift.celexreferenser.all %}
+        <tr>
+            <th scope="row">Relaterade EG-direktiv</th>
+            <td><ul>{% for referens in foreskrift.celexreferenser.all %}<li><a href="http://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=CELEX:{{referens.celexnummer}}:SV:HTML">{{referens}}</a></li>{% endfor %}</ul></td>
+        </tr>
+        {% endif %}
+        {% if foreskrift.andrar %}
+        <tr>
+            <th scope="row">Ändrar</th>
+            <td><a href="{{foreskrift.andrar.get_absolute_url}}">{{foreskrift.andrar}}</a></td>
+        </tr>
+        {% endif %}
+    </table>
+
+    {% if foreskrift.andringar.all %}
+    <h2>Ändringar</h2>
+    <ul class="andringar">
+        {% for andringsforeskrift in foreskrift.andringar.all %}
+        <li><a href="{{andringsforeskrift.get_absolute_url}}">{{andringsforeskrift}}{% if andringsforeskrift.omtryck %} (omtryck){% endif %}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+{% endblock %}
