@@ -35,5 +35,5 @@ urlpatterns = patterns('',
 
     # Slå på administrationsgränssnitt
     (r'^admin/', include(admin.site.urls)),
-    (r'^admin/(.*)', admin.site.root),
+    #(r'^admin/(.*)', admin.site.root),
 )
