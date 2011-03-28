@@ -5,7 +5,7 @@ from os import path
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': path.join(path.dirname(__file__), 'database/lagrumsapp.db').replace('\\','/') #Path to sqlite 3 db-file
+        'NAME': path.join(path.dirname(__file__), 'database/fst_demo.db').replace('\\','/') #Path to sqlite 3 db-file
     }
 }
 
