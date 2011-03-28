@@ -1,5 +1,16 @@
 # -*- coding: utf-8 -*-
 # DUMMY Django settings for FST Web (fst_web).
+from os import path
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': path.join(path.dirname(__file__), 'database/lagrumsapp.db').replace('\\','/') #Path to sqlite 3 db-file
+    }
+}
+
+UPLOAD_DIR = 'dokument'
+
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
