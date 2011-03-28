@@ -94,7 +94,7 @@ kommando inifrån projektkatalogen:
 
 ...och sedan kopiera över PDF-dokumenten från mappen fst_web/fs_doc/fixtures till mappen dokument:
 
-    $ cp fs_doc/fixtures/*.pdf dokument/
+    $ cp fs_doc/fixtures/*.pdf uploads/
 
 Alternativt börjar du med att logga in i administrationsgränssnittet och skapa
 lite grunddata (Författningssamling, några ämnesord och bemyndigandeparagrafer).

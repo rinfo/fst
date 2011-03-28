@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.conf import settings
 from django.conf.urls.defaults import *
 from django.contrib import admin
 import os
@@ -13,7 +14,7 @@ urlpatterns = patterns('',
     (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': os.path.join(os.path.dirname(__file__), 'static').replace('\\','/')}),
 
     # Se till att PDF-versionen av föreskrifter i mappen dokument skickas
-    (r'^dokument/(?P<path>.*)$', 'django.views.static.serve', {'document_root': os.path.join(os.path.dirname(__file__), 'dokument').replace('\\','/')}),
+    (r'^dokument/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.UPLOAD_DIR.replace('\\','/')}),
 
     # Startsidan ("/")
     (r'^$', 'fst_web.fs_doc.views.index'),

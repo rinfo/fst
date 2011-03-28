@@ -9,7 +9,7 @@ DATABASES = {
     }
 }
 
-UPLOAD_DIR = 'dokument'
+UPLOAD_DIR = path.join(path.dirname(__file__), 'uploads')
 
 
 DEBUG = True
