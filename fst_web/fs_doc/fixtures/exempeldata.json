@@ -87,7 +87,7 @@
             "celexreferenser": [
                 1
             ], 
-            "dokument": "dokument/EXFS-2009-1.pdf", 
+            "dokument": "EXFS-2009-1.pdf", 
             "forfattningssamling": 1, 
             "identifierare": "EXFS 2009:1",
             "arsutgava": "2009",
@@ -115,7 +115,7 @@
                 2, 
                 3
             ], 
-            "dokument": "dokument/EXFS-2009-2.pdf", 
+            "dokument": "EXFS-2009-2.pdf", 
             "forfattningssamling": 1, 
             "identifierare": "EXFS 2009:2",
             "arsutgava": "2009",
@@ -140,7 +140,7 @@
                 1, 
                 2
             ], 
-            "dokument": "dokument/EXFS-2009-3.pdf", 
+            "dokument": "EXFS-2009-3.pdf", 
             "forfattningssamling": 1,
             "identifierare": "EXFS 2009:3",
             "arsutgava": "2009",
@@ -156,7 +156,7 @@
     {
         "fields": {
             "content_md5": "5c2c3fc272e57cb1f1c5d9d3d1aeec3b", 
-            "content_src": "/dokument/EXFS-2009-1.pdf", 
+            "content_src": "EXFS-2009-1.pdf", 
             "deleted": null, 
             "entry_id": "http://fs_doc.lagrummet.se/publ/exfs/2009:1", 
             "foreskrift_id": 1, 
@@ -175,7 +175,7 @@
     {
         "fields": {
             "content_md5": "6becd47ccdc1d4441a7d7d45d2111049", 
-            "content_src": "/dokument/EXFS-2009-2.pdf", 
+            "content_src": "EXFS-2009-2.pdf", 
             "deleted": null, 
             "entry_id": "http://fs_doc.lagrummet.se/publ/exfs/2009:2", 
             "foreskrift_id": 2, 
@@ -193,7 +193,7 @@
     {
         "fields": {
             "content_md5": "38f6775435ee332650f718435ed0c6f9", 
-            "content_src": "/dokument/EXFS-2009-3.pdf", 
+            "content_src": "EXFS-2009-3.pdf", 
             "deleted": null, 
             "entry_id": "http://fs_doc.lagrummet.se/publ/exfs/2009:3", 
             "foreskrift_id": 3, 
