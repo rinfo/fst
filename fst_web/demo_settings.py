@@ -9,7 +9,9 @@ DATABASES = {
     }
 }
 
-UPLOAD_DIR = path.join(path.dirname(__file__), 'uploads')
+MEDIA_ROOT = path.join(path.dirname(__file__), 'uploads')
+
+UPLOAD_DIR = MEDIA_ROOT
 
 
 DEBUG = True
