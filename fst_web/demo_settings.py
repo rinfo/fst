@@ -2,6 +2,10 @@
 # DUMMY Django settings for FST Web (fst_web).
 from os import path
 
+DEBUG = True
+TEMPLATE_DEBUG = DEBUG
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -10,12 +14,6 @@ DATABASES = {
 }
 
 MEDIA_ROOT = path.join(path.dirname(__file__), 'uploads')
-
-UPLOAD_DIR = MEDIA_ROOT
-
-
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),

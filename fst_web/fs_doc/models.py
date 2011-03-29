@@ -176,7 +176,7 @@ class Myndighetsforeskrift(models.Model):
     
     # PDF-version av dokumentet
     dokument=models.FileField(u"PDF-version av föreskrift",
-            upload_to=settings.UPLOAD_DIR,
+            upload_to="foreskrift",
             blank=False,
             help_text="""Se till att dokumentet är i PDF-format.""")
     
@@ -202,7 +202,7 @@ class Myndighetsforeskrift(models.Model):
     
     # Bilage fil (om blank förutsätts bilagan vara en del av föreskriftsdokumentet)
     bilaga=models.FileField(u"Bilagefil",
-            upload_to=settings.UPLOAD_DIR,
+            upload_to="bilaga",
             blank=True,
             null=True,
             help_text="""Om ingen fil anges förutsätts bilagan vara en del av föreskriftsdokumentet.""")
