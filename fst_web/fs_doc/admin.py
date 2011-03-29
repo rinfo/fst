@@ -21,11 +21,18 @@ class AmnesordAdmin(admin.ModelAdmin):
     ordering = ('titel',)
     search_fields = ('titel', 'beskrivning',)
 
+class BilagaInline(admin.StackedInline):
+    model = Bilaga
+    extra = 1
+    list_display = ('titel', 'file')
+    ordering = ('titel',)
+
 class MyndighetsforeskriftAdmin(admin.ModelAdmin):
     list_display = ('identifierare', 'arsutgava', 'lopnummer', 'titel','beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck', 'typ')
     list_filter = ('beslutsdatum', 'ikrafttradandedatum')
     ordering = ('-beslutsdatum', 'titel')
     search_fields = ('titel', 'identifierare',)
+    inlines = [BilagaInline]
 
     def save_model(self, request, obj, form, change):
         """Se till att AtomEntry-objekt skaps i samband med att
@@ -57,17 +64,17 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
         md5.update(open(obj.dokument.path, 'rb').read())
         dokument_md5 = md5.hexdigest()
 
-        # ...och för eventuell bilaga
-        bilaga_md5 = ""
-        bilaga_length = 0
-        bilaga_uri = ""
-
-        if obj.bilaga:
-            md5 = hashlib.md5()
-            md5.update(open(obj.bilaga.path, 'rb').read())
-            bilaga_md5 = md5.hexdigest()
-            bilaga_length = len(open(obj.bilaga.path, 'rb').read())
-            bilaga_uri = obj.get_rinfo_uri() + "#bilaga_1"
+        ## TODO: ...och för eventuella bilagor (kod nedan gällde när det bara
+        # kunde finnas en)
+        #bilaga_md5 = ""
+        #bilaga_length = 0
+        #bilaga_uri = ""
+        #if obj.bilaga:
+        #    md5 = hashlib.md5()
+        #    md5.update(open(obj.bilaga.path, 'rb').read())
+        #    bilaga_md5 = md5.hexdigest()
+        #    bilaga_length = len(open(obj.bilaga.path, 'rb').read()) # use file.data.size()
+        #    bilaga_uri = obj.get_rinfo_uri() + "#bilaga_1"
 
         # ...och för metadataposten i RDF-format
         md5 = hashlib.md5()
@@ -84,10 +91,6 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
                 entry_id=obj.get_rinfo_uri(),
                 content_md5=dokument_md5,
                 content_src="/" + obj.dokument.url,
-                enclosure_href=("/" + obj.bilaga.url) if obj.bilaga else None,
-                enclosure_length=bilaga_length if obj.bilaga else None,
-                enclosure_md5=bilaga_md5 if obj.bilaga else None,
-                enclosure_uri=bilaga_uri if obj.bilaga else None,
                 rdf_href=obj.get_absolute_url() + "rdf",
                 rdf_length=len(rdfxml_repr),
                 rdf_md5=rdf_md5)

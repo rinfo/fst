@@ -4,12 +4,11 @@
 
 
 {% block content %}
-<h1>{{foreskrift.identifierare}} {{foreskrift.titel|safe}}</h1>
-<p class="type">{{foreskrift.typ}}</p>
 
-<p class="download"><a href="/{{foreskrift.dokument.url}}">Ladda ner {{foreskrift.identifierare}} som PDF</a></p>
-{% if foreskrift.bilaga %}
-<p class="download"><a href="/{{foreskrift.bilaga.url}}">Ladda ner bilaga som PDF</a></p>{% endif %}
+    <h1>{{foreskrift.identifierare}} {{foreskrift.titel|safe}}</h1>
+    <p class="type">{{foreskrift.typ}}</p>
+
+    <p class="download"><a href="/{{foreskrift.dokument.url}}">Ladda ner {{foreskrift.identifierare}} som PDF</a></p>
 
     <table class="fsdata">
         <tr>
@@ -62,4 +61,22 @@
         {% endfor %}
     </ul>
     {% endif %}
+
+    {% if foreskrift.bilagor.all %}
+        <h2>Bilagor</h2>
+        <ul>
+            {% for bilaga in foreskrift.bilagor.all %}
+                <li>
+                    {% if bilaga.file %}
+                        <p class="download">
+                            <a href="/{{bilaga.file.url}}">Ladda ner {{ bilaga.titel }} som PDF</a>
+                        </p>
+                    {% else %}
+                        <p>{{ bilaga.titel }}</p>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
 {% endblock %}

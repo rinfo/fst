@@ -120,7 +120,6 @@ class Bemyndigandeparagraf(models.Model):
 
 
 
-
 class Myndighetsforeskrift(models.Model):
     """Modell för myndighetsföreskrifter. Denna hanterar det huvudsakliga
     innehållet i en författningssamling - själva föreskrifterna. Den kan enkelt
@@ -136,6 +135,7 @@ class Myndighetsforeskrift(models.Model):
     # Sammanfattning
     sammanfattning=models.CharField(
            max_length=512,
+           blank=True,
            unique=False,
            help_text="""T.ex. <em>Denna föreskrift beskriver allmänna råd om arkiv hos statliga myndigheter</em>""")
     
@@ -197,17 +197,6 @@ class Myndighetsforeskrift(models.Model):
     celexreferenser=models.ManyToManyField(CelexReferens,
             blank=True, verbose_name=u"Bidrar till att genomföra EG-direktiv", related_name="foreskrifter")
     
-    # Eventuell bilaga till föreskriften
-    bilaga_titel=models.CharField("Bilaga - titel", max_length=512, blank=True, null=True, help_text="""T.ex. <em>Bilaga 1</em>""")
-    
-    # Bilage fil (om blank förutsätts bilagan vara en del av föreskriftsdokumentet)
-    bilaga=models.FileField(u"Bilagefil",
-            upload_to="bilaga",
-            blank=True,
-            null=True,
-            help_text="""Om ingen fil anges förutsätts bilagan vara en del av föreskriftsdokumentet.""")
-
-    
     def typ(self):
         """Typ av dokument i klartext; Myndighetsföreskrift, Ändringsförfattning, Ändringsförfattning (omtryck)"""
         typtext = u"Myndighetsföreskrift"
@@ -252,6 +241,22 @@ class Myndighetsforeskrift(models.Model):
 
 
 
+class Bilaga(models.Model):
+
+    foreskrift = models.ForeignKey(Myndighetsforeskrift, blank=False, related_name='bilagor')
+
+    titel = models.CharField("Titel", max_length=512, blank=True, null=True, help_text="""T.ex. <em>Bilaga 1</em>""")
+
+    file = models.FileField(u"Fil",
+            upload_to="bilaga",
+            blank=True,
+            null=True,
+            help_text="""Om ingen fil anges förutsätts bilagan vara en del av föreskriftsdokumentet.""")
+
+    class Meta:
+        verbose_name = u"Bilaga"
+        verbose_name_plural = u"Bilagor"
+
 
 class AtomEntry(models.Model):
     """En klass för att skapa ett Atom entry för feeden. Dessa objekt skapas
@@ -270,12 +275,6 @@ class AtomEntry(models.Model):
     # Information om föreskriftsdokumentet
     content_src=models.CharField(max_length=512, blank=True, null=True)
     content_md5=models.CharField(max_length=32, blank=False)
-    
-    # Eventuell bilageinformation
-    enclosure_href=models.CharField(max_length=512, blank=True, null=True)
-    enclosure_md5=models.CharField(max_length=32, blank=True, null=True)
-    enclosure_length=models.PositiveIntegerField(blank=True, null=True)
-    enclosure_uri=models.CharField(max_length=512, blank=True, null=True)
     
     # RDF-data för denna post
     rdf_href=models.CharField(max_length=512, blank=True, null=True)
@@ -299,10 +298,11 @@ class AtomEntry(models.Model):
             'rdf_href': self.rdf_href,
             'rdf_length': self.rdf_length,
             'rdf_md5': self.rdf_md5,
-            'enclosure_href': self.enclosure_href,
-            'enclosure_length': self.enclosure_length,
-            'enclosure_md5': self.enclosure_md5,
-            'enclosure_uri': self.enclosure_uri,
+            # TODO: stöd för multipla bilagor
+            #'enclosure_href': self.enclosure_href,
+            #'enclosure_length': self.enclosure_length,
+            #'enclosure_md5': self.enclosure_md5,
+            #'enclosure_uri': self.enclosure_uri,
             'rinfo_base_uri': settings.FST_PUBL_BASE_URI,
             'fst_site_url': settings.FST_SITE_URL})
         return template.render(context)
