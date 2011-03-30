@@ -7,25 +7,30 @@ from django.core.files import File
 from django.conf import settings
 from os import path
 
+
 class ForfattningssamlingAdmin(admin.ModelAdmin):
     list_display = ('titel', 'kortnamn', 'identifierare')
     ordering = ('titel',)
+
 
 class CelexReferensAdmin(admin.ModelAdmin):
     list_display = ('celexnummer', 'titel')
     ordering = ('celexnummer',)
     search_fields = ('celexnummer', 'titel')
 
+
 class AmnesordAdmin(admin.ModelAdmin):
     list_display = ('titel', 'beskrivning')
     ordering = ('titel',)
     search_fields = ('titel', 'beskrivning',)
+
 
 class BilagaInline(admin.StackedInline):
     model = Bilaga
     extra = 1
     list_display = ('titel', 'file')
     ordering = ('titel',)
+
 
 class MyndighetsforeskriftAdmin(admin.ModelAdmin):
     list_display = ('identifierare', 'arsutgava', 'lopnummer', 'titel','beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck', 'typ')

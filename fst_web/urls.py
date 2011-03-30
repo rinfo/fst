@@ -4,6 +4,7 @@ from django.conf.urls.defaults import *
 from django.contrib import admin
 import os
 
+
 # Slå på Djangos automatiska administrationssgränssnitt
 admin.autodiscover()
 

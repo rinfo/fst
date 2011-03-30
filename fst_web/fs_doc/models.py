@@ -9,6 +9,7 @@ from django.core.files import File
 import hashlib
 from django.utils.feedgenerator import rfc3339_date
 
+
 class Forfattningssamling(models.Model):
     """Modell för författningssamlingar."""
 
@@ -43,7 +44,6 @@ class Forfattningssamling(models.Model):
         verbose_name_plural = u"Författningssamlingar"
 
 
-
 class CelexReferens(models.Model):
     """Modell för referenser till t.ex. EG-direktiv"""
 
@@ -67,8 +67,6 @@ class CelexReferens(models.Model):
         verbose_name_plural = u"EG-rättsreferenser"
 
 
-
-
 class Amnesord(models.Model):
     """Modell för ämnesord."""
 
@@ -88,8 +86,6 @@ class Amnesord(models.Model):
     class Meta:
         verbose_name = u"Ämnesord"
         verbose_name_plural = u"Ämnesord"
-
-
 
 
 class Bemyndigandereferens(models.Model):
@@ -121,7 +117,6 @@ class Bemyndigandereferens(models.Model):
     class Meta:
         verbose_name=u"Bemyndigandereferens"
         verbose_name_plural=u"Bemyndigandereferenser"
-
 
 
 class Myndighetsforeskrift(models.Model):
@@ -242,7 +237,6 @@ class Myndighetsforeskrift(models.Model):
     class Meta:
         verbose_name = u"Myndighetsföreskrift"
         verbose_name_plural = u"Myndighetsföreskrifter"
-
 
 
 class Bilaga(models.Model):

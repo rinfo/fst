@@ -8,6 +8,7 @@ from django.utils.feedgenerator import rfc3339_date
 from django.conf import settings
 from django.template import loader, Context
 
+
 def _response(request, template, context):
     return render_to_response(template, context, context_instance=RequestContext(request))
 
@@ -34,7 +35,6 @@ def foreskrift_rdf(request, fskortnamn, arsutgava, lopnummer):
     return HttpResponse(foreskrift.to_rdfxml(), mimetype="application/rdf+xml; charset=utf-8")
 
 
-
 def foreskrift(request, fskortnamn, arsutgava, lopnummer):
     """Visa enskild föreskrift i författningssamling."""
 
@@ -47,7 +47,6 @@ def foreskrift(request, fskortnamn, arsutgava, lopnummer):
     return _response(request, 'foreskrift.html', locals())
 
 
-
 def amnesord(request):
     """Visa föreskrifter indelade efter ämnesord."""
 
@@ -55,7 +54,6 @@ def amnesord(request):
     amnesord = Amnesord.objects.filter(myndighetsforeskrift__isnull = False).order_by("titel").distinct()
 
     return _response(request, 'per_amnesord.html', locals())
-
 
 
 def artal(request):
@@ -83,9 +81,5 @@ def atomfeed(request):
     context = Context(locals())
 
     return HttpResponse(template.render(context), mimetype="application/atom+xml; charset=utf-8")
-
-
-
-
 
 
