@@ -243,7 +243,8 @@ class Bilaga(models.Model):
 
     foreskrift = models.ForeignKey(Myndighetsforeskrift, blank=False, related_name='bilagor')
 
-    titel = models.CharField("Titel", max_length=512, blank=True, null=True, help_text="""T.ex. <em>Bilaga 1</em>""")
+    titel = models.CharField("Titel", max_length=512, blank=True, null=True,
+        help_text="""T.ex. <em>Bilaga 1</em>""")
 
     file = models.FileField(u"Fil",
             upload_to="bilaga",
@@ -254,6 +255,24 @@ class Bilaga(models.Model):
     class Meta:
         verbose_name = u"Bilaga"
         verbose_name_plural = u"Bilagor"
+
+
+class OvrigtDokument(models.Model):
+
+    foreskrift = models.ForeignKey(Myndighetsforeskrift, blank=False, related_name='ovriga_dokument')
+
+    titel = models.CharField("Titel", max_length=512, blank=True, null=True,
+        help_text="""T.ex. <em>Besluts-PM för ...</em>""")
+
+    file = models.FileField(u"Fil",
+            upload_to="ovrigt",
+            blank=False,
+            null=False,
+            help_text="""T.ex. en PDF-fil.""")
+
+    class Meta:
+        verbose_name = u"Övrigt dokument"
+        verbose_name_plural = u"Övriga dokument"
 
 
 class AtomEntry(models.Model):

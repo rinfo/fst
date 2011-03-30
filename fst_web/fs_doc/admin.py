@@ -32,12 +32,19 @@ class BilagaInline(admin.StackedInline):
     ordering = ('titel',)
 
 
+class OvrigtDokumentInline(admin.StackedInline):
+    model = OvrigtDokument
+    extra = 1
+    list_display = ('titel', 'file')
+    ordering = ('titel',)
+
+
 class MyndighetsforeskriftAdmin(admin.ModelAdmin):
     list_display = ('identifierare', 'arsutgava', 'lopnummer', 'titel','beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck', 'typ')
     list_filter = ('beslutsdatum', 'ikrafttradandedatum')
     ordering = ('-beslutsdatum', 'titel')
     search_fields = ('titel', 'identifierare',)
-    inlines = [BilagaInline]
+    inlines = [BilagaInline, OvrigtDokumentInline]
 
     def save_model(self, request, obj, form, change):
         """Se till att AtomEntry-objekt skaps i samband med att
