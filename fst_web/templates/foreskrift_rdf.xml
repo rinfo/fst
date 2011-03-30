@@ -2,7 +2,9 @@
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     xmlns:dct="http://purl.org/dc/terms/"
     xmlns:dces="http://purl.org/dc/elements/1.1/"
+    xmlns:foaf="http://xmlns.com/foaf/0.1/"
     xmlns="http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#">
+
     <Myndighetsforeskrift rdf:about="{{foreskrift.get_rinfo_uri}}">
         <forfattningssamling rdf:resource="{{foreskrift.forfattningssamling.identifierare}}"/>
         <dct:title xml:lang="sv">{{foreskrift.titel}}</dct:title>
@@ -42,4 +44,12 @@
             {% endif %}
         {% endfor %}
     </Myndighetsforeskrift>
+
+    {% for dok in foreskrift.ovriga_dokument.all %}
+        <foaf:Document rdf:about="{{foreskrift.get_rinfo_uri}}/{{dok.file.url}}">
+            <dct:title>{{dok.titel}}</dct:title>
+            <foaf:primaryTopic rdf:resource="{{foreskrift.get_rinfo_uri}}"/>
+        </foaf:Document>
+    {% endfor %}
+
 </rdf:RDF>
