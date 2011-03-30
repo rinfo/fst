@@ -252,6 +252,9 @@ class Bilaga(models.Model):
             null=True,
             help_text="""Om ingen fil anges förutsätts bilagan vara en del av föreskriftsdokumentet.""")
 
+    def __unicode__(self):
+        return u'%s' % (self.titel)
+
     class Meta:
         verbose_name = u"Bilaga"
         verbose_name_plural = u"Bilagor"
@@ -269,6 +272,9 @@ class OvrigtDokument(models.Model):
             blank=False,
             null=False,
             help_text="""T.ex. en PDF-fil.""")
+
+    def __unicode__(self):
+        return u'%s' % (self.titel)
 
     class Meta:
         verbose_name = u"Övrigt dokument"
