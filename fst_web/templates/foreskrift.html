@@ -30,7 +30,7 @@
         {% if foreskrift.bemyndigandeparagrafer %}
         <tr>
             <th scope="row">Bemyndiganden</th>
-            <td>{% for para in foreskrift.bemyndigandeparagrafer.all %}{{para.paragrafnummer}}§ {{para.titel}} ({{para.sfsnummer}}){% if not forloop.last %}, {% endif %}{% endfor %}</td>
+            <td>{% for para in foreskrift.bemyndigandeparagrafer.all %}{% if para.kapitelnummer %}Kap. {{para.kapitelnummer}} {% endif %}{{para.paragrafnummer}}§ {{para.titel}} ({{para.sfsnummer}}){% if not forloop.last %}, {% endif %}{% endfor %}</td>
         </tr>
         {% endif %}
         {% if foreskrift.amnesord %}

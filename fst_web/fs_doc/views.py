@@ -31,7 +31,7 @@ def foreskrift_rdf(request, fskortnamn, arsutgava, lopnummer):
     foreskrift = Myndighetsforeskrift.objects.get(identifierare=identifierare, forfattningssamling=fs)
 
     # Skicka rdf-data för denna post
-    return HttpResponse(foreskrift.to_rdfxml(), mimetype="application/rdf+xml; charset=utf-8") 
+    return HttpResponse(foreskrift.to_rdfxml(), mimetype="application/rdf+xml; charset=utf-8")
 
 
 
@@ -82,8 +82,8 @@ def atomfeed(request):
     template = loader.get_template('atomfeed.xml')
     context = Context(locals())
 
-    return HttpResponse(template.render(context), mimetype="application/atom+xml; charset=utf-8") 
-    
+    return HttpResponse(template.render(context), mimetype="application/atom+xml; charset=utf-8")
+
 
 
 
