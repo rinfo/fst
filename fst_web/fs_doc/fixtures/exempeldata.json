@@ -62,7 +62,7 @@
             "sfsnummer": "1234:1", 
             "titel": "Exempelf\u00f6rordning"
         }, 
-        "model": "fs_doc.bemyndigandeparagraf", 
+        "model": "fs_doc.bemyndigandereferens", 
         "pk": 1
     }, 
     {
@@ -71,7 +71,7 @@
             "sfsnummer": "1234:1", 
             "titel": "Exempelf\u00f6rordning"
         }, 
-        "model": "fs_doc.bemyndigandeparagraf", 
+        "model": "fs_doc.bemyndigandereferens", 
         "pk": 2
     }, 
     {
@@ -81,7 +81,7 @@
             ], 
             "andrar": null, 
             "omtryck": false, 
-            "bemyndigandeparagrafer": [
+            "bemyndiganden": [
                 1
             ], 
             "celexreferenser": [
@@ -107,7 +107,7 @@
             ], 
             "andrar": 1, 
             "omtryck": true, 
-            "bemyndigandeparagrafer": [
+            "bemyndiganden": [
                 1
             ], 
             "celexreferenser": [
@@ -136,7 +136,7 @@
             ], 
             "andrar": 1, 
             "omtryck": false, 
-            "bemyndigandeparagrafer": [
+            "bemyndiganden": [
                 1, 
                 2
             ], 

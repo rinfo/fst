@@ -22,7 +22,7 @@
         {% if foreskrift.celexreferenser.all %}
         {% for referens in foreskrift.celexreferenser.all %}
         <genomforDirektiv rdf:resource="http://rinfo.lagrummet.se/ext/eur-lex/{{referens.celexnummer}}"/>{% endfor %}{% endif %}
-        {% for bemyndigande in foreskrift.bemyndigandeparagrafer.all %}
+        {% for bemyndigande in foreskrift.bemyndiganden.all %}
         <bemyndigande>
             <Forfattningsreferens>
                 <angerGrundforfattning rdf:resource="http://rinfo.lagrummet.se/publ/sfs/{{bemyndigande.sfsnummer}}"/>

@@ -92,8 +92,8 @@ class Amnesord(models.Model):
 
 
 
-class Bemyndigandeparagraf(models.Model):
-    """Modell för att hantera bemyndigandeparagrafer."""
+class Bemyndigandereferens(models.Model):
+    """Modell för att hantera bemyndigandereferenser."""
 
     # Namn, t.ex. "Arkivförordningen"
     titel = models.CharField(max_length=255,
@@ -119,8 +119,8 @@ class Bemyndigandeparagraf(models.Model):
 
     # Inställningar för etiketter i administrationsgränssnittet.
     class Meta:
-        verbose_name=u"Bemyndigandeparagraf"
-        verbose_name_plural=u"Bemyndigandeparagrafer"
+        verbose_name=u"Bemyndigandereferens"
+        verbose_name_plural=u"Bemyndigandereferenser"
 
 
 
@@ -174,8 +174,8 @@ class Myndighetsforeskrift(models.Model):
     forfattningssamling = models.ForeignKey(Forfattningssamling, blank=False,
             verbose_name=u"författnings-samling")
 
-    # Bemyndiganden (referenser till bemyndigandeparagrafer)
-    bemyndigandeparagrafer = models.ManyToManyField(Bemyndigandeparagraf,
+    # Bemyndiganden (referenser till bemyndigandereferenser)
+    bemyndiganden = models.ManyToManyField(Bemyndigandereferens,
             blank=False, verbose_name=u"referenser till bemyndiganden")
 
     # PDF-version av dokumentet

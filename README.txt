@@ -97,7 +97,7 @@ kommando inifrån projektkatalogen:
     $ cp fs_doc/fixtures/*.pdf uploads/foreskrift
 
 Alternativt börjar du med att logga in i administrationsgränssnittet och skapa
-lite grunddata (Författningssamling, några ämnesord och bemyndigandeparagrafer).
+lite grunddata (en författningssamling, några bemyndiganden och eventuellt några ämnesord).
 
 
 
