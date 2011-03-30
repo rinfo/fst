@@ -79,4 +79,21 @@
         </ul>
     {% endif %}
 
+    {% if foreskrift.ovriga_dokument.all %}
+        <h2>Övriga dokument</h2>
+        <ul>
+            {% for dok in foreskrift.ovriga_dokument.all %}
+                <li>
+                    {% if dok.file %}
+                        <p class="download">
+                            <a href="/{{dok.file.url}}">Ladda ner {{ dok.titel }} som PDF</a>
+                        </p>
+                    {% else %}
+                        <p>{{ dok.titel }}</p>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
 {% endblock %}
