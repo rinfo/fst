@@ -102,6 +102,10 @@ class Bemyndigandeparagraf(models.Model):
     # SFS-nummer, t.ex. "1991:446"
     sfsnummer = models.CharField("SFS-nummer", max_length=10, blank=False,
             help_text="T.ex. <em>1991:446</em>")
+ 
+    # Kapitelnummer, t.ex. "2"
+    kapitelnummer = models.CharField(max_length=10, blank=True,
+            help_text="T.ex. <em>12</em>")
 
     # Paragrafnummer, t.ex. "11"
     paragrafnummer = models.CharField(max_length=10, blank=True,
