@@ -264,7 +264,7 @@ class OvrigtDokument(models.Model):
 
     foreskrift = models.ForeignKey(Myndighetsforeskrift, blank=False, related_name='ovriga_dokument')
 
-    titel = models.CharField("Titel", max_length=512, blank=True, null=True,
+    titel = models.CharField("Titel", max_length=512, blank=False, null=False,
         help_text="""T.ex. <em>Besluts-PM för ...</em>""")
 
     file = models.FileField(u"Fil",
