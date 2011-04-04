@@ -266,6 +266,10 @@ class Bilaga(HasFile):
             blank=True, null=True,
             help_text="""Om ingen fil anges förutsätts bilagan vara en del av föreskriftsdokumentet.""")
 
+    def get_rinfo_uri(self):
+        ordinal = 1 # FIXME: compute ordinal
+        return self.foreskrift.get_rinfo_uri() + "#bilaga_%s" % ordinal
+
     class Meta:
         verbose_name = u"Bilaga"
         verbose_name_plural = u"Bilagor"
@@ -297,11 +301,14 @@ class AtomEntry(models.Model):
     raderas. För radering se create_delete_entry-signalen sist i denna fil. För
     uppdatering/nya poster se ModelAdmin.save_model() i rinfo/admin.py."""
 
-    entry_id = models.CharField(max_length=512, blank=False)
-    foreskrift_id = models.PositiveIntegerField(blank=True, null=True)
+    foreskrift = models.ForeignKey(Myndighetsforeskrift, blank=True,
+            related_name='entries')
+
     updated = models.DateTimeField(blank=False)
     published = models.DateTimeField(blank=False)
     deleted = models.DateTimeField(blank=True, null=True)
+
+    entry_id = models.CharField(max_length=512, blank=False)
     title = models.TextField(blank=False)
     summary = models.TextField(blank=True, null=True)
 
@@ -320,24 +327,26 @@ class AtomEntry(models.Model):
         mallen i templates/foreskrift_entry.xml"""
 
         template = loader.get_template('foreskrift_entry.xml')
-        context = Context({ 'entry_id': self.entry_id,
-            'title': self.title,
-            'summary': self.summary,
+        context = Context({
+            'foreskrift': self.foreskrift,
+
             'updated': rfc3339_date(self.updated),
             'published': rfc3339_date(self.published),
             'deleted': rfc3339_date(self.deleted) if self.deleted else None,
+
+            'entry_id': self.entry_id,
+            'title': self.title,#self.foreskrift.titel,
+            'summary': self.summary,
+
             'content_src': self.content_src,
             'content_md5': self.content_md5,
             'rdf_href': self.rdf_href,
             'rdf_length': self.rdf_length,
             'rdf_md5': self.rdf_md5,
-            # TODO: stöd för multipla bilagor
-            #'enclosure_href': self.enclosure_href,
-            #'enclosure_length': self.enclosure_length,
-            #'enclosure_md5': self.enclosure_md5,
-            #'enclosure_uri': self.enclosure_uri,
+
             'rinfo_base_uri': settings.FST_PUBL_BASE_URI,
-            'fst_site_url': settings.FST_SITE_URL})
+            'fst_site_url': settings.FST_SITE_URL
+        })
         return template.render(context)
 
 
@@ -350,7 +359,7 @@ def create_delete_entry(sender, instance, **kwargs):
 
     # Skapa AtomEntry-posten
     entry = AtomEntry(title=instance.titel,
-            foreskrift_id=instance.id,
+            foreskrift=instance,
             updated=datetime.now(),
             published=datetime.now(),
             deleted=datetime.now(),

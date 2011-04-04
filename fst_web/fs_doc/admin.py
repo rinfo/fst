@@ -72,13 +72,13 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
         # Nu kan vi skapa ett AtomEntry
 
         # Då posten publicerades (nu, om det är en ny post)
-        published=datetime.now()
+        published = datetime.now()
 
         # Se om det finns ett tidigare AtomEntry för denna föreskrift.
         try:
-            foreskrift_entries=AtomEntry.objects.filter(foreskrift_id=obj.id).order_by("published")
+            foreskrift_entries = AtomEntry.objects.filter(foreskrift=obj.id).order_by("published")
             if foreskrift_entries:
-                published=foreskrift_entries[0].published
+                published = foreskrift_entries[0].published
         except AtomEntry.DoesNotExist:
             # Kan inte hitta AtomEntry för denna föreskrift. Därmed är det en ny post.
             pass
@@ -87,18 +87,6 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
         with open(obj.dokument.path, 'rb') as f:
             dokument_md5 = get_file_md5(f)
 
-        ## TODO: ...och för eventuella bilagor (kod nedan gällde när det bara
-        # kunde finnas en)
-        #bilaga_md5 = ""
-        #bilaga_length = 0
-        #bilaga_uri = ""
-        #if obj.bilaga:
-        #    md5 = hashlib.md5()
-        #    md5.update(open(obj.bilaga.path, 'rb').read())
-        #    bilaga_md5 = md5.hexdigest()
-        #    bilaga_length = len(open(obj.bilaga.path, 'rb').read()) # use file.data.size()
-        #    bilaga_uri = obj.get_rinfo_uri() + "#bilaga_1"
-
         # ...och för metadataposten i RDF-format
         md5 = hashlib.md5()
         rdfxml_repr = obj.to_rdfxml().encode("utf-8")
@@ -106,7 +94,7 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
         rdf_md5 = md5.hexdigest()
 
         # Skapa AtomEntry-posten
-        entry = AtomEntry(  foreskrift_id=obj.id,
+        entry = AtomEntry(  foreskrift=obj,
                 title=obj.titel,
                 summary=obj.sammanfattning,
                 updated=datetime.now(),
