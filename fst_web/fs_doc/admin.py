@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-from django.contrib import admin
-from fst_web.fs_doc.models import *
-import hashlib
+from os import path
 from datetime import datetime
+from django import forms
+from django.contrib import admin
 from django.core.files import File
 from django.conf import settings
-from os import path
+from fst_web.fs_doc.models import *
 
 
 class ForfattningssamlingAdmin(admin.ModelAdmin):
@@ -25,18 +25,30 @@ class AmnesordAdmin(admin.ModelAdmin):
     search_fields = ('titel', 'beskrivning',)
 
 
-class BilagaInline(admin.StackedInline):
+class HasFileForm(forms.ModelForm):
+
+    def save(self, commit=True):
+        m = super(HasFileForm, self).save(commit=False)
+        m.file_md5 = get_file_md5(self.cleaned_data['file'].file)
+        if commit:
+            m.save()
+        return m
+
+
+class HasFileInline(admin.StackedInline):
+    form = HasFileForm
+    extra = 1
+    list_display = ('titel', 'file')
+    ordering = ('titel',)
+    exclude = ('file_md5',)
+
+
+class BilagaInline(HasFileInline):
     model = Bilaga
-    extra = 1
-    list_display = ('titel', 'file')
-    ordering = ('titel',)
 
 
-class OvrigtDokumentInline(admin.StackedInline):
+class OvrigtDokumentInline(HasFileInline):
     model = OvrigtDokument
-    extra = 1
-    list_display = ('titel', 'file')
-    ordering = ('titel',)
 
 
 class MyndighetsforeskriftAdmin(admin.ModelAdmin):
@@ -72,9 +84,8 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
             pass
 
         # Beräkna md5 för dokumentet
-        md5 = hashlib.md5()
-        md5.update(open(obj.dokument.path, 'rb').read())
-        dokument_md5 = md5.hexdigest()
+        with open(obj.dokument.path, 'rb') as f:
+            dokument_md5 = get_file_md5(f)
 
         ## TODO: ...och för eventuella bilagor (kod nedan gällde när det bara
         # kunde finnas en)
@@ -118,3 +129,5 @@ admin.site.register(Forfattningssamling, ForfattningssamlingAdmin)
 admin.site.register(Myndighetsforeskrift, MyndighetsforeskriftAdmin)
 admin.site.register(Bemyndigandereferens)
 admin.site.register(AtomEntry)
+
+
