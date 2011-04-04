@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-from django.contrib import admin
-from fst_web.fs_doc.models import *
-import hashlib
+from os import path
 from datetime import datetime
+from django import forms
+from django.contrib import admin
 from django.core.files import File
 from django.conf import settings
-from os import path
+from fst_web.fs_doc.models import *
 
 
 class ForfattningssamlingAdmin(admin.ModelAdmin):
@@ -25,18 +25,30 @@ class AmnesordAdmin(admin.ModelAdmin):
     search_fields = ('titel', 'beskrivning',)
 
 
-class BilagaInline(admin.StackedInline):
+class HasFileForm(forms.ModelForm):
+
+    def save(self, commit=True):
+        m = super(HasFileForm, self).save(commit=False)
+        m.file_md5 = get_file_md5(self.cleaned_data['file'].file)
+        if commit:
+            m.save()
+        return m
+
+
+class HasFileInline(admin.StackedInline):
+    form = HasFileForm
+    extra = 1
+    list_display = ('titel', 'file')
+    ordering = ('titel',)
+    exclude = ('file_md5',)
+
+
+class BilagaInline(HasFileInline):
     model = Bilaga
-    extra = 1
-    list_display = ('titel', 'file')
-    ordering = ('titel',)
 
 
-class OvrigtDokumentInline(admin.StackedInline):
+class OvrigtDokumentInline(HasFileInline):
     model = OvrigtDokument
-    extra = 1
-    list_display = ('titel', 'file')
-    ordering = ('titel',)
 
 
 class MyndighetsforeskriftAdmin(admin.ModelAdmin):
@@ -60,33 +72,20 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
         # Nu kan vi skapa ett AtomEntry
 
         # Då posten publicerades (nu, om det är en ny post)
-        published=datetime.now()
+        published = datetime.now()
 
         # Se om det finns ett tidigare AtomEntry för denna föreskrift.
         try:
-            foreskrift_entries=AtomEntry.objects.filter(foreskrift_id=obj.id).order_by("published")
+            foreskrift_entries = AtomEntry.objects.filter(foreskrift=obj.id).order_by("published")
             if foreskrift_entries:
-                published=foreskrift_entries[0].published
+                published = foreskrift_entries[0].published
         except AtomEntry.DoesNotExist:
             # Kan inte hitta AtomEntry för denna föreskrift. Därmed är det en ny post.
             pass
 
         # Beräkna md5 för dokumentet
-        md5 = hashlib.md5()
-        md5.update(open(obj.dokument.path, 'rb').read())
-        dokument_md5 = md5.hexdigest()
-
-        ## TODO: ...och för eventuella bilagor (kod nedan gällde när det bara
-        # kunde finnas en)
-        #bilaga_md5 = ""
-        #bilaga_length = 0
-        #bilaga_uri = ""
-        #if obj.bilaga:
-        #    md5 = hashlib.md5()
-        #    md5.update(open(obj.bilaga.path, 'rb').read())
-        #    bilaga_md5 = md5.hexdigest()
-        #    bilaga_length = len(open(obj.bilaga.path, 'rb').read()) # use file.data.size()
-        #    bilaga_uri = obj.get_rinfo_uri() + "#bilaga_1"
+        with open(obj.dokument.path, 'rb') as f:
+            dokument_md5 = get_file_md5(f)
 
         # ...och för metadataposten i RDF-format
         md5 = hashlib.md5()
@@ -95,7 +94,7 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
         rdf_md5 = md5.hexdigest()
 
         # Skapa AtomEntry-posten
-        entry = AtomEntry(  foreskrift_id=obj.id,
+        entry = AtomEntry(  foreskrift=obj,
                 title=obj.titel,
                 summary=obj.sammanfattning,
                 updated=datetime.now(),
@@ -118,3 +117,5 @@ admin.site.register(Forfattningssamling, ForfattningssamlingAdmin)
 admin.site.register(Myndighetsforeskrift, MyndighetsforeskriftAdmin)
 admin.site.register(Bemyndigandereferens)
 admin.site.register(AtomEntry)
+
+

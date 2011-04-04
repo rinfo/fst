@@ -14,12 +14,18 @@
             href="{{rdf_href}}"
             type="application/rdf+xml"
             length="{{rdf_length}}" le:md5="{{rdf_md5}}"/>
-        {% comment %}<!-- TODO: use the multiple "foreskrift.bilagor" field
-        {% if enclosure_href %}<link rel="enclosure"
-            href="{{enclosure_href}}"
+        {% for bilaga in foreskrift.bilagor.all %}
+        <link rel="enclosure"
+            href="{{bilaga.file.url|safe}}"
             type="application/pdf"
-            dct:isFormatOf="{{enclosure_uri}}"
-            length="{{enclosure_length}}" le:md5="{{enclosure_md5}}"/>{% endif %}
-         -->{% endcomment %}
+            dct:isFormatOf="{{bilaga.get_rinfo_uri}}"
+            length="{{bilaga.file.data.size}}" le:md5="{{bilaga.file_md5}}"/>
+        {% endfor %}
+        {% for dok in foreskrift.ovriga_dokument.all %}
+        <link rel="enclosure"
+            href="{{dok.file.url|safe}}"
+            type="application/pdf"
+            length="{{dok.file.data.size}}" le:md5="{{dok.file_md5}}"/>
+        {% endfor %}
     </entry>
 {% endif %}

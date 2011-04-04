@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
+import hashlib
+from django.conf import settings
 from django.db import models
 from django.db.models import permalink
+from django.db.models.signals import post_delete, post_save
 from django.template import loader, Context
-from django.conf import settings
-from datetime import datetime
 from django.contrib.sites.models import Site
 from django.core.files import File
-import hashlib
 from django.utils.feedgenerator import rfc3339_date
 
 
@@ -239,7 +240,21 @@ class Myndighetsforeskrift(models.Model):
         verbose_name_plural = u"Myndighetsföreskrifter"
 
 
-class Bilaga(models.Model):
+class HasFile(models.Model):
+
+    class Meta:
+        abstract = True
+
+    titel = None
+    file = None
+
+    file_md5 = models.CharField(max_length=32, blank=True, null=True)
+
+    def __unicode__(self):
+        return u'%s' % (self.titel)
+
+
+class Bilaga(HasFile):
 
     foreskrift = models.ForeignKey(Myndighetsforeskrift, blank=False, related_name='bilagor')
 
@@ -248,19 +263,19 @@ class Bilaga(models.Model):
 
     file = models.FileField(u"Fil",
             upload_to="bilaga",
-            blank=True,
-            null=True,
+            blank=True, null=True,
             help_text="""Om ingen fil anges förutsätts bilagan vara en del av föreskriftsdokumentet.""")
 
-    def __unicode__(self):
-        return u'%s' % (self.titel)
+    def get_rinfo_uri(self):
+        ordinal = 1 # FIXME: compute ordinal
+        return self.foreskrift.get_rinfo_uri() + "#bilaga_%s" % ordinal
 
     class Meta:
         verbose_name = u"Bilaga"
         verbose_name_plural = u"Bilagor"
 
 
-class OvrigtDokument(models.Model):
+class OvrigtDokument(HasFile):
 
     foreskrift = models.ForeignKey(Myndighetsforeskrift, blank=False, related_name='ovriga_dokument')
 
@@ -269,8 +284,7 @@ class OvrigtDokument(models.Model):
 
     file = models.FileField(u"Fil",
             upload_to="ovrigt",
-            blank=False,
-            null=False,
+            blank=False, null=False,
             help_text="""T.ex. en PDF-fil.""")
 
     def __unicode__(self):
@@ -287,11 +301,14 @@ class AtomEntry(models.Model):
     raderas. För radering se create_delete_entry-signalen sist i denna fil. För
     uppdatering/nya poster se ModelAdmin.save_model() i rinfo/admin.py."""
 
-    entry_id = models.CharField(max_length=512, blank=False)
-    foreskrift_id = models.PositiveIntegerField(blank=True, null=True)
+    foreskrift = models.ForeignKey(Myndighetsforeskrift, blank=True,
+            related_name='entries')
+
     updated = models.DateTimeField(blank=False)
     published = models.DateTimeField(blank=False)
     deleted = models.DateTimeField(blank=True, null=True)
+
+    entry_id = models.CharField(max_length=512, blank=False)
     title = models.TextField(blank=False)
     summary = models.TextField(blank=True, null=True)
 
@@ -310,30 +327,30 @@ class AtomEntry(models.Model):
         mallen i templates/foreskrift_entry.xml"""
 
         template = loader.get_template('foreskrift_entry.xml')
-        context = Context({ 'entry_id': self.entry_id,
-            'title': self.title,
-            'summary': self.summary,
+        context = Context({
+            'foreskrift': self.foreskrift,
+
             'updated': rfc3339_date(self.updated),
             'published': rfc3339_date(self.published),
             'deleted': rfc3339_date(self.deleted) if self.deleted else None,
+
+            'entry_id': self.entry_id,
+            'title': self.title,#self.foreskrift.titel,
+            'summary': self.summary,
+
             'content_src': self.content_src,
             'content_md5': self.content_md5,
             'rdf_href': self.rdf_href,
             'rdf_length': self.rdf_length,
             'rdf_md5': self.rdf_md5,
-            # TODO: stöd för multipla bilagor
-            #'enclosure_href': self.enclosure_href,
-            #'enclosure_length': self.enclosure_length,
-            #'enclosure_md5': self.enclosure_md5,
-            #'enclosure_uri': self.enclosure_uri,
+
             'rinfo_base_uri': settings.FST_PUBL_BASE_URI,
-            'fst_site_url': settings.FST_SITE_URL})
+            'fst_site_url': settings.FST_SITE_URL
+        })
         return template.render(context)
 
 
 # Signal för att skapa AtomEntry-poster i samband med att föreskrifter raderas.
-from django.db.models.signals import post_delete
-
 def create_delete_entry(sender, instance, **kwargs):
     """Skapa en speciell AtomEntry-post i samband med att en
     myndighetsföreskrift raderas. AtomEntry-posten plockas upp av
@@ -342,7 +359,7 @@ def create_delete_entry(sender, instance, **kwargs):
 
     # Skapa AtomEntry-posten
     entry = AtomEntry(title=instance.titel,
-            foreskrift_id=instance.id,
+            foreskrift=instance,
             updated=datetime.now(),
             published=datetime.now(),
             deleted=datetime.now(),
@@ -355,4 +372,16 @@ def create_delete_entry(sender, instance, **kwargs):
     entry.save()
 
 # Koppla upp signalhanteringen
-post_delete.connect(create_delete_entry, sender=Myndighetsforeskrift, dispatch_uid="fst_web.fs_doc.create_delete_signal")
+post_delete.connect(create_delete_entry, sender=Myndighetsforeskrift,
+        dispatch_uid="fst_web.fs_doc.create_delete_signal")
+
+
+def get_file_md5(opened_file):
+    md5sum = hashlib.md5()
+    block_size = 128 * md5sum.block_size
+    while True:
+        data = opened_file.read(block_size)
+        if not data: break
+        md5sum.update(data)
+    return md5sum.hexdigest()
+
