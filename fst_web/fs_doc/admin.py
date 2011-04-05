@@ -29,7 +29,9 @@ class HasFileForm(forms.ModelForm):
 
     def save(self, commit=True):
         m = super(HasFileForm, self).save(commit=False)
-        m.file_md5 = get_file_md5(self.cleaned_data['file'].file)
+        file_field = self.cleaned_data['file']
+        if file_field:
+            m.file_md5 = get_file_md5(file_field.file)
         if commit:
             m.save()
         return m
@@ -101,7 +103,7 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
                 published=published,
                 entry_id=obj.get_rinfo_uri(),
                 content_md5=dokument_md5,
-                content_src="/" + obj.dokument.url,
+                content_src=obj.dokument.url,
                 rdf_href=obj.get_absolute_url() + "rdf",
                 rdf_length=len(rdfxml_repr),
                 rdf_md5=rdf_md5)
