@@ -64,23 +64,23 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
 ('titel','sammanfattning','amnesord'),\
 ('beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck'),('omtryck','andrar'),'bemyndiganden','celexreferenser'),'classes': ['wide', 'extrapretty']}),)
 
-    
+
     def save_model(self, request, obj, form, change):
         """Se till att AtomEntry-objekt skaps i samband med att
         myndighetsföreskrifter sparas och uppdateras. Se även
         create_delete_entry i rinfo/models.py för detaljer om det entry som
         skapas när en post raderas."""
-        
+
         # Först, spara ner föreskriften och relationer till andra objekt
         super(MyndighetsforeskriftAdmin, self).save_model(request, obj, form, change)
         form.save_m2m()
         obj.save()
-        
+
         # Nu kan vi skapa ett AtomEntry
-        
+
         # Då posten publicerades (nu, om det är en ny post)
         published = datetime.now()
-        
+
         # Se om det finns ett tidigare AtomEntry för denna föreskrift.
         try:
             foreskrift_entries = AtomEntry.objects.filter(foreskrift=obj.id).order_by("published")
@@ -89,17 +89,17 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
         except AtomEntry.DoesNotExist:
             # Kan inte hitta AtomEntry för denna föreskrift. Därmed är det en ny post.
             pass
-        
+
         # Beräkna md5 för dokumentet
         with open(obj.dokument.path, 'rb') as f:
             dokument_md5 = get_file_md5(f)
-        
+
         # ...och för metadataposten i RDF-format
         md5 = hashlib.md5()
         rdfxml_repr = obj.to_rdfxml().encode("utf-8")
         md5.update(rdfxml_repr)
         rdf_md5 = md5.hexdigest()
-        
+
         # Skapa AtomEntry-posten
         entry = AtomEntry(  foreskrift=obj,
                 title=obj.titel,
@@ -112,17 +112,17 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
                 rdf_href=obj.get_absolute_url() + "rdf",
                 rdf_length=len(rdfxml_repr),
                 rdf_md5=rdf_md5)
-        
+
         # Spara AtomEntry för denna aktivitet
         entry.save()
-	    
+
     def make_published(self, request, queryset):
-	    rows_updated = queryset.update(publicerad=True)
-	    if rows_updated == 1:
-		    message_bit = "1 föreskrift"
-	    else:
-	        message_bit = "%s föreskrifter" % rows_updated
-	    self.message_user(request, "%s har publicerats." % message_bit)
+        rows_updated = queryset.update(publicerad=True)
+        if rows_updated == 1:
+            message_bit = "1 föreskrift"
+        else:
+            message_bit = "%s föreskrifter" % rows_updated
+        self.message_user(request, "%s har publicerats." % message_bit)
     make_published.short_description = u"Publicera markerade föreskrifter via FST"
     actions = [make_published]
 
