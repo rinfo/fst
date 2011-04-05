@@ -55,7 +55,7 @@ class OvrigtDokumentInline(HasFileInline):
 
 class MyndighetsforeskriftAdmin(admin.ModelAdmin):
     list_display = ('identifierare', 'arsutgava', 'lopnummer', 'titel','beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck', 'typ')
-    list_filter = ('beslutsdatum', 'ikrafttradandedatum')
+    list_filter = ('beslutsdatum', 'ikrafttradandedatum','publicerad','amnesord','andrar','omtryck')
     ordering = ('-beslutsdatum', 'titel')
     search_fields = ('titel', 'identifierare',)
     inlines = [BilagaInline, OvrigtDokumentInline]
