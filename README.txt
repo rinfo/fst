@@ -43,6 +43,7 @@ http://pypi.python.org/pypi/setuptools och
 http://peak.telecommunity.com/DevCenter/EasyInstall)
 
 3. Installera Django
+
     $ easy_install django
 
 4. Installera Sqllite 3 (Se http://www.sqlite.org/)
@@ -51,7 +52,8 @@ http://peak.telecommunity.com/DevCenter/EasyInstall)
 med RINFO.
 
 6. Installera databasschemat:
-    $ python manage.py syncdb   
+
+    $ python manage.py syncdb
 
 Om det inträffade ett fel behöver du eventuellt justera miljövariablen
 PYTHONPATH så att den inkluderar katalogen i vilken rinfo-foreksriftshantering
@@ -63,6 +65,7 @@ Efter information att tabeller skapas skall du få en fråga om du vill skapa
 en 'superuser'. Svara ja på frågan och ange information om användaren.
 
 7. Starta den inbyggda webbservern:
+
     $ python manage.py runserver
 
 8. Öppna webbläsaren med följande adress: http://127.0.0.1:8000/
@@ -71,6 +74,7 @@ http://127.0.0.1:8000/admin/ och logga in som den användare du skapade i steg 7
 
 9. Verifiera att applikationen är installerad korrekt genom att köra de
 automatiska testerna med:
+
     $ python manage.py test
 
 Får du problem med installationen se följande källor:
