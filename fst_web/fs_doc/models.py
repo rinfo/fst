@@ -125,6 +125,10 @@ class Myndighetsforeskrift(models.Model):
     innehållet i en författningssamling - själva föreskrifterna. Den kan enkelt
     utökas med fler egenskaper."""
 
+    # Anger om föreskriften är publicerad via FST
+    publicerad = models.BooleanField(u"Är publicerad", default=False, null=False, blank=True,
+            help_text="""Anger om denna föreskrift är publicerad via FST.""")
+
     # Föreskriftens officiella titel
     titel = models.CharField(
             max_length=512,
