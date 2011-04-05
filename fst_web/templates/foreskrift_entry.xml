@@ -5,8 +5,8 @@
         <id>{{entry_id}}</id>
         <updated>{{updated}}</updated>
         <published>{{published}}</published>
-        <title>{{title}}</title>
-        <summary>{{summary|default_if_none:""}}</summary>
+        <title xml:lang="sv">{{title}}</title>
+        <summary xml:lang="sv">{{summary|default_if_none:""}}</summary>
         <content src="/{{foreskrift.dokument.url|safe}}"
             type="application/pdf"
             hash="md5:{{content_md5}}"/>
