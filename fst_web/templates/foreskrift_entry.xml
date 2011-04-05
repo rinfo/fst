@@ -7,7 +7,7 @@
         <published>{{published}}</published>
         <title>{{title}}</title>
         <summary>{{summary|default_if_none:""}}</summary>
-        <content src="{{content_src|safe}}"
+        <content src="/{{foreskrift.dokument.url|safe}}"
             type="application/pdf"
             hash="md5:{{content_md5}}"/>
         <link rel="alternate"
@@ -15,11 +15,13 @@
             type="application/rdf+xml"
             length="{{rdf_length}}" hash="md5:{{rdf_md5}}"/>
         {% for bilaga in foreskrift.bilagor.all %}
+        {% if bilaga.file %}
         <link rel="enclosure"
             href="/{{bilaga.file.url|safe}}"
             type="application/pdf"
             dct:isFormatOf="{{bilaga.get_rinfo_uri}}"
             length="{{bilaga.file.data.size}}" hash="md5:{{bilaga.file_md5}}"/>
+        {% endif %}
         {% endfor %}
         {% for dok in foreskrift.ovriga_dokument.all %}
         <link rel="enclosure"
