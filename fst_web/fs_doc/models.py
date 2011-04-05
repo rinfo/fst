@@ -8,6 +8,7 @@ from django.db.models.signals import post_delete, post_save
 from django.template import loader, Context
 from django.contrib.sites.models import Site
 from django.core.files import File
+from django.forms import TextInput, Textarea
 from django.utils.feedgenerator import rfc3339_date
 
 
@@ -125,9 +126,9 @@ class Myndighetsforeskrift(models.Model):
     innehållet i en författningssamling - själva föreskrifterna. Den kan enkelt
     utökas med fler egenskaper."""
 
-    # Anger om föreskriften är publicerad via FST
+    # Denna föreskrift är publicerad via FST
     publicerad = models.BooleanField(u"Är publicerad", default=False, null=False, blank=True,
-            help_text="""Anger om denna föreskrift är publicerad via FST.""")
+            help_text="""Denna föreskrift är redan publicerad via FST.""")
 
     # Föreskriftens officiella titel
     titel = models.CharField(
