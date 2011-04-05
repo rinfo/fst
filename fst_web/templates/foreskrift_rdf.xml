@@ -28,7 +28,9 @@
         <bemyndigande>
             <Forfattningsreferens>
                 <angerGrundforfattning rdf:resource="http://rinfo.lagrummet.se/publ/sfs/{{bemyndigande.sfsnummer}}"/>
-                <angerKapitelnummer>{{bemyndigande.kapitelnummmer}}</angerKapitelnummer>
+                {% if bemyndigande.kapitelnummer %}
+                <angerKapitelnummer>{{bemyndigande.kapitelnummer}}</angerKapitelnummer>
+                {% endif %}
                 <angerParagrafnummer>{{bemyndigande.paragrafnummer}}</angerParagrafnummer>
             </Forfattningsreferens>
        </bemyndigande>{% endfor %}
