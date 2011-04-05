@@ -7,7 +7,6 @@ from django.core.files import File
 from django.conf import settings
 from fst_web.fs_doc.models import *
 
-
 class ForfattningssamlingAdmin(admin.ModelAdmin):
     list_display = ('titel', 'kortnamn', 'identifierare')
     ordering = ('titel',)
@@ -37,7 +36,7 @@ class HasFileForm(forms.ModelForm):
         return m
 
 
-class HasFileInline(admin.StackedInline):
+class HasFileInline(admin.TabularInline):
     form = HasFileForm
     extra = 1
     list_display = ('titel', 'file')
@@ -47,11 +46,11 @@ class HasFileInline(admin.StackedInline):
 
 class BilagaInline(HasFileInline):
     model = Bilaga
-
+    classes = ['collapse', 'collapsed']
 
 class OvrigtDokumentInline(HasFileInline):
     model = OvrigtDokument
-
+    classes = ['collapse', 'collapsed']
 
 class MyndighetsforeskriftAdmin(admin.ModelAdmin):
     list_display = ('identifierare', 'arsutgava', 'lopnummer', 'titel','beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck', 'typ')
@@ -59,6 +58,12 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
     ordering = ('-beslutsdatum', 'titel')
     search_fields = ('titel', 'identifierare',)
     inlines = [BilagaInline, OvrigtDokumentInline]
+    readonly_fields = ('publicerad',)
+    save_on_top = True
+    fieldsets = ((None, {'fields': (('publicerad','forfattningssamling'),('identifierare', 'arsutgava', 'lopnummer'),\
+('titel','sammanfattning','amnesord'),\
+('beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck'),('omtryck','andrar'),'bemyndiganden','celexreferenser'),'classes': ['wide', 'extrapretty']}),)
+
     
     def save_model(self, request, obj, form, change):
         """Se till att AtomEntry-objekt skaps i samband med att
