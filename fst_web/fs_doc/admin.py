@@ -60,9 +60,19 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
     inlines = [BilagaInline, OvrigtDokumentInline]
     readonly_fields = ('publicerad',)
     save_on_top = True
-    fieldsets = ((None, {'fields': (('publicerad','forfattningssamling'),('identifierare', 'arsutgava', 'lopnummer'),\
-('titel','sammanfattning','amnesord'),\
-('beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck'),('omtryck','andrar'),'bemyndiganden','celexreferenser'),'classes': ['wide', 'extrapretty']}),)
+    fieldsets = ((None, {
+        'fields': (
+            ('publicerad','forfattningssamling'),
+            ('identifierare', 'arsutgava', 'lopnummer'),
+            ('titel','sammanfattning','amnesord'),
+            'content',
+            ('beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck'),
+            ('omtryck','andrar'),
+            'bemyndiganden',
+            'celexreferenser'
+        ),
+        'classes': ['wide', 'extrapretty']
+        }),)
 
 
     def save_model(self, request, obj, form, change):
