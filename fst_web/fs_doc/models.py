@@ -128,7 +128,7 @@ class Myndighetsforeskrift(models.Model):
 
     # Denna föreskrift är publicerad via FST
     publicerad = models.BooleanField(u"Är publicerad", default=False, null=False, blank=True,
-            help_text="""Denna föreskrift är redan publicerad via FST.""")
+            help_text="""Denna föreskrift är redan publicerad via FST. Vid eventuella felaktigheter, ändra och publicera sedan om. """)
 
     # Föreskriftens officiella titel
     titel = models.CharField(
@@ -148,10 +148,9 @@ class Myndighetsforeskrift(models.Model):
     #fsnummer = models.CharField("FS-nummer", max_length=10,
     #        unique=True, blank=False, help_text="T.ex. <em>2010:1</em>")
 
-
-    identifierare = models.CharField("Identifierare", max_length=20,
-                                   unique=True, blank=False,
-                                   help_text="T.ex. <em>EXFS 2010:1</em>")
+    #identifierare = models.CharField("Identifierare", max_length=20,
+   #                                unique=True, blank=False,
+   #                                help_text="T.ex. <em>EXFS 2010:1</em>")
 
     arsutgava = models.CharField("Årsutgåva", max_length=13,
                                unique=False, blank=False,
@@ -160,6 +159,11 @@ class Myndighetsforeskrift(models.Model):
                                unique=False, blank=False,
                                help_text="T.ex. <em>1</em>")
 
+
+    @property
+    def identifierare(self):
+		return "%s %s:%s" % (self.forfattningssamling.kortnamn,
+                self.arsutgava, self.lopnummer)
 
     # Utfärdandedatum, t.ex. 2007-02-09
     beslutsdatum = models.DateField("Beslutsdatum", blank=False)

@@ -17,11 +17,15 @@ class CelexReferensAdmin(admin.ModelAdmin):
     ordering = ('celexnummer',)
     search_fields = ('celexnummer', 'titel')
 
-
 class AmnesordAdmin(admin.ModelAdmin):
     list_display = ('titel', 'beskrivning')
     ordering = ('titel',)
     search_fields = ('titel', 'beskrivning',)
+
+class BemyndigandereferensAdmin(admin.ModelAdmin):
+    list_display = ('titel', 'sfsnummer','kapitelnummer','paragrafnummer')
+    ordering = ('titel',)
+    search_fields = ('titel', 'sfsnummer',)
 
 
 class HasFileForm(forms.ModelForm):
@@ -58,22 +62,24 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
     ordering = ('-beslutsdatum', 'titel')
     search_fields = ('titel', 'identifierare',)
     inlines = [BilagaInline, OvrigtDokumentInline]
-    readonly_fields = ('publicerad',)
+    readonly_fields = ('publicerad','identifierare',)
     save_on_top = True
     fieldsets = ((None, {
         'fields': (
-            ('publicerad','forfattningssamling'),
-            ('identifierare', 'arsutgava', 'lopnummer'),
-            ('titel','sammanfattning','amnesord'),
-            'content',
-            ('beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck'),
-            ('omtryck','andrar'),
-            'bemyndiganden',
+			('publicerad','forfattningssamling'),
+			 ('arsutgava', 'lopnummer'),
+            ('identifierare','titel' ),
+			'dokument',
+			('beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck'),
+			('omtryck','andrar'),
+			'sammanfattning',
+			'bemyndiganden',
+			'amnesord',     
             'celexreferenser'
         ),
         'classes': ['wide', 'extrapretty']
         }),)
-
+    filter_horizontal = ('bemyndiganden','amnesord','celexreferenser')
 
     def save_model(self, request, obj, form, change):
         """Se till att AtomEntry-objekt skaps i samband med att
@@ -142,7 +148,7 @@ admin.site.register(Amnesord, AmnesordAdmin)
 admin.site.register(CelexReferens, CelexReferensAdmin)
 admin.site.register(Forfattningssamling, ForfattningssamlingAdmin)
 admin.site.register(Myndighetsforeskrift, MyndighetsforeskriftAdmin)
-admin.site.register(Bemyndigandereferens)
+admin.site.register(Bemyndigandereferens,BemyndigandereferensAdmin)
 admin.site.register(AtomEntry)
 
 
