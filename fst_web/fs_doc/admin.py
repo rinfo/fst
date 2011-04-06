@@ -66,9 +66,11 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
     save_on_top = True
     fieldsets = ((None, {
         'fields': (
-			('publicerad','forfattningssamling'),
+			'identifierare',
+			'publicerad',
+			'forfattningssamling',
 			 ('arsutgava', 'lopnummer'),
-            ('identifierare','titel' ),
+            'titel',
 			'dokument',
 			('beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck'),
 			('omtryck','andrar'),
