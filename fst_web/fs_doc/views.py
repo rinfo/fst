@@ -28,8 +28,7 @@ def foreskrift_rdf(request, fskortnamn, arsutgava, lopnummer):
     # Hämta författningssamlingen
     fs = Forfattningssamling.objects.get(kortnamn=fskortnamn)
     # Hämta föreskriften
-    identifierare = "%s %s:%s" % (fskortnamn, arsutgava, lopnummer)
-    foreskrift = Myndighetsforeskrift.objects.get(identifierare=identifierare, forfattningssamling=fs)
+    foreskrift = Myndighetsforeskrift.objects.get(arsutgava=arsutgava,lopnummer=lopnummer,forfattningssamling=fs)
 
     # Skicka rdf-data för denna post
     return HttpResponse(foreskrift.to_rdfxml(), mimetype="application/rdf+xml; charset=utf-8")
@@ -41,8 +40,7 @@ def foreskrift(request, fskortnamn, arsutgava, lopnummer):
     # Hämta författningssamlingen
     fs = Forfattningssamling.objects.get(kortnamn=fskortnamn)
     # Hämta föreskriften
-    identifierare = "%s %s:%s" % (fskortnamn, arsutgava, lopnummer)
-    foreskrift = Myndighetsforeskrift.objects.get(identifierare=identifierare, forfattningssamling=fs)
+    foreskrift = Myndighetsforeskrift.objects.get(arsutgava=arsutgava,lopnummer=lopnummer,forfattningssamling=fs)
 
     return _response(request, 'foreskrift.html', locals())
 
