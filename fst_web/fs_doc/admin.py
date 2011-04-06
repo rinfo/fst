@@ -23,7 +23,7 @@ class AmnesordAdmin(admin.ModelAdmin):
     search_fields = ('titel', 'beskrivning',)
 
 class BemyndigandereferensAdmin(admin.ModelAdmin):
-    list_display = ('titel', 'sfsnummer','kapitelnummer','paragrafnummer')
+    list_display = ('sfsnummer','titel','kapitelnummer','paragrafnummer')
     ordering = ('titel',)
     search_fields = ('titel', 'sfsnummer',)
 
@@ -74,7 +74,6 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
 			'dokument',
 			('beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck'),
 			('omtryck','andrar'),
-			'sammanfattning',
 			'bemyndiganden',
 			'amnesord',     
             'celexreferenser'
