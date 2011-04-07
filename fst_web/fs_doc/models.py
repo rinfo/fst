@@ -162,7 +162,7 @@ class Myndighetsforeskrift(models.Model):
 
     @property
     def identifierare(self):
-		return "%s %s:%s" % (self.forfattningssamling.kortnamn,
+        return "%s %s:%s" % (self.forfattningssamling.kortnamn,
                 self.arsutgava, self.lopnummer)
 
     # Utfärdandedatum, t.ex. 2007-02-09
