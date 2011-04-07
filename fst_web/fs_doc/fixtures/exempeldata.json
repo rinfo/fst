@@ -162,9 +162,6 @@
             "entry_id": "http://rinfo.lagrummet.se/publ/exfs/2009:1", 
             "foreskrift": 1, 
             "published": "2009-04-30 14:20:46", 
-            "rdf_href": "/publ/EXFS/2009:1/rdf", 
-            "rdf_length": 1618, 
-            "rdf_md5": "011821896e71932992b9b23c147923e4", 
             "updated": "2009-04-30 14:20:46"
 
         }, 
@@ -177,9 +174,6 @@
             "entry_id": "http://rinfo.lagrummet.se/publ/exfs/2009:2", 
             "foreskrift": 2, 
             "published": "2009-04-30 14:21:29", 
-            "rdf_href": "/publ/EXFS/2009:2/rdf", 
-            "rdf_length": 2014, 
-            "rdf_md5": "f31856ef7004d49d77fe219cb899399a", 
             "updated": "2009-04-30 14:21:29"
         }, 
         "model": "fs_doc.atomentry", 
@@ -191,9 +185,6 @@
             "entry_id": "http://rinfo.lagrummet.se/publ/exfs/2009:3", 
             "foreskrift": 3, 
             "published": "2009-04-30 14:22:04", 
-            "rdf_href": "/publ/EXFS/2009:3/rdf", 
-            "rdf_length": 1956, 
-            "rdf_md5": "44a85e234a06ec429625600bb8cab6f5", 
             "updated": "2009-04-30 14:22:04"
         }, 
         "model": "fs_doc.atomentry", 

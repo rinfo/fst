@@ -299,6 +299,30 @@ class OvrigtDokument(HasFile):
         verbose_name_plural = u"Övriga dokument"
 
 
+class RDFPost(models.Model):
+
+    data = models.TextField(blank=False)
+    md5 = models.CharField(max_length=32, blank=False)
+
+    def save(self, *args, **kwargs):
+        self._add_checksum()
+        super(RDFPost, self).save(*args, **kwargs)
+
+    def _add_checksum(self):
+        checksum = hashlib.md5()
+        checksum.update(self.data)
+        self.md5 = checksum.hexdigest()
+
+    @property
+    def length(self):
+        return len(self.data)
+
+    @classmethod
+    def create_for(cls, object):
+        data = object.to_rdfxml().encode("utf-8")
+        return cls(data=data)
+
+
 class AtomEntry(models.Model):
     """En klass för att skapa ett Atom entry för feeden. Dessa objekt skapas
     automatiskt i samband med att en föreskrift sparas, uppdateras eller
@@ -314,10 +338,7 @@ class AtomEntry(models.Model):
     published = models.DateTimeField(blank=False)
     deleted = models.DateTimeField(blank=True, null=True)
 
-    # RDF-data för denna post
-    rdf_href = models.CharField(max_length=512, blank=True, null=True)
-    rdf_length = models.PositiveIntegerField()
-    rdf_md5 = models.CharField(max_length=32, blank=False)
+    rdf_post = models.OneToOneField(RDFPost, null=True, blank=True)
 
 
     def to_entryxml(self):
@@ -331,13 +352,9 @@ class AtomEntry(models.Model):
             'published': rfc3339_date(self.published),
             'deleted': rfc3339_date(self.deleted) if self.deleted else None,
 
-            'foreskrift': self.foreskrift,
-            'title': self.foreskrift.titel,
-            'summary': self.foreskrift.sammanfattning,
-
-            'rdf_href': self.rdf_href,
-            'rdf_length': self.rdf_length,
-            'rdf_md5': self.rdf_md5,
+            'doc': self.foreskrift,
+            'rdf_post': self.rdf_post,
+            'rdf_url': self.foreskrift.get_absolute_url() + "rdf",
 
             'rinfo_base_uri': settings.FST_PUBL_BASE_URI,
             'fst_site_url': settings.FST_SITE_URL

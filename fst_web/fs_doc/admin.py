@@ -89,7 +89,7 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
             ('beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck'),
             ('omtryck','andrar'),
             'bemyndiganden',
-            'amnesord',     
+            'amnesord',
             'celexreferenser'
         ),
         'classes': ['wide', 'extrapretty']
@@ -103,43 +103,34 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
         skapas när en post raderas."""
 
         # Först, spara ner föreskriften och relationer till andra objekt
-        super(MyndighetsforeskriftAdmin, self).save_model(request, obj, form, change)
+        super(MyndighetsforeskriftAdmin, self).save_model(
+                request, obj, form, change)
         form.save_m2m()
         obj.save()
+        self._create_entry(obj)
 
-        # Nu kan vi skapa ett AtomEntry
-
+    def _create_entry(self, obj):
         # Då posten publicerades (nu, om det är en ny post)
-        published = datetime.now()
+        updated = datetime.now()
 
-        # Se om det finns ett tidigare AtomEntry för denna föreskrift.
+        # Se om det finns ett tidigare AtomEntry för denna föreskrift
         try:
-            foreskrift_entries = AtomEntry.objects.filter(foreskrift=obj.id) \
-                    .order_by("published")
-            if foreskrift_entries:
-                published = foreskrift_entries[0].published
+            for entry in AtomEntry.objects.filter(foreskrift=obj.id) \
+                    .order_by("published"):
+                published = entry.published
+                break
         except AtomEntry.DoesNotExist:
-            # Kan inte hitta AtomEntry för denna föreskrift. Därmed är det en ny post.
-            pass
+            # Om inte är den ny
+            published = updated
 
-        # ...och för metadataposten i RDF-format
-        md5 = hashlib.md5()
-        rdfxml_repr = obj.to_rdfxml().encode("utf-8")
-        md5.update(rdfxml_repr)
-        rdf_md5 = md5.hexdigest()
-        rdf_href = obj.get_absolute_url() + "rdf"
+        # Skapa metadatapost i RDF-format
+        rdf_post = RDFPost.create_for(obj)
+        rdf_post.save()
 
-        # Skapa AtomEntry-posten
-        entry = AtomEntry(
-                foreskrift=obj,
+        entry = AtomEntry(foreskrift=obj,
                 entry_id=obj.get_rinfo_uri(),
-                updated=datetime.now(),
-                published=published,
-                rdf_href=rdf_href,
-                rdf_length=len(rdfxml_repr),
-                rdf_md5=rdf_md5)
-
-        # Spara AtomEntry för denna aktivitet
+                updated=updated, published=published,
+                rdf_post=rdf_post)
         entry.save()
 
     def make_published(self, request, queryset):
