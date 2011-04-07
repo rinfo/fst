@@ -7,9 +7,9 @@
         <published>{{published}}</published>
         <title xml:lang="sv">{{title}}</title>
         <summary xml:lang="sv">{{summary|default_if_none:""}}</summary>
-        <content src="/{{foreskrift.dokument.url|safe}}"
+        <content src="/{{foreskrift.content.url|safe}}"
             type="application/pdf"
-            hash="md5:{{content_md5}}"/>
+            hash="md5:{{foreskrift.content_md5}}"/>
         <link rel="alternate"
             href="{{rdf_href}}"
             type="application/rdf+xml"
@@ -20,14 +20,14 @@
             href="/{{bilaga.file.url|safe}}"
             type="application/pdf"
             dct:isFormatOf="{{bilaga.get_rinfo_uri}}"
-            length="{{bilaga.file.data.size}}" hash="md5:{{bilaga.file_md5}}"/>
+            length="{{bilaga.file.size}}" hash="md5:{{bilaga.file_md5}}"/>
         {% endif %}
         {% endfor %}
         {% for dok in foreskrift.ovriga_dokument.all %}
         <link rel="enclosure"
             href="/{{dok.file.url|safe}}"
             type="application/pdf"
-            length="{{dok.file.data.size}}" hash="md5:{{dok.file_md5}}"/>
+            length="{{dok.file.size}}" hash="md5:{{dok.file_md5}}"/>
         {% endfor %}
     </entry>
 {% endif %}
