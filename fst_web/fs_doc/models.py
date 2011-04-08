@@ -320,8 +320,8 @@ class RDFPost(models.Model):
         return len(self.data)
 
     @classmethod
-    def create_for(cls, object):
-        data = object.to_rdfxml().encode("utf-8")
+    def create_for(cls, obj):
+        data = obj.to_rdfxml().encode("utf-8")
         return cls(data=data)
 
 
@@ -331,8 +331,12 @@ class AtomEntry(models.Model):
     raderas. För radering se create_delete_entry-signalen sist i denna fil. För
     uppdatering/nya poster se ModelAdmin.save_model() i rinfo/admin.py."""
 
-    foreskrift = models.ForeignKey(Myndighetsforeskrift, blank=True,
-            related_name='entries')
+    class Meta:
+        unique_together = ('content_type', 'object_id')
+
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField('object_id', db_index=True)
+    content_object = generic.GenericForeignKey('content_type', 'object_id')
 
     entry_id = models.CharField(max_length=512, blank=False)
 
@@ -354,9 +358,9 @@ class AtomEntry(models.Model):
             'published': rfc3339_date(self.published),
             'deleted': rfc3339_date(self.deleted) if self.deleted else None,
 
-            'doc': self.foreskrift,
+            'doc': self.content_object,
             'rdf_post': self.rdf_post,
-            'rdf_url': self.foreskrift.get_absolute_url() + "rdf",
+            'rdf_url': self.content_object.get_absolute_url() + "rdf",
 
             'rinfo_base_uri': settings.FST_PUBL_BASE_URI,
             'fst_site_url': settings.FST_SITE_URL
@@ -373,7 +377,7 @@ def create_delete_entry(sender, instance, **kwargs):
 
     # Skapa AtomEntry-posten
     entry = AtomEntry(
-            foreskrift=instance,
+            content_object=instance,
             updated=datetime.now(),
             published=datetime.now(),
             deleted=datetime.now(),

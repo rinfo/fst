@@ -115,12 +115,13 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
         updated = datetime.now()
 
         # Se om det finns ett tidigare AtomEntry för denna föreskrift
-        try:
-            for entry in AtomEntry.objects.filter(foreskrift=obj.id) \
-                    .order_by("published"):
-                published = entry.published
-                break
-        except AtomEntry.DoesNotExist:
+        obj_type = ContentType.objects.get_for_model(obj)
+        entries = AtomEntry.objects.filter(content_type__pk=obj_type.id,
+                object_id=obj.id)
+        for entry in entries.order_by("published"):
+            published = entry.published
+            break
+        else:
             # Om inte är den ny
             published = updated
 
@@ -128,7 +129,7 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
         rdf_post = RDFPost.create_for(obj)
         rdf_post.save()
 
-        entry = AtomEntry(foreskrift=obj,
+        entry = AtomEntry(content_object=obj,
                 entry_id=obj.get_rinfo_uri(),
                 updated=updated, published=published,
                 rdf_post=rdf_post)

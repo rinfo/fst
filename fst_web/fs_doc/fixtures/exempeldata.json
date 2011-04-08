@@ -155,39 +155,5 @@
         }, 
         "model": "fs_doc.myndighetsforeskrift", 
         "pk": 3
-    }, 
-    {
-        "fields": {
-            "deleted": null, 
-            "entry_id": "http://rinfo.lagrummet.se/publ/exfs/2009:1", 
-            "foreskrift": 1, 
-            "published": "2009-04-30 14:20:46", 
-            "updated": "2009-04-30 14:20:46"
-
-        }, 
-        "model": "fs_doc.atomentry", 
-        "pk": 1
-    }, 
-    {
-        "fields": {
-            "deleted": null, 
-            "entry_id": "http://rinfo.lagrummet.se/publ/exfs/2009:2", 
-            "foreskrift": 2, 
-            "published": "2009-04-30 14:21:29", 
-            "updated": "2009-04-30 14:21:29"
-        }, 
-        "model": "fs_doc.atomentry", 
-        "pk": 2
-    }, 
-    {
-        "fields": {
-            "deleted": null, 
-            "entry_id": "http://rinfo.lagrummet.se/publ/exfs/2009:3", 
-            "foreskrift": 3, 
-            "published": "2009-04-30 14:22:04", 
-            "updated": "2009-04-30 14:22:04"
-        }, 
-        "model": "fs_doc.atomentry", 
-        "pk": 3
     }
 ]
