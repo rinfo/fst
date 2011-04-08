@@ -375,9 +375,7 @@ def create_delete_entry(sender, instance, **kwargs):
             updated=datetime.now(),
             published=datetime.now(),
             deleted=datetime.now(),
-            entry_id=instance.get_rinfo_uri(),
-            rdf_length=0,
-            rdf_md5="")
+            entry_id=instance.get_rinfo_uri())
 
     # Spara AtomEntry för denna aktivitet
     entry.save()
