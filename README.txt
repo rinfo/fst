@@ -53,7 +53,7 @@ med RINFO.
 
 6. Installera databasschemat:
 
-    $ python manage.py syncdb
+    $ python manage.py syncdb 
 
 Om det inträffade ett fel behöver du eventuellt justera miljövariablen
 PYTHONPATH så att den inkluderar katalogen i vilken rinfo-foreksriftshantering
@@ -103,7 +103,12 @@ kommando inifrån projektkatalogen:
 Alternativt börjar du med att logga in i administrationsgränssnittet och skapa
 lite grunddata (en författningssamling, några bemyndiganden och eventuellt några ämnesord).
 
+Egna experiment
+---------------
 
+Om du senare vill spara din aktuella databas till en fil använder du detta kommando:
+
+    $ python manage.py dumpdata --indent 4 --exclude admin --exclude sessions.session --exclude contenttypes.contenttype  --exclude fs_doc.atomentry --exclude fs_doc.rdfpost > fs_doc/fixtures/egna_data.json
 
 Applikationens delar
 --------------------
