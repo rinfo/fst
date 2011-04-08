@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
+from django.conf import settings
 from django.conf.urls.defaults import *
 from django.contrib import admin
 import os
+
 
 # Slå på Djangos automatiska administrationssgränssnitt
 admin.autodiscover()
@@ -13,7 +15,7 @@ urlpatterns = patterns('',
     (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': os.path.join(os.path.dirname(__file__), 'static').replace('\\','/')}),
 
     # Se till att PDF-versionen av föreskrifter i mappen dokument skickas
-    (r'^dokument/(?P<path>.*)$', 'django.views.static.serve', {'document_root': os.path.join(os.path.dirname(__file__), 'dokument').replace('\\','/')}),
+    (r'^dokument/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT.replace('\\','/')}),
 
     # Startsidan ("/")
     (r'^$', 'fst_web.fs_doc.views.index'),
@@ -35,5 +37,5 @@ urlpatterns = patterns('',
 
     # Slå på administrationsgränssnitt
     (r'^admin/', include(admin.site.urls)),
-    (r'^admin/(.*)', admin.site.root),
+    #(r'^admin/(.*)', admin.site.root),
 )

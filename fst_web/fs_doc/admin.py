@@ -1,31 +1,101 @@
 # -*- coding: utf-8 -*-
-from django.contrib import admin
-from fst_web.fs_doc.models import *
-import hashlib
+from os import path
 from datetime import datetime
+from django import forms
+from django.contrib import admin
 from django.core.files import File
 from django.conf import settings
-from os import path
+from fst_web.fs_doc.models import *
+
 
 class ForfattningssamlingAdmin(admin.ModelAdmin):
     list_display = ('titel', 'kortnamn', 'identifierare')
     ordering = ('titel',)
+
 
 class CelexReferensAdmin(admin.ModelAdmin):
     list_display = ('celexnummer', 'titel')
     ordering = ('celexnummer',)
     search_fields = ('celexnummer', 'titel')
 
+
 class AmnesordAdmin(admin.ModelAdmin):
     list_display = ('titel', 'beskrivning')
     ordering = ('titel',)
     search_fields = ('titel', 'beskrivning',)
 
+class BemyndigandereferensAdmin(admin.ModelAdmin):
+    list_display = ('sfsnummer','titel','kapitelnummer','paragrafnummer')
+    ordering = ('titel',)
+    search_fields = ('titel', 'sfsnummer',)
+
+
+class HasFileForm(forms.ModelForm):
+
+    FILE_FIELD_KEY = 'file'
+
+    def save(self, commit=True):
+        m = super(HasFileForm, self).save(commit=False)
+        file_field = self.cleaned_data[self.FILE_FIELD_KEY]
+        file_md5_key = '%s_md5' % self.FILE_FIELD_KEY
+        if file_field:
+            setattr(m, file_md5_key, get_file_md5(file_field.file))
+        if commit:
+            m.save()
+        return m
+
+
+class HasFileInline(admin.TabularInline):
+    form = HasFileForm
+    extra = 1
+    list_display = ('titel', 'file')
+    ordering = ('titel',)
+    exclude = ('file_md5',)
+
+
+class BilagaInline(HasFileInline):
+    model = Bilaga
+    classes = ['collapse', 'collapsed']
+
+class OvrigtDokumentInline(HasFileInline):
+    model = OvrigtDokument
+    classes = ['collapse', 'collapsed']
+
+
+class HasContentFileForm(HasFileForm):
+
+    FILE_FIELD_KEY = 'content'
+
+
 class MyndighetsforeskriftAdmin(admin.ModelAdmin):
+
+    form = HasContentFileForm
+
     list_display = ('identifierare', 'arsutgava', 'lopnummer', 'titel','beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck', 'typ')
-    list_filter = ('beslutsdatum', 'ikrafttradandedatum')
+    list_filter = ('beslutsdatum', 'ikrafttradandedatum','publicerad','amnesord','andrar','omtryck')
     ordering = ('-beslutsdatum', 'titel')
     search_fields = ('titel', 'identifierare',)
+    inlines = [BilagaInline, OvrigtDokumentInline]
+    readonly_fields = ('publicerad','identifierare',)
+    save_on_top = True
+    fieldsets = ((None, {
+        'fields': (
+            'identifierare',
+            'publicerad',
+            'forfattningssamling',
+             ('arsutgava', 'lopnummer'),
+            'titel',
+            'sammanfattning',
+            'content',
+            ('beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck'),
+            ('omtryck','andrar'),
+            'bemyndiganden',
+            'amnesord',
+            'celexreferenser'
+        ),
+        'classes': ['wide', 'extrapretty']
+        }),)
+    filter_horizontal = ('bemyndiganden','amnesord','celexreferenser')
 
     def save_model(self, request, obj, form, change):
         """Se till att AtomEntry-objekt skaps i samband med att
@@ -34,66 +104,47 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
         skapas när en post raderas."""
 
         # Först, spara ner föreskriften och relationer till andra objekt
-        super(MyndighetsforeskriftAdmin, self).save_model(request, obj, form, change)
+        super(MyndighetsforeskriftAdmin, self).save_model(
+                request, obj, form, change)
         form.save_m2m()
         obj.save()
+        self._create_entry(obj)
 
-        # Nu kan vi skapa ett AtomEntry
-
+    def _create_entry(self, obj):
         # Då posten publicerades (nu, om det är en ny post)
-        published=datetime.now()
+        updated = datetime.now()
 
-        # Se om det finns ett tidigare AtomEntry för denna föreskrift.
-        try:
-            foreskrift_entries=AtomEntry.objects.filter(foreskrift_id=obj.id).order_by("published")
-            if foreskrift_entries:
-                published=foreskrift_entries[0].published
-        except AtomEntry.DoesNotExist:
-            # Kan inte hitta AtomEntry för denna föreskrift. Därmed är det en ny post.
-            pass
+        # Se om det finns ett tidigare AtomEntry för denna föreskrift
+        obj_type = ContentType.objects.get_for_model(obj)
+        entries = AtomEntry.objects.filter(content_type__pk=obj_type.id,
+                object_id=obj.id)
+        for entry in entries.order_by("published"):
+            published = entry.published
+            break
+        else:
+            # Om inte är den ny
+            published = updated
 
-        # Beräkna md5 för dokumentet
-        md5 = hashlib.md5()
-        md5.update(open(obj.dokument.path, 'rb').read())
-        dokument_md5 = md5.hexdigest()
+        # Skapa metadatapost i RDF-format
+        rdf_post = RDFPost.create_for(obj)
+        rdf_post.save()
 
-        # ...och för eventuell bilaga
-        bilaga_md5 = ""
-        bilaga_length = 0
-        bilaga_uri = ""
-
-        if obj.bilaga:
-            md5 = hashlib.md5()
-            md5.update(open(obj.bilaga.path, 'rb').read())
-            bilaga_md5 = md5.hexdigest()
-            bilaga_length = len(open(obj.bilaga.path, 'rb').read())
-            bilaga_uri = obj.get_rinfo_uri() + "#bilaga_1"
-
-        # ...och för metadataposten i RDF-format
-        md5 = hashlib.md5()
-        rdfxml_repr = obj.to_rdfxml().encode("utf-8")
-        md5.update(rdfxml_repr)
-        rdf_md5 = md5.hexdigest()
-
-        # Skapa AtomEntry-posten
-        entry = AtomEntry(  foreskrift_id=obj.id,
-                title=obj.titel,
-				summary=obj.sammanfattning,
-                updated=datetime.now(),
-                published=published,
+        entry = AtomEntry(content_object=obj,
                 entry_id=obj.get_rinfo_uri(),
-                content_md5=dokument_md5,
-                content_src="/" + obj.dokument.url,
-                enclosure_href=("/" + obj.bilaga.url) if obj.bilaga else None,
-                enclosure_length=bilaga_length if obj.bilaga else None,
-                enclosure_md5=bilaga_md5 if obj.bilaga else None,
-                enclosure_uri=bilaga_uri if obj.bilaga else None,
-                rdf_href=obj.get_absolute_url() + "rdf",
-                rdf_length=len(rdfxml_repr),
-                rdf_md5=rdf_md5)
-
-        # Spara AtomEntry för denna aktivitet
+                updated=updated, published=published,
+                rdf_post=rdf_post)
         entry.save()
+
+    def make_published(self, request, queryset):
+        rows_updated = queryset.update(publicerad=True)
+        if rows_updated == 1:
+            message_bit = "1 föreskrift"
+        else:
+            message_bit = "%s föreskrifter" % rows_updated
+        self.message_user(request, "%s har publicerats." % message_bit)
+
+    make_published.short_description = u"Publicera markerade föreskrifter via FST"
+    actions = [make_published]
 
 
 # Registrera adminklasserna
@@ -101,5 +152,8 @@ admin.site.register(Amnesord, AmnesordAdmin)
 admin.site.register(CelexReferens, CelexReferensAdmin)
 admin.site.register(Forfattningssamling, ForfattningssamlingAdmin)
 admin.site.register(Myndighetsforeskrift, MyndighetsforeskriftAdmin)
-admin.site.register(Bemyndigandeparagraf)
+admin.site.register(Bemyndigandereferens,BemyndigandereferensAdmin)
 admin.site.register(AtomEntry)
+
+
+

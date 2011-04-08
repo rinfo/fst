@@ -9,6 +9,6 @@ local_settings.py
 .DS_Store
 
 # FST
-fst_web/dokument/*.pdf
+fst_web/uploads/*/*.pdf
 fst_web/database/*.db
 
