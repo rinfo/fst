@@ -85,6 +85,7 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
             'forfattningssamling',
              ('arsutgava', 'lopnummer'),
             'titel',
+            'sammanfattning',
             'content',
             ('beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck'),
             ('omtryck','andrar'),
