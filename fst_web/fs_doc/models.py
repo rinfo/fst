@@ -331,8 +331,8 @@ class AtomEntry(models.Model):
     raderas. För radering se create_delete_entry-signalen sist i denna fil. För
     uppdatering/nya poster se ModelAdmin.save_model() i rinfo/admin.py."""
 
-    class Meta:
-        unique_together = ('content_type', 'object_id')
+    #class Meta:
+    #    unique_together = ('content_type', 'object_id')
 
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField('object_id', db_index=True)
