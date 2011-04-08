@@ -115,7 +115,11 @@ class Bemyndigandereferens(models.Model):
                                help_text="""T.ex. <em>rätt att meddela föreskrifter om notarietjänstgöring och notariemeritering</em>""")
 
     def __unicode__(self):
-        return u"%s (%s) %s" % (self.titel, self.sfsnummer, self.paragrafnummer)
+		if self.kapitelnummer:
+			kap_text = " kap. "
+		else:
+			kap_text = " "
+		return u"%s (%s) %s %s %s §" % (self.titel, self.sfsnummer, self.kapitelnummer, kap_text, self.paragrafnummer)
 
     # Inställningar för etiketter i administrationsgränssnittet.
     class Meta:
