@@ -5,29 +5,31 @@
         <id>{{entry_id}}</id>
         <updated>{{updated}}</updated>
         <published>{{published}}</published>
-        <title xml:lang="sv">{{title}}</title>
-        <summary xml:lang="sv">{{summary|default_if_none:""}}</summary>
-        <content src="/{{foreskrift.dokument.url|safe}}"
+        <title xml:lang="sv">{{doc.titel}}</title>
+        <summary xml:lang="sv">{{doc.sammanfattning|default_if_none:""}}</summary>
+        <content src="/{{doc.content.url|safe}}"
             type="application/pdf"
-            hash="md5:{{content_md5}}"/>
+            hash="md5:{{doc.content_md5}}"/>
+        {% if rdf_post %}
         <link rel="alternate"
-            href="{{rdf_href}}"
+            href="{{rdf_url}}"
             type="application/rdf+xml"
-            length="{{rdf_length}}" hash="md5:{{rdf_md5}}"/>
-        {% for bilaga in foreskrift.bilagor.all %}
+            length="{{rdf_post.length}}" hash="md5:{{rdf_post.md5}}"/>
+        {% endif %}
+        {% for bilaga in doc.bilagor.all %}
         {% if bilaga.file %}
         <link rel="enclosure"
             href="/{{bilaga.file.url|safe}}"
             type="application/pdf"
             dct:isFormatOf="{{bilaga.get_rinfo_uri}}"
-            length="{{bilaga.file.data.size}}" hash="md5:{{bilaga.file_md5}}"/>
+            length="{{bilaga.file.size}}" hash="md5:{{bilaga.file_md5}}"/>
         {% endif %}
         {% endfor %}
-        {% for dok in foreskrift.ovriga_dokument.all %}
+        {% for reldoc in doc.ovriga_dokument.all %}
         <link rel="enclosure"
-            href="/{{dok.file.url|safe}}"
+            href="/{{reldoc.file.url|safe}}"
             type="application/pdf"
-            length="{{dok.file.data.size}}" hash="md5:{{dok.file_md5}}"/>
+            length="{{reldoc.file.size}}" hash="md5:{{reldoc.file_md5}}"/>
         {% endfor %}
     </entry>
 {% endif %}

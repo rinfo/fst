@@ -4,8 +4,8 @@
     xmlns:dct="http://purl.org/dc/terms/">
 
     <id>{{feed_id}}</id>
-    <title xml:lang="sv">{{feed_title}}</title>
     <updated>{{last_updated}}</updated>
+    <title xml:lang="sv">{{feed_title}}</title>
     <author>
         <name>{{feed_contact_name}}</name>
         <uri>{{feed_contact_url}}</uri>

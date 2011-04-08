@@ -7,6 +7,7 @@ from django.core.files import File
 from django.conf import settings
 from fst_web.fs_doc.models import *
 
+
 class ForfattningssamlingAdmin(admin.ModelAdmin):
     list_display = ('titel', 'kortnamn', 'identifierare')
     ordering = ('titel',)
@@ -16,6 +17,7 @@ class CelexReferensAdmin(admin.ModelAdmin):
     list_display = ('celexnummer', 'titel')
     ordering = ('celexnummer',)
     search_fields = ('celexnummer', 'titel')
+
 
 class AmnesordAdmin(admin.ModelAdmin):
     list_display = ('titel', 'beskrivning')
@@ -30,11 +32,14 @@ class BemyndigandereferensAdmin(admin.ModelAdmin):
 
 class HasFileForm(forms.ModelForm):
 
+    FILE_FIELD_KEY = 'file'
+
     def save(self, commit=True):
         m = super(HasFileForm, self).save(commit=False)
-        file_field = self.cleaned_data['file']
+        file_field = self.cleaned_data[self.FILE_FIELD_KEY]
+        file_md5_key = '%s_md5' % self.FILE_FIELD_KEY
         if file_field:
-            m.file_md5 = get_file_md5(file_field.file)
+            setattr(m, file_md5_key, get_file_md5(file_field.file))
         if commit:
             m.save()
         return m
@@ -56,7 +61,16 @@ class OvrigtDokumentInline(HasFileInline):
     model = OvrigtDokument
     classes = ['collapse', 'collapsed']
 
+
+class HasContentFileForm(HasFileForm):
+
+    FILE_FIELD_KEY = 'content'
+
+
 class MyndighetsforeskriftAdmin(admin.ModelAdmin):
+
+    form = HasContentFileForm
+
     list_display = ('identifierare', 'arsutgava', 'lopnummer', 'titel','beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck', 'typ')
     list_filter = ('beslutsdatum', 'ikrafttradandedatum','publicerad','amnesord','andrar','omtryck')
     ordering = ('-beslutsdatum', 'titel')
@@ -66,16 +80,16 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
     save_on_top = True
     fieldsets = ((None, {
         'fields': (
-			'identifierare',
-			'publicerad',
-			'forfattningssamling',
-			 ('arsutgava', 'lopnummer'),
+            'identifierare',
+            'publicerad',
+            'forfattningssamling',
+             ('arsutgava', 'lopnummer'),
             'titel',
-			'dokument',
-			('beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck'),
-			('omtryck','andrar'),
-			'bemyndiganden',
-			'amnesord',     
+            'content',
+            ('beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck'),
+            ('omtryck','andrar'),
+            'bemyndiganden',
+            'amnesord',
             'celexreferenser'
         ),
         'classes': ['wide', 'extrapretty']
@@ -89,48 +103,34 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
         skapas när en post raderas."""
 
         # Först, spara ner föreskriften och relationer till andra objekt
-        super(MyndighetsforeskriftAdmin, self).save_model(request, obj, form, change)
+        super(MyndighetsforeskriftAdmin, self).save_model(
+                request, obj, form, change)
         form.save_m2m()
         obj.save()
+        self._create_entry(obj)
 
-        # Nu kan vi skapa ett AtomEntry
-
+    def _create_entry(self, obj):
         # Då posten publicerades (nu, om det är en ny post)
-        published = datetime.now()
+        updated = datetime.now()
 
-        # Se om det finns ett tidigare AtomEntry för denna föreskrift.
+        # Se om det finns ett tidigare AtomEntry för denna föreskrift
         try:
-            foreskrift_entries = AtomEntry.objects.filter(foreskrift=obj.id).order_by("published")
-            if foreskrift_entries:
-                published = foreskrift_entries[0].published
+            for entry in AtomEntry.objects.filter(foreskrift=obj.id) \
+                    .order_by("published"):
+                published = entry.published
+                break
         except AtomEntry.DoesNotExist:
-            # Kan inte hitta AtomEntry för denna föreskrift. Därmed är det en ny post.
-            pass
+            # Om inte är den ny
+            published = updated
 
-        # Beräkna md5 för dokumentet
-        with open(obj.dokument.path, 'rb') as f:
-            dokument_md5 = get_file_md5(f)
+        # Skapa metadatapost i RDF-format
+        rdf_post = RDFPost.create_for(obj)
+        rdf_post.save()
 
-        # ...och för metadataposten i RDF-format
-        md5 = hashlib.md5()
-        rdfxml_repr = obj.to_rdfxml().encode("utf-8")
-        md5.update(rdfxml_repr)
-        rdf_md5 = md5.hexdigest()
-
-        # Skapa AtomEntry-posten
-        entry = AtomEntry(  foreskrift=obj,
-                title=obj.titel,
-                summary=obj.sammanfattning,
-                updated=datetime.now(),
-                published=published,
+        entry = AtomEntry(foreskrift=obj,
                 entry_id=obj.get_rinfo_uri(),
-                content_md5=dokument_md5,
-                content_src=obj.dokument.url,
-                rdf_href=obj.get_absolute_url() + "rdf",
-                rdf_length=len(rdfxml_repr),
-                rdf_md5=rdf_md5)
-
-        # Spara AtomEntry för denna aktivitet
+                updated=updated, published=published,
+                rdf_post=rdf_post)
         entry.save()
 
     def make_published(self, request, queryset):
@@ -140,6 +140,7 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
         else:
             message_bit = "%s föreskrifter" % rows_updated
         self.message_user(request, "%s har publicerats." % message_bit)
+
     make_published.short_description = u"Publicera markerade föreskrifter via FST"
     actions = [make_published]
 
@@ -151,5 +152,6 @@ admin.site.register(Forfattningssamling, ForfattningssamlingAdmin)
 admin.site.register(Myndighetsforeskrift, MyndighetsforeskriftAdmin)
 admin.site.register(Bemyndigandereferens,BemyndigandereferensAdmin)
 admin.site.register(AtomEntry)
+
 
 

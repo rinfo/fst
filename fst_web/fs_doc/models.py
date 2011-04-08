@@ -144,13 +144,10 @@ class Myndighetsforeskrift(models.Model):
            unique=False,
            help_text="""T.ex. <em>Denna föreskrift beskriver allmänna råd om arkiv hos statliga myndigheter</em>""")
 
-    # Författningssamlingsnummer, t.ex. "2010:1"
-    #fsnummer = models.CharField("FS-nummer", max_length=10,
-    #        unique=True, blank=False, help_text="T.ex. <em>2010:1</em>")
-
-    #identifierare = models.CharField("Identifierare", max_length=20,
-   #                                unique=True, blank=False,
-   #                                help_text="T.ex. <em>EXFS 2010:1</em>")
+    # Författningssamling (referens till post i de upprättade
+    # författningssamlingarna)
+    forfattningssamling = models.ForeignKey(Forfattningssamling, blank=False,
+            verbose_name=u"författnings-samling")
 
     arsutgava = models.CharField("Årsutgåva", max_length=13,
                                unique=False, blank=False,
@@ -174,20 +171,18 @@ class Myndighetsforeskrift(models.Model):
     # Utkom från tryck datum, t.ex. 2007-02-09
     utkom_fran_tryck = models.DateField("Utkom från tryck", blank=False)
 
-    # Författningssamling (referens till post i de upprättade
-    # författningssamlingarna)
-    forfattningssamling = models.ForeignKey(Forfattningssamling, blank=False,
-            verbose_name=u"författnings-samling")
 
     # Bemyndiganden (referenser till bemyndigandereferenser)
     bemyndiganden = models.ManyToManyField(Bemyndigandereferens,
             blank=False, verbose_name=u"referenser till bemyndiganden")
 
     # PDF-version av dokumentet
-    dokument = models.FileField(u"PDF-version av föreskrift",
+    content = models.FileField(u"PDF-version av föreskrift",
             upload_to="foreskrift",
             blank=False,
             help_text="""Se till att dokumentet är i PDF-format.""")
+
+    content_md5 = models.CharField(max_length=32, blank=True, null=True)
 
     # Koppling till ämnesord
     amnesord = models.ManyToManyField(Amnesord, blank=True, verbose_name=u"ämnesord")
@@ -304,6 +299,30 @@ class OvrigtDokument(HasFile):
         verbose_name_plural = u"Övriga dokument"
 
 
+class RDFPost(models.Model):
+
+    data = models.TextField(blank=False)
+    md5 = models.CharField(max_length=32, blank=False)
+
+    def save(self, *args, **kwargs):
+        self._add_checksum()
+        super(RDFPost, self).save(*args, **kwargs)
+
+    def _add_checksum(self):
+        checksum = hashlib.md5()
+        checksum.update(self.data)
+        self.md5 = checksum.hexdigest()
+
+    @property
+    def length(self):
+        return len(self.data)
+
+    @classmethod
+    def create_for(cls, object):
+        data = object.to_rdfxml().encode("utf-8")
+        return cls(data=data)
+
+
 class AtomEntry(models.Model):
     """En klass för att skapa ett Atom entry för feeden. Dessa objekt skapas
     automatiskt i samband med att en föreskrift sparas, uppdateras eller
@@ -313,22 +332,13 @@ class AtomEntry(models.Model):
     foreskrift = models.ForeignKey(Myndighetsforeskrift, blank=True,
             related_name='entries')
 
+    entry_id = models.CharField(max_length=512, blank=False)
+
     updated = models.DateTimeField(blank=False)
     published = models.DateTimeField(blank=False)
     deleted = models.DateTimeField(blank=True, null=True)
 
-    entry_id = models.CharField(max_length=512, blank=False)
-    title = models.TextField(blank=False)
-    summary = models.TextField(blank=True, null=True)
-
-    # Information om föreskriftsdokumentet
-    content_src = models.CharField(max_length=512, blank=True, null=True)
-    content_md5 = models.CharField(max_length=32, blank=False)
-
-    # RDF-data för denna post
-    rdf_href = models.CharField(max_length=512, blank=True, null=True)
-    rdf_length = models.PositiveIntegerField()
-    rdf_md5 = models.CharField(max_length=32, blank=False)
+    rdf_post = models.OneToOneField(RDFPost, null=True, blank=True)
 
 
     def to_entryxml(self):
@@ -337,21 +347,14 @@ class AtomEntry(models.Model):
 
         template = loader.get_template('foreskrift_entry.xml')
         context = Context({
-            'foreskrift': self.foreskrift,
-
+            'entry_id': self.entry_id,
             'updated': rfc3339_date(self.updated),
             'published': rfc3339_date(self.published),
             'deleted': rfc3339_date(self.deleted) if self.deleted else None,
 
-            'entry_id': self.entry_id,
-            'title': self.title,#self.foreskrift.titel,
-            'summary': self.summary,
-
-            'content_src': self.content_src,
-            'content_md5': self.content_md5,
-            'rdf_href': self.rdf_href,
-            'rdf_length': self.rdf_length,
-            'rdf_md5': self.rdf_md5,
+            'doc': self.foreskrift,
+            'rdf_post': self.rdf_post,
+            'rdf_url': self.foreskrift.get_absolute_url() + "rdf",
 
             'rinfo_base_uri': settings.FST_PUBL_BASE_URI,
             'fst_site_url': settings.FST_SITE_URL
@@ -367,15 +370,12 @@ def create_delete_entry(sender, instance, **kwargs):
     korrigera felaktigheter i eventuellt redan hämtad information."""
 
     # Skapa AtomEntry-posten
-    entry = AtomEntry(title=instance.titel,
+    entry = AtomEntry(
             foreskrift=instance,
             updated=datetime.now(),
             published=datetime.now(),
             deleted=datetime.now(),
-            entry_id=instance.get_rinfo_uri(),
-            content_md5="",
-            rdf_length=0,
-            rdf_md5="")
+            entry_id=instance.get_rinfo_uri())
 
     # Spara AtomEntry för denna aktivitet
     entry.save()
@@ -393,4 +393,5 @@ def get_file_md5(opened_file):
         if not data: break
         md5sum.update(data)
     return md5sum.hexdigest()
+
 
