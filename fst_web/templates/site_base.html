@@ -2,8 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <title>{% block title %}{% endblock %}</title>
-        <link rel="stylesheet" href="/static/screen.css" type="text/css" />
-        <link rel="alternate" type="application/atom+xml" href="/feed/" title="{{ organization.name_possessive }} författningssamling" />
+        <link rel="stylesheet" href="{% url fst_web.fs_doc.views.index %}/static/screen.css" type="text/css" />
+        <link rel="alternate" type="application/atom+xml" href="{% url fst_web.fs_doc.views.atomfeed %}" title="{{ organization.name_possessive }} författningssamling" />
     </head>
     <body>
         <div class="bottom">
@@ -16,9 +16,9 @@
                     <div class="col2">
                         <h2>Meny</h2>
                         <ul id="menu">
-                            <li><a href="/">Startsida</a></li>
-                            <li><a href="/amnesord/">Lista föreskrifter utifrån ämnesord</a></li>
-                            <li><a href="/artal/">Lista föreskrifter per ikraftträdandeår</a></li>
+                            <li><a href="{% url fst_web.fs_doc.views.index %}/">Startsida</a></li>
+                            <li><a href="{% url fst_web.fs_doc.views.amnesord %}">Lista föreskrifter utifrån ämnesord</a></li>
+                            <li><a href="{% url fst_web.fs_doc.views.artal %}">Lista föreskrifter per ikraftträdandeår</a></li>
                         </ul>
                     </div>
                 </div>

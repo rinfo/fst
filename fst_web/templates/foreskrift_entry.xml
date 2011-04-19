@@ -7,7 +7,7 @@
         <published>{{published}}</published>
         <title xml:lang="sv">{{doc.titel}}</title>
         <summary xml:lang="sv">{{doc.sammanfattning|default_if_none:""}}</summary>
-        <content src="/{{doc.content.url|safe}}"
+        <content src="{{fst_site_url}}/{{doc.content.url|safe}}"
             type="application/pdf"
             hash="md5:{{doc.content_md5}}"/>
         {% if rdf_post %}
@@ -19,7 +19,7 @@
         {% for bilaga in doc.bilagor.all %}
         {% if bilaga.file %}
         <link rel="enclosure"
-            href="/{{bilaga.file.url|safe}}"
+            href="{{fst_site_url}}/{{bilaga.file.url|safe}}"
             type="application/pdf"
             dct:isFormatOf="{{bilaga.get_rinfo_uri}}"
             length="{{bilaga.file.size}}" hash="md5:{{bilaga.file_md5}}"/>
@@ -27,7 +27,7 @@
         {% endfor %}
         {% for reldoc in doc.ovriga_dokument.all %}
         <link rel="enclosure"
-            href="/{{reldoc.file.url|safe}}"
+            href="{{fst_site_url}}/{{reldoc.file.url|safe}}"
             type="application/pdf"
             length="{{reldoc.file.size}}" hash="md5:{{reldoc.file_md5}}"/>
         {% endfor %}
