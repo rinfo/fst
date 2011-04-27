@@ -11,13 +11,13 @@
         <tr>
             <th>Beslutad</th>
             <th>Föreskrift</th>
-            <th>Typ</th>
+            <th>Roll</th>
         </tr>
         {% for foreskrift in senaste_myndighetsforeskrifter %}
         <tr>
             <td>{{foreskrift.beslutsdatum}}</td>
             <td><a href="{{foreskrift.get_absolute_url}}">{{foreskrift.identifierare}} {{foreskrift.titel}}</a></td>
-            <td>{{foreskrift.typ}}</td>
+            <td>{{foreskrift.role_label}}</td>
         </tr>
         {% endfor %}
     </table>

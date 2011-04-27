@@ -60,7 +60,7 @@ class Myndighetsforeskrift(ForfattningsamlingsDokument):
 
     forfattningssamling = models.ForeignKey('Forfattningssamling', 
                                             blank=False,
-                                            verbose_name=u"författnings-samling")
+                                            verbose_name=u"författningssamling")
 
     arsutgava = models.CharField("Årsutgåva", 
                                  max_length=13,
@@ -121,14 +121,15 @@ class Myndighetsforeskrift(ForfattningsamlingsDokument):
                                              verbose_name=
                                              u"Bidrar till att genomföra EG-direktiv", related_name="foreskrifter")
 
-    def typ(self):
-        """Display info about the type of document in Django GUI"""
-        typtext = u"Grundförfattning"
+    def role_label(self):
+        """Display role of this document in Django GUI"""
+        label = u"Grundförfattning"
         if self.andrar:
-            typtext = u"Ändringsförfattning"
-            if self.omtryck:
-                typtext = u"Ändringsförfattning (omtryck)"
-        return typtext
+            label = u"Ändringsförfattning"
+        if self.omtryck:
+            label += " (omtryck)"
+        return label
+    role_label.short_description = u"Roll"
 
     def ikrafttradandear(self):
         """Return only year to support additional sorting"""

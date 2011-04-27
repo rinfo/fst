@@ -6,7 +6,7 @@
 {% block content %}
 
     <h1>{{foreskrift.identifierare}} {{foreskrift.titel|safe}}</h1>
-    <p class="type">{{foreskrift.typ}}</p>
+    <p class="type">{{foreskrift.role_label}}</p>
 
     <p class="download"><a href="{{site.url}}/{{foreskrift.content.url}}">Ladda ner ner {{foreskrift.identifierare}} som PDF</a></p>
 

@@ -78,7 +78,7 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
                     'beslutsdatum', 
                     'ikrafttradandedatum', 
                     'utkom_fran_tryck', 
-                    'typ')
+                    'role_label')
     list_filter = ('beslutsdatum', 
                    'ikrafttradandedatum',
                    'publicerad',
