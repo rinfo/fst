@@ -110,23 +110,20 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
     filter_horizontal = ('bemyndiganden','amnesord','celexreferenser')
 
     def save_model(self, request, obj, form, change):
-        """Se till att AtomEntry-objekt skaps i samband med att
-        myndighetsföreskrifter sparas och uppdateras. Se även
-        create_delete_entry i rinfo/models.py för detaljer om det entry som
-        skapas när en post raderas."""
+        """Create an AtomEntry object when 'Myndighetsforeskrift' is saved or updated. See 'create_delete_entry' in 'rinfo/models.py' for deletion."""
 
-        # Först, spara ner föreskriften och relationer till andra objekt
+        # Save the document and it's relations to other objects
         super(MyndighetsforeskriftAdmin, self).save_model(
             request, obj, form, change)
         form.save_m2m()
         obj.save()
+        # Then create new entry
         self._create_entry(obj)
 
     def _create_entry(self, obj):
-        # Då posten publicerades (nu, om det är en ny post)
         updated = datetime.now()
 
-        # Se om det finns ett tidigare AtomEntry för denna föreskrift
+        # Check if we already published this document
         obj_type = ContentType.objects.get_for_model(obj)
         entries = AtomEntry.objects.filter(content_type__pk=obj_type.id,
                                            object_id=obj.id)
@@ -134,10 +131,10 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
             published = entry.published
             break
         else:
-            # Om inte är den ny
+            # For new documents
             published = updated
 
-        # Skapa metadatapost i RDF-format
+        # Create RDF metadata
         rdf_post = RDFPost.create_for(obj)
         rdf_post.save()
 
@@ -147,6 +144,8 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
                           rdf_post=rdf_post)
         entry.save()
 
+
+    #TODO: replace setting of field 'published' with complete atom feed workflow
     def make_published(self, request, queryset):
         rows_updated = queryset.update(publicerad=True)
         if rows_updated == 1:
@@ -160,7 +159,6 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
     actions = [make_published]
 
 
-# Registrera adminklasserna
 admin.site.register(Amnesord, AmnesordAdmin)
 admin.site.register(CelexReferens, CelexReferensAdmin)
 admin.site.register(Forfattningssamling, ForfattningssamlingAdmin)
