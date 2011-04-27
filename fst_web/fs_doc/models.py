@@ -15,8 +15,7 @@ from django.utils.feedgenerator import rfc3339_date
 
 
 class Myndighetsforeskrift(models.Model):
-    """Describes the main document content of document collections of type 'författningsamling'. 
-    
+    """The main document of document collections of type 'författningsamling'. 
     
     See also the rinfo domain model RDF definition at: http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#Myndighetsforeskrift
     """
@@ -154,7 +153,7 @@ class Myndighetsforeskrift(models.Model):
 
 
 class Forfattningssamling(models.Model):
-    """Describes document collection of type 'författningsamling'. 
+    """Document collection of type 'författningsamling'. 
     
     See also the rinfo domain model RDF definition at: http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#forfattningssamling
     """
