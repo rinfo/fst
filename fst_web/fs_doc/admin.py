@@ -155,7 +155,7 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
         self.message_user(request, "%s har publicerats." % message_bit)
 
     make_published.short_description = u"Publicera markerade \
-    föreskrifter via FST"
+                  föreskrifter via FST"
     actions = [make_published]
 
 
@@ -165,5 +165,4 @@ admin.site.register(Forfattningssamling, ForfattningssamlingAdmin)
 admin.site.register(Myndighetsforeskrift, MyndighetsforeskriftAdmin)
 admin.site.register(Bemyndigandereferens,BemyndigandereferensAdmin)
 admin.site.register(AtomEntry)
-
 
