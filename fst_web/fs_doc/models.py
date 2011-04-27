@@ -14,6 +14,144 @@ from django.forms import TextInput, Textarea
 from django.utils.feedgenerator import rfc3339_date
 
 
+
+class Myndighetsforeskrift(models.Model):
+    """Modell för myndighetsföreskrifter. Denna hanterar det huvudsakliga
+    innehållet i en författningssamling - själva föreskrifterna. Den kan enkelt
+    utökas med fler egenskaper."""
+
+    class Meta:
+        verbose_name = u"Myndighetsföreskrift"
+        verbose_name_plural = u"Myndighetsföreskrifter"
+
+    @property
+    def identifierare(self):
+        return "%s %s:%s" % (self.forfattningssamling.kortnamn,
+                             self.arsutgava, self.lopnummer)
+
+    publicerad = models.BooleanField(u"Är publicerad", 
+                                     default=False, 
+                                     null=False, 
+                                     blank=True,
+                                     help_text=
+                                     """Denna föreskrift är redan publicerad via FST. Vid eventuella felaktigheter, ändra och publicera sedan om. """)
+
+    titel = models.CharField(
+        max_length=512,
+        unique=True,
+        help_text="""T.ex. <em>Exempelmyndighetens föreskrifter och
+            allmänna råd om arkiv hos statliga myndigheter;</em>""")
+
+    sammanfattning = models.CharField(
+        max_length=512,
+        blank=True,
+        unique=False,
+        help_text=
+        """T.ex. <em>Denna föreskrift beskriver allmänna råd om arkiv hos statliga myndigheter</em>""")
+
+    forfattningssamling = models.ForeignKey('Forfattningssamling', 
+                                            blank=False,
+                                            verbose_name=u"författnings-samling")
+
+    arsutgava = models.CharField("Årsutgåva", 
+                                 max_length=13,
+                                 unique=False, 
+                                 blank=False,
+                                 help_text="T.ex. <em>2010</em>")
+    lopnummer = models.CharField("Löpnummer", 
+                                 max_length=3,
+                                 unique=False, 
+                                 blank=False,
+                                 help_text="T.ex. <em>1</em>")
+
+
+    beslutsdatum = models.DateField("Beslutsdatum", blank=False)
+
+    ikrafttradandedatum = models.DateField("Ikraftträdandedatum", blank=False)
+
+    utkom_fran_tryck = models.DateField("Utkom från tryck", blank=False)
+
+    content = models.FileField(u"PDF-version av föreskrift",
+                               upload_to="foreskrift",
+                               blank=False,
+                               help_text=
+                               """Se till att dokumentet är i PDF-format.""")
+
+    content_md5 = models.CharField(max_length=32, 
+                                   blank=True, 
+                                   null=True)
+
+    bemyndiganden = models.ManyToManyField('Bemyndigandereferens',
+                                           blank=False, 
+                                           verbose_name=
+                                           u"referenser till bemyndiganden")
+
+    amnesord = models.ManyToManyField('Amnesord', 
+                                      blank=True, 
+                                      verbose_name=u"ämnesord")
+
+    # Optional: specify that another document is changed by this document
+    # NOTE: we use 'limit_choices_to' to restricts Django's admin GUI. 
+    # Only documents that don't change other documents are allowed.
+    andrar = models.ForeignKey("self", 
+                               null=True, 
+                               blank=True,
+                               related_name="andringar", 
+                               limit_choices_to={'andrar': None}, 
+                               verbose_name=u"Ändrar")
+
+    omtryck = models.BooleanField(u"Är omtryck", 
+                                  default=False, 
+                                  null=False, 
+                                  blank=True,
+                                  help_text=
+                                  """Anger om denna föreskrift är ett omtryck.""")
+
+    celexreferenser = models.ManyToManyField('CelexReferens',
+                                             blank=True, 
+                                             verbose_name=
+                                             u"Bidrar till att genomföra EG-direktiv", related_name="foreskrifter")
+
+    def typ(self):
+        """Typ av dokument i klartext; Myndighetsföreskrift, Ändringsförfattning, Ändringsförfattning (omtryck)"""
+        typtext = u"Myndighetsföreskrift"
+        if self.andrar:
+            typtext = u"Ändringsförfattning"
+            if self.omtryck:
+                typtext = u"Ändringsförfattning (omtryck)"
+        return typtext
+
+    def ikrafttradandear(self):
+        """Return only year to support additional sorting"""
+        return self.ikrafttradandedatum.year
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('fst_web.fs_doc.views.foreskrift',
+                [str(self.forfattningssamling.kortnamn), 
+                 str(self.arsutgava), 
+                 str(self.lopnummer)])
+
+    def get_rinfo_uri(self):
+        """Return the canonical URI used by rinfo system."""
+        return settings.FST_PUBL_BASE_URI + self.arsutgava + ":" + self.lopnummer
+
+    def to_rdfxml(self):
+        """Return metadata as RDF/XML for this document."""
+
+        template = loader.get_template('foreskrift_rdf.xml')
+        context = Context({ 'foreskrift': self, 
+                            'publisher_uri':
+                            settings.FST_ORG_URI, 
+                            'rinfo_base_uri': settings.FST_PUBL_BASE_URI})
+
+        return template.render(context)
+
+    def __unicode__(self):
+        """Display value for user interface."""
+        return u'%s %s' % (self.identifierare, self.titel)
+
+
 class Forfattningssamling(models.Model):
     """Modell för författningssamlingar."""
 
@@ -135,154 +273,6 @@ class Bemyndigandereferens(models.Model):
         verbose_name_plural=u"Bemyndigandereferenser"
 
 
-class Myndighetsforeskrift(models.Model):
-    """Modell för myndighetsföreskrifter. Denna hanterar det huvudsakliga
-    innehållet i en författningssamling - själva föreskrifterna. Den kan enkelt
-    utökas med fler egenskaper."""
-
-    # Denna föreskrift är publicerad via FST
-    publicerad = models.BooleanField(u"Är publicerad", 
-                                     default=False, 
-                                     null=False, 
-                                     blank=True,
-                                     help_text=
-                                     """Denna föreskrift är redan publicerad via FST. Vid eventuella felaktigheter, ändra och publicera sedan om. """)
-
-    # Föreskriftens officiella titel
-    titel = models.CharField(
-        max_length=512,
-        unique=True,
-        help_text="""T.ex. <em>Exempelmyndighetens föreskrifter och
-            allmänna råd om arkiv hos statliga myndigheter;</em>""")
-
-    # Sammanfattning
-    sammanfattning = models.CharField(
-        max_length=512,
-        blank=True,
-        unique=False,
-        help_text=
-        """T.ex. <em>Denna föreskrift beskriver allmänna råd om arkiv hos statliga myndigheter</em>""")
-
-    # Författningssamling (referens till post i de upprättade
-    # författningssamlingarna)
-    forfattningssamling = models.ForeignKey(Forfattningssamling, 
-                                            blank=False,
-                                            verbose_name=u"författnings-samling")
-
-    arsutgava = models.CharField("Årsutgåva", 
-                                 max_length=13,
-                                 unique=False, 
-                                 blank=False,
-                                 help_text="T.ex. <em>2010</em>")
-    lopnummer = models.CharField("Löpnummer", 
-                                 max_length=3,
-                                 unique=False, 
-                                 blank=False,
-                                 help_text="T.ex. <em>1</em>")
-
-
-    @property
-    def identifierare(self):
-        return "%s %s:%s" % (self.forfattningssamling.kortnamn,
-                             self.arsutgava, self.lopnummer)
-
-    # Utfärdandedatum, t.ex. 2007-02-09
-    beslutsdatum = models.DateField("Beslutsdatum", blank=False)
-
-    # Ikraftträdandedatum, t.ex. 2007-02-01
-    ikrafttradandedatum = models.DateField("Ikraftträdandedatum", blank=False)
-
-    # Utkom från tryck datum, t.ex. 2007-02-09
-    utkom_fran_tryck = models.DateField("Utkom från tryck", blank=False)
-
-
-    # Bemyndiganden (referenser till bemyndigandereferenser)
-    bemyndiganden = models.ManyToManyField(Bemyndigandereferens,
-                                           blank=False, 
-                                           verbose_name=
-                                           u"referenser till bemyndiganden")
-
-    # PDF-version av dokumentet
-    content = models.FileField(u"PDF-version av föreskrift",
-                               upload_to="foreskrift",
-                               blank=False,
-                               help_text=
-                               """Se till att dokumentet är i PDF-format.""")
-
-    content_md5 = models.CharField(max_length=32, 
-                                   blank=True, 
-                                   null=True)
-
-    # Koppling till ämnesord
-    amnesord = models.ManyToManyField(Amnesord, 
-                                      blank=True, 
-                                      verbose_name=u"ämnesord")
-
-    # Eventuell koppling till föreskrift som ändras (limit_choices_to
-    # säkerställer att bara grundföreskrifter visas i admingränssnittet (dvs
-    # man skall inte kunna ändra en ändringsföreskrift).
-    andrar = models.ForeignKey("self", null=True, blank=True,
-                               related_name="andringar", limit_choices_to={'andrar': None}, verbose_name=u"Ändrar")
-
-    # Anger om föreskriften är ett omtryck
-    omtryck = models.BooleanField(u"Är omtryck", 
-                                  default=False, 
-                                  null=False, 
-                                  blank=True,
-                                  help_text=
-                                  """Anger om denna föreskrift är ett omtryck.""")
-
-    # Referenser till EG-direktiv som denna föreskrift helt eller delvis genomför.
-    celexreferenser = models.ManyToManyField(CelexReferens,
-                                             blank=True, 
-                                             verbose_name=
-                                             u"Bidrar till att genomföra EG-direktiv", related_name="foreskrifter")
-
-    def typ(self):
-        """Typ av dokument i klartext; Myndighetsföreskrift, Ändringsförfattning, Ändringsförfattning (omtryck)"""
-        typtext = u"Myndighetsföreskrift"
-        if self.andrar:
-            typtext = u"Ändringsförfattning"
-            if self.omtryck:
-                typtext = u"Ändringsförfattning (omtryck)"
-        return typtext
-
-    def ikrafttradandear(self):
-        """Returnera bara årtalet från ikraftträdandedagen."""
-        return self.ikrafttradandedatum.year
-
-    @models.permalink
-    def get_absolute_url(self):
-        """Genererar webbplatsens länk till denna post."""
-        return ('fst_web.fs_doc.views.foreskrift',
-                [str(self.forfattningssamling.kortnamn), 
-                 str(self.arsutgava), 
-                 str(self.lopnummer)])
-
-    def get_rinfo_uri(self):
-        """Metod för att skapa rättsinformationssystemets unika identifierare för denna post."""
-        return settings.FST_PUBL_BASE_URI + self.arsutgava + ":" + self.lopnummer
-
-    # Metod för att returnera textrepresentation av en föreskrift (används i
-    # admin-gränssnittets listor)
-    def __unicode__(self):
-        return u'%s %s' % (self.identifierare, self.titel)
-
-    def to_rdfxml(self):
-        """Metod för att skapa den standardiserade metadataposten om denna
-        föreskrift."""
-
-        template = loader.get_template('foreskrift_rdf.xml')
-        context = Context({ 'foreskrift': self, 
-                            'publisher_uri':
-                            settings.FST_ORG_URI, 
-                            'rinfo_base_uri': settings.FST_PUBL_BASE_URI})
-
-        return template.render(context)
-
-    class Meta:
-        verbose_name = u"Myndighetsföreskrift"
-        verbose_name_plural = u"Myndighetsföreskrifter"
 
 
 class HasFile(models.Model):
@@ -297,7 +287,7 @@ class HasFile(models.Model):
 
     def __unicode__(self):
         return u'%s' % (self.titel)
-
+    
 
 class Bilaga(HasFile):
 
