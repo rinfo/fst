@@ -14,7 +14,16 @@ from django.forms import TextInput, Textarea
 from django.utils.feedgenerator import rfc3339_date
 
 
-class Myndighetsforeskrift(models.Model):
+class ForfattningsamlingsDokument(models.Model):
+    """Superclass of 'Myndighetsforeskrift' and 'AllmannaRad'.
+    
+    This class is defined by the Django model for practical reasons.
+    """
+
+    class Meta:
+        abstract = True
+    
+class Myndighetsforeskrift(ForfattningsamlingsDokument):
     """The main document of document collections of type 'författningsamling'. 
     
     See also the rinfo domain model RDF definition at: http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#Myndighetsforeskrift
@@ -29,12 +38,12 @@ class Myndighetsforeskrift(models.Model):
         return "%s %s:%s" % (self.forfattningssamling.kortnamn,
                              self.arsutgava, self.lopnummer)
 
-    publicerad = models.BooleanField(u"Är publicerad", 
+    publicerad = models.BooleanField(u"Publicerad", 
                                      default=False, 
                                      null=False, 
                                      blank=True,
                                      help_text=
-                                     """Denna föreskrift är redan publicerad via FST. Vid eventuella felaktigheter, ändra och publicera sedan om. """)
+                                     """En grön bock anger att denna föreskrift redan är publicerad via FST. Vid eventuella felaktigheter, ändra och publicera sedan om. """)
 
     titel = models.CharField(
         max_length=512,
@@ -183,6 +192,73 @@ class Forfattningssamling(models.Model):
         return u'%s %s' % (self.titel, self.kortnamn)
 
 
+class HasFile(models.Model):
+    """Superclass of 'Bilaga' and 'OvrigtDokument' used for uploading files.
+    
+    This class is defined by the Django model for practical reasons.
+    """
+
+    class Meta:
+        abstract = True
+
+    titel = None
+    file = None
+
+    file_md5 = models.CharField(max_length=32, blank=True, null=True)
+
+    def __unicode__(self):
+        return u'%s' % (self.titel)
+    
+
+class Bilaga(HasFile):
+
+    class Meta:
+        verbose_name = u"Bilaga"
+        verbose_name_plural = u"Bilagor"
+
+    foreskrift = models.ForeignKey('Myndighetsforeskrift', 
+                                   blank=False, 
+                                   related_name='bilagor')
+
+    titel = models.CharField("Titel", 
+                             max_length=512, 
+                             blank=True, 
+                             null=True,
+                             help_text="""T.ex. <em>Bilaga 1</em>""")
+
+    file = models.FileField(u"Fil",
+                            upload_to="bilaga",
+                            blank=True, null=True,
+                            help_text=
+                            """Om ingen fil anges förutsätts bilagan vara en del av föreskriftsdokumentet.""")
+
+    def get_rinfo_uri(self):
+        ordinal = 1 # FIXME: compute ordinal
+        return self.foreskrift.get_rinfo_uri() + "#bilaga_%s" % ordinal
+
+
+class OvrigtDokument(HasFile):
+
+    class Meta:
+        verbose_name = u"Övrigt dokument"
+        verbose_name_plural = u"Övriga dokument"
+
+    foreskrift = models.ForeignKey('Myndighetsforeskrift', 
+                                   blank=False, 
+                                   related_name='ovriga_dokument')
+
+    titel = models.CharField("Titel", max_length=512, blank=False, null=False,
+                             help_text="""T.ex. <em>Besluts-PM för ...</em>""")
+
+    file = models.FileField(u"Fil",
+                            upload_to="ovrigt",
+                            blank=False, null=False,
+                            help_text="""T.ex. en PDF-fil.""")
+
+    def __unicode__(self):
+        return u'%s' % (self.titel)
+
+
 class CelexReferens(models.Model):
     """Modell för referenser till t.ex. EG-direktiv"""
 
@@ -259,69 +335,6 @@ class Bemyndigandereferens(models.Model):
         return u"%s (%s) %s %s %s §" % (self.titel, self.sfsnummer, 
                                          self.kapitelnummer, kap_text, 
                                          self.paragrafnummer)
-
-
-class HasFile(models.Model):
-
-    class Meta:
-        abstract = True
-
-    titel = None
-    file = None
-
-    file_md5 = models.CharField(max_length=32, blank=True, null=True)
-
-    def __unicode__(self):
-        return u'%s' % (self.titel)
-    
-
-class Bilaga(HasFile):
-
-    class Meta:
-        verbose_name = u"Bilaga"
-        verbose_name_plural = u"Bilagor"
-
-    foreskrift = models.ForeignKey(Myndighetsforeskrift, 
-                                   blank=False, 
-                                   related_name='bilagor')
-
-    titel = models.CharField("Titel", 
-                             max_length=512, 
-                             blank=True, 
-                             null=True,
-                             help_text="""T.ex. <em>Bilaga 1</em>""")
-
-    file = models.FileField(u"Fil",
-                            upload_to="bilaga",
-                            blank=True, null=True,
-                            help_text=
-                            """Om ingen fil anges förutsätts bilagan vara en del av föreskriftsdokumentet.""")
-
-    def get_rinfo_uri(self):
-        ordinal = 1 # FIXME: compute ordinal
-        return self.foreskrift.get_rinfo_uri() + "#bilaga_%s" % ordinal
-
-
-class OvrigtDokument(HasFile):
-
-    class Meta:
-        verbose_name = u"Övrigt dokument"
-        verbose_name_plural = u"Övriga dokument"
-
-    foreskrift = models.ForeignKey(Myndighetsforeskrift, 
-                                   blank=False, 
-                                   related_name='ovriga_dokument')
-
-    titel = models.CharField("Titel", max_length=512, blank=False, null=False,
-                             help_text="""T.ex. <em>Besluts-PM för ...</em>""")
-
-    file = models.FileField(u"Fil",
-                            upload_to="ovrigt",
-                            blank=False, null=False,
-                            help_text="""T.ex. en PDF-fil.""")
-
-    def __unicode__(self):
-        return u'%s' % (self.titel)
 
 
 class RDFPost(models.Model):
