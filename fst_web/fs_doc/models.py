@@ -15,8 +15,11 @@ from django.utils.feedgenerator import rfc3339_date
 
 
 class Myndighetsforeskrift(models.Model):
-    """Modell för myndighetsföreskrifter. Denna hanterar det huvudsakliga
-    innehållet i en författningssamling."""
+    """Describes the main document content of document collections of type 'författningsamling'. 
+    
+    
+    See also the rinfo domain model RDF definition at: http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#Myndighetsforeskrift
+    """
 
     class Meta:
         verbose_name = u"Myndighetsföreskrift"
@@ -111,7 +114,7 @@ class Myndighetsforeskrift(models.Model):
                                              u"Bidrar till att genomföra EG-direktiv", related_name="foreskrifter")
 
     def typ(self):
-        """Typ av dokument i klartext; Myndighetsföreskrift, Ändringsförfattning, Ändringsförfattning (omtryck)"""
+        """Display info about the type of document in Django GUI"""
         typtext = u"Myndighetsföreskrift"
         if self.andrar:
             typtext = u"Ändringsförfattning"
@@ -151,7 +154,10 @@ class Myndighetsforeskrift(models.Model):
 
 
 class Forfattningssamling(models.Model):
-    """Modell för författningssamlingar."""
+    """Describes document collection of type 'författningsamling'. 
+    
+    See also the rinfo domain model RDF definition at: http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#forfattningssamling
+    """
 
     class Meta:
         verbose_name = u"Författningssamling"
