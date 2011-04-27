@@ -22,7 +22,17 @@ class ForfattningsamlingsDokument(models.Model):
 
     class Meta:
         abstract = True
+
+        
+class AllmannaRad(ForfattningsamlingsDokument):
+    """A kind of document that can occur in document collections of type 'författningsamling'.
     
+    See also the rinfo domain model RDF definition at: http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#AllmannaRad
+    """
+    
+    pass
+
+
 class Myndighetsforeskrift(ForfattningsamlingsDokument):
     """The main document of document collections of type 'författningsamling'. 
     
