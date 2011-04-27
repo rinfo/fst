@@ -14,11 +14,9 @@ from django.forms import TextInput, Textarea
 from django.utils.feedgenerator import rfc3339_date
 
 
-
 class Myndighetsforeskrift(models.Model):
     """Modell för myndighetsföreskrifter. Denna hanterar det huvudsakliga
-    innehållet i en författningssamling - själva föreskrifterna. Den kan enkelt
-    utökas med fler egenskaper."""
+    innehållet i en författningssamling."""
 
     class Meta:
         verbose_name = u"Myndighetsföreskrift"
@@ -155,41 +153,38 @@ class Myndighetsforeskrift(models.Model):
 class Forfattningssamling(models.Model):
     """Modell för författningssamlingar."""
 
-    # Namn på författningssamling
+    class Meta:
+        verbose_name = u"Författningssamling"
+        verbose_name_plural = u"Författningssamlingar"
+
     titel = models.CharField(
         max_length=255,
         unique=True,
         help_text="""Namn på författningssamling, t.ex.
             <em>Exempelmyndighetens författningssamling</em>""")
 
-    # Kortnamn på författningssamling, t.ex. "EXFS"
     kortnamn = models.CharField(
         max_length=10,
         unique=True,
         help_text="""T.ex. <em>EXFS</em>""")
 
-    # Författningssamlingens unika identifierare, t.ex.
-    # "http://rinfo.lagrummet.se/serie/fs/ra-fs". Denna erhålls från
-    # projektet.
     identifierare = models.URLField(
         verify_exists=False,
         max_length=255,
         unique=True,
-        help_text="Erhålls från Domstolsverket")
+        help_text=u"Unik identiferare t ex 'http://rinfo.lagrummet.se/serie/fs/exfs'. Erhålls från Domstolsverket")
 
     def __unicode__(self):
         return u'%s %s' % (self.titel, self.kortnamn)
-
-    # Inställningar för etiketter i administrationsgränssnittet.
-    class Meta:
-        verbose_name = u"Författningssamling"
-        verbose_name_plural = u"Författningssamlingar"
 
 
 class CelexReferens(models.Model):
     """Modell för referenser till t.ex. EG-direktiv"""
 
-    # Dokumentetes officiella titel. Möjlighet att lämna blank i detta exempel.
+    class Meta:
+        verbose_name = u"EG-rättsreferens"
+        verbose_name_plural = u"EG-rättsreferenser"
+
     titel = models.TextField(help_text="Titel", blank=True)
 
     celexnummer = models.CharField(
@@ -203,47 +198,40 @@ class CelexReferens(models.Model):
         else:
             return self.celexnummer
 
-    # Inställningar för etiketter i administrationsgränssnittet.
-    class Meta:
-        verbose_name = u"EG-rättsreferens"
-        verbose_name_plural = u"EG-rättsreferenser"
-
 
 class Amnesord(models.Model):
     """Modell för ämnesord."""
 
-    # Namn, t.ex. "Arkivgallring"
+    class Meta:
+        verbose_name = u"Ämnesord"
+        verbose_name_plural = u"Ämnesord"
+        
     titel = models.CharField(
         max_length=255,
         unique=True,
         help_text="Ämnesordet")
 
-    # Beskrivning/definition av ämnesordet
     beskrivning = models.TextField(blank=True)
 
     def __unicode__(self):
         return self.titel
 
-    # Inställningar för etiketter i administrationsgränssnittet.
-    class Meta:
-        verbose_name = u"Ämnesord"
-        verbose_name_plural = u"Ämnesord"
-
 
 class Bemyndigandereferens(models.Model):
     """Modell för att hantera bemyndigandereferenser."""
 
-    # Namn, t.ex. "Arkivförordningen"
+    class Meta:
+        verbose_name=u"Bemyndigandereferens"
+        verbose_name_plural=u"Bemyndigandereferenser"
+
     titel = models.CharField(max_length=255,
                              help_text="""T.ex. <em>Arkivförordningen</em>""")
 
-    # SFS-nummer, t.ex. "1991:446"
     sfsnummer = models.CharField("SFS-nummer", 
                                  max_length=10, 
                                  blank=False,
                                  help_text="T.ex. <em>1991:446</em>")
 
-    # Kapitelnummer, t.ex. "2"
     kapitelnummer = models.CharField(max_length=10, 
                                      blank=True,
                                      help_text="T.ex. <em>12</em>")
@@ -267,13 +255,6 @@ class Bemyndigandereferens(models.Model):
                                          self.kapitelnummer, kap_text, 
                                          self.paragrafnummer)
 
-    # Inställningar för etiketter i administrationsgränssnittet.
-    class Meta:
-        verbose_name=u"Bemyndigandereferens"
-        verbose_name_plural=u"Bemyndigandereferenser"
-
-
-
 
 class HasFile(models.Model):
 
@@ -290,6 +271,10 @@ class HasFile(models.Model):
     
 
 class Bilaga(HasFile):
+
+    class Meta:
+        verbose_name = u"Bilaga"
+        verbose_name_plural = u"Bilagor"
 
     foreskrift = models.ForeignKey(Myndighetsforeskrift, 
                                    blank=False, 
@@ -311,12 +296,12 @@ class Bilaga(HasFile):
         ordinal = 1 # FIXME: compute ordinal
         return self.foreskrift.get_rinfo_uri() + "#bilaga_%s" % ordinal
 
-    class Meta:
-        verbose_name = u"Bilaga"
-        verbose_name_plural = u"Bilagor"
-
 
 class OvrigtDokument(HasFile):
+
+    class Meta:
+        verbose_name = u"Övrigt dokument"
+        verbose_name_plural = u"Övriga dokument"
 
     foreskrift = models.ForeignKey(Myndighetsforeskrift, 
                                    blank=False, 
@@ -332,10 +317,6 @@ class OvrigtDokument(HasFile):
 
     def __unicode__(self):
         return u'%s' % (self.titel)
-
-    class Meta:
-        verbose_name = u"Övrigt dokument"
-        verbose_name_plural = u"Övriga dokument"
 
 
 class RDFPost(models.Model):
@@ -363,11 +344,12 @@ class RDFPost(models.Model):
 
 
 class AtomEntry(models.Model):
-    """En klass för att skapa ett Atom entry för feeden. Dessa objekt skapas
-    automatiskt i samband med att en föreskrift sparas, uppdateras eller
-    raderas. För radering se create_delete_entry-signalen sist i denna fil. För
-    uppdatering/nya poster se ModelAdmin.save_model() i rinfo/admin.py."""
+    """Class to create entry for Atom feed. 
+    
+    Automatically created when a document is saved, updated or deleted. For deletion, see the 'create_delete_entry'-signal defined below. For create/update, see 'ModelAdmin.save_model()' in 'rinfo/admin.py'.
+    """
 
+    # TODO: check if this is necessary for 1-to-1 generic relationships
     #class Meta:
     #    unique_together = ('content_type', 'object_id')
 
@@ -385,8 +367,10 @@ class AtomEntry(models.Model):
 
 
     def to_entryxml(self):
-        """Skapa en XML-representation av ett entry enligt Atom-standarden. Se
-        mallen i templates/foreskrift_entry.xml"""
+        """XML representation of entry according to Atom standard. 
+        
+        Uses template in templates/foreskrift_entry.xml
+        """
 
         template = loader.get_template('foreskrift_entry.xml')
         context = Context({
@@ -405,14 +389,11 @@ class AtomEntry(models.Model):
         return template.render(context)
 
 
-# Signal för att skapa AtomEntry-poster i samband med att föreskrifter raderas.
 def create_delete_entry(sender, instance, **kwargs):
-    """Skapa en speciell AtomEntry-post i samband med att en
-    myndighetsföreskrift raderas. AtomEntry-posten plockas upp av
-    rättsinformationssystemet (och andra) och ger möjlighet att snabbt
-    korrigera felaktigheter i eventuellt redan hämtad information."""
+    """Create a special entry when a
+    'Myndighetsforeskrift' is deleted. This entry will be picked up by
+    Rättsinformationssystemet (and others), allowing for quick corrections of already collected information."""
 
-    # Skapa AtomEntry-posten
     entry = AtomEntry(
         content_object=instance,
         updated=datetime.now(),
@@ -420,10 +401,8 @@ def create_delete_entry(sender, instance, **kwargs):
         deleted=datetime.now(),
         entry_id=instance.get_rinfo_uri())
 
-    # Spara AtomEntry för denna aktivitet
     entry.save()
 
-# Koppla upp signalhanteringen
 post_delete.connect(create_delete_entry, sender=Myndighetsforeskrift,
                     dispatch_uid="fst_web.fs_doc.create_delete_signal")
 
