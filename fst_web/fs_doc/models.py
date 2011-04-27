@@ -123,7 +123,7 @@ class Myndighetsforeskrift(ForfattningsamlingsDokument):
 
     def typ(self):
         """Display info about the type of document in Django GUI"""
-        typtext = u"Myndighetsföreskrift"
+        typtext = u"Myndighetsförfattning"
         if self.andrar:
             typtext = u"Ändringsförfattning"
             if self.omtryck:
