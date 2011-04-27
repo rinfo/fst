@@ -71,8 +71,20 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
 
     form = HasContentFileForm
 
-    list_display = ('identifierare', 'arsutgava', 'lopnummer', 'titel','beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck', 'typ')
-    list_filter = ('beslutsdatum', 'ikrafttradandedatum','publicerad','amnesord','andrar','omtryck')
+    list_display = ('identifierare', 
+                    'arsutgava', 
+                    'lopnummer', 
+                    'titel',
+                    'beslutsdatum', 
+                    'ikrafttradandedatum', 
+                    'utkom_fran_tryck', 
+                    'typ')
+    list_filter = ('beslutsdatum', 
+                   'ikrafttradandedatum',
+                   'publicerad',
+                   'amnesord',
+                   'andrar',
+                   'omtryck')
     ordering = ('-beslutsdatum', 'titel')
     search_fields = ('titel', 'identifierare',)
     inlines = [BilagaInline, OvrigtDokumentInline]
@@ -83,7 +95,7 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
             'identifierare',
             'publicerad',
             'forfattningssamling',
-             ('arsutgava', 'lopnummer'),
+            ('arsutgava', 'lopnummer'),
             'titel',
             'sammanfattning',
             'content',
@@ -92,7 +104,7 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
             'bemyndiganden',
             'amnesord',
             'celexreferenser'
-        ),
+            ),
         'classes': ['wide', 'extrapretty']
         }),)
     filter_horizontal = ('bemyndiganden','amnesord','celexreferenser')
@@ -105,7 +117,7 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
 
         # Först, spara ner föreskriften och relationer till andra objekt
         super(MyndighetsforeskriftAdmin, self).save_model(
-                request, obj, form, change)
+            request, obj, form, change)
         form.save_m2m()
         obj.save()
         self._create_entry(obj)
@@ -117,7 +129,7 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
         # Se om det finns ett tidigare AtomEntry för denna föreskrift
         obj_type = ContentType.objects.get_for_model(obj)
         entries = AtomEntry.objects.filter(content_type__pk=obj_type.id,
-                object_id=obj.id)
+                                           object_id=obj.id)
         for entry in entries.order_by("published"):
             published = entry.published
             break
@@ -130,9 +142,9 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
         rdf_post.save()
 
         entry = AtomEntry(content_object=obj,
-                entry_id=obj.get_rinfo_uri(),
-                updated=updated, published=published,
-                rdf_post=rdf_post)
+                          entry_id=obj.get_rinfo_uri(),
+                          updated=updated, published=published,
+                          rdf_post=rdf_post)
         entry.save()
 
     def make_published(self, request, queryset):
@@ -143,7 +155,8 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
             message_bit = "%s föreskrifter" % rows_updated
         self.message_user(request, "%s har publicerats." % message_bit)
 
-    make_published.short_description = u"Publicera markerade föreskrifter via FST"
+    make_published.short_description = u"Publicera markerade \
+    föreskrifter via FST"
     actions = [make_published]
 
 
@@ -154,6 +167,5 @@ admin.site.register(Forfattningssamling, ForfattningssamlingAdmin)
 admin.site.register(Myndighetsforeskrift, MyndighetsforeskriftAdmin)
 admin.site.register(Bemyndigandereferens,BemyndigandereferensAdmin)
 admin.site.register(AtomEntry)
-
 
 
