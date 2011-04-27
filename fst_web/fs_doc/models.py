@@ -43,7 +43,7 @@ class Myndighetsforeskrift(ForfattningsamlingsDokument):
                                      null=False, 
                                      blank=True,
                                      help_text=
-                                     """En grön bock anger att denna föreskrift redan är publicerad via FST. Vid eventuella felaktigheter, ändra och publicera sedan om. """)
+                                     """Rött streck = ej publicerad. Grön bock = publicerad via FST. OBS! Kom ihåg att publicera dina ändringar när du har sparat.""")
 
     titel = models.CharField(
         max_length=512,
