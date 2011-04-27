@@ -100,13 +100,10 @@ class Myndighetsforeskrift(ForfattningsamlingsDokument):
                                       verbose_name=u"ämnesord")
 
     # Optional: specify that another document is changed by this document
-    # NOTE: we use 'limit_choices_to' to restricts Django's admin GUI. 
-    # Only documents that don't change other documents are allowed.
     andrar = models.ForeignKey("self", 
                                null=True, 
                                blank=True,
                                related_name="andringar", 
-                               limit_choices_to={'andrar': None}, 
                                verbose_name=u"Ändrar")
 
     omtryck = models.BooleanField(u"Är omtryck", 
