@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 import datetime
-from fst_web.fs_doc.models import Myndighetsforeskrift, Forfattningssamling, Amnesord, AtomEntry
+from fst_web.fs_doc.models import Myndighetsforeskrift, Forfattningssamling, Amnesord, AtomEntry,AllmannaRad
 from django.utils.feedgenerator import rfc3339_date
 from django.conf import settings
 from django.template import loader, Context
@@ -32,6 +32,17 @@ def foreskrift_rdf(request, fskortnamn, arsutgava, lopnummer):
 
     # Skicka rdf-data för denna post
     return HttpResponse(foreskrift.to_rdfxml(), mimetype="application/rdf+xml; charset=utf-8")
+
+
+def allmanna_rad(request, fskortnamn, arsutgava, lopnummer):
+    """Visa enskild föreskrift i författningssamling."""
+
+    # Hämta författningssamlingen
+    fs = Forfattningssamling.objects.get(kortnamn=fskortnamn)
+    # Hämta föreskriften
+    foreskrift = AllmannaRad.objects.get(arsutgava=arsutgava,lopnummer=lopnummer,forfattningssamling=fs)
+
+    return _response(request, 'foreskrift.html', locals())
 
 
 def foreskrift(request, fskortnamn, arsutgava, lopnummer):

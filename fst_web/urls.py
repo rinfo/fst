@@ -25,6 +25,9 @@ urlpatterns = patterns('',
 
     # Enskild föreskrift (t.ex. "/publ/RA-FS/2006:6"
     (r'^publ/(?P<fskortnamn>.*)/(?P<arsutgava>.*):(?P<lopnummer>.*)/$', 'fst_web.fs_doc.views.foreskrift'),
+    
+    # Allmänna råd (t.ex. "/publ/RA-FS/2006:6"
+    (r'^publ/(?P<fskortnamn>.*)/(?P<arsutgava>.*):(?P<lopnummer>.*)/$', 'fst_web.fs_doc.views.allmanna_rad'),
 
     # Indelade per ämnesord ("/amnesord/")
     (r'^amnesord/$', 'fst_web.fs_doc.views.amnesord'),

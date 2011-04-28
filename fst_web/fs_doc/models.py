@@ -16,44 +16,35 @@ from django.utils.feedgenerator import rfc3339_date
 
 class ForfattningsamlingsDokument(models.Model):
     """Superclass of 'Myndighetsforeskrift' and 'AllmannaRad'.
-    
-    This class is defined by the Django model for practical reasons.
+
+    Defined by the Django model for practical reasons.
     """
 
     class Meta:
         abstract = True
-
         
-class AllmannaRad(ForfattningsamlingsDokument):
-    """A kind of document that can occur in document collections of type 'författningsamling'.
-    
-    See also the rinfo domain model RDF definition at: http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#AllmannaRad
-    """
-    
-    pass
-
-
-class Myndighetsforeskrift(ForfattningsamlingsDokument):
-    """The main document of document collections of type 'författningsamling'. 
-    
-    See also the rinfo domain model RDF definition at: http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#Myndighetsforeskrift
-    """
-
-    class Meta:
-        verbose_name = u"Myndighetsföreskrift"
-        verbose_name_plural = u"Myndighetsföreskrifter"
-
     @property
     def identifierare(self):
         return "%s %s:%s" % (self.forfattningssamling.kortnamn,
                              self.arsutgava, self.lopnummer)
+
+    arsutgava = models.CharField("Årsutgåva", 
+                                 max_length=13,
+                                 unique=False, 
+                                 blank=False,
+                                 help_text="T.ex. <em>2010</em>")
+    lopnummer = models.CharField("Löpnummer", 
+                                 max_length=3,
+                                 unique=False, 
+                                 blank=False,
+                                 help_text="T.ex. <em>1</em>")
 
     publicerad = models.BooleanField(u"Publicerad", 
                                      default=False, 
                                      null=False, 
                                      blank=True,
                                      help_text=
-                                     """Rött streck = ej publicerad. Grön bock = publicerad via FST. OBS! Kom ihåg att publicera dina ändringar när du har sparat.""")
+                                     """Grön bock = publicerad via FST. Rött streck = ej publicerad. OBS! Glöm inte att publicera eventuella ändringar.""")
 
     titel = models.CharField(
         max_length=512,
@@ -68,21 +59,11 @@ class Myndighetsforeskrift(ForfattningsamlingsDokument):
         help_text=
         """T.ex. <em>Denna föreskrift beskriver allmänna råd om arkiv hos statliga myndigheter</em>""")
 
+    # NOTE: The FST webservice currently only supports document collections 
+    # of type 'forfattningssamling'. 
     forfattningssamling = models.ForeignKey('Forfattningssamling', 
                                             blank=False,
                                             verbose_name=u"författningssamling")
-
-    arsutgava = models.CharField("Årsutgåva", 
-                                 max_length=13,
-                                 unique=False, 
-                                 blank=False,
-                                 help_text="T.ex. <em>2010</em>")
-    lopnummer = models.CharField("Löpnummer", 
-                                 max_length=3,
-                                 unique=False, 
-                                 blank=False,
-                                 help_text="T.ex. <em>1</em>")
-
 
     beslutsdatum = models.DateField("Beslutsdatum", blank=False)
 
@@ -90,7 +71,97 @@ class Myndighetsforeskrift(ForfattningsamlingsDokument):
 
     utkom_fran_tryck = models.DateField("Utkom från tryck", blank=False)
 
-    content = models.FileField(u"PDF-version av föreskrift",
+    omtryck = models.BooleanField(u"Är omtryck", 
+                                  default=False, 
+                                  null=False, 
+                                  blank=True,
+                                  help_text=
+                                  """Anger om denna föreskrift är ett omtryck.""")
+
+
+    amnesord = models.ManyToManyField('Amnesord', 
+                                      blank=True, 
+                                      verbose_name=u"ämnesord")
+
+
+    # Optional: specify that another document is changed by this document
+    andrar = models.ForeignKey("self", 
+                               null=True, 
+                               blank=True,
+                               related_name="andringar", 
+                               verbose_name=u"Ändrar")
+    
+
+    def get_rinfo_uri(self):
+        """Return the canonical URI used by rinfo system.
+        
+        NOTE: The FST webservice currently only supports document collection 
+        of type 'forfattningssamling'. 
+        """
+        return settings.FST_PUBL_BASE_URI + self.arsutgava + ":" + self.lopnummer
+
+    def role_label(self):
+        """Display role of document in Django GUI"""
+        label = u"Grundförfattning"
+        if self.andrar:
+            label = u"Ändringsförfattning"
+        if self.omtryck:
+            label += " (omtryck)"
+        return label
+    role_label.short_description = u"Roll"
+
+    def ikrafttradandear(self):
+        """Support additional sorting: by year only"""
+        return self.ikrafttradandedatum.year
+
+
+    def __unicode__(self):
+        """Display value for user interface."""
+        return u'%s %s' % (self.identifierare, self.titel)
+
+
+class AllmannaRad(ForfattningsamlingsDokument):
+    """Common document type in document collections of type 'författningsamling'.
+
+    See also the domain model RDF definition at: http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#AllmannaRad
+    """
+
+    class Meta:
+        verbose_name = u"Allmänna råd"
+        verbose_name_plural = u"Allmänna råd"
+    
+    content = models.FileField(u"PDF-version",
+                               upload_to="allmanna_rad",
+                               blank=False,
+                               help_text=
+                               """Se till att dokumentet är i PDF-format.""")
+
+    content_md5 = models.CharField(max_length=32, 
+                                   blank=True, 
+                                   null=True)
+
+    @models.permalink
+    def get_absolute_url(self):
+        """"Construct Django URL path from document attributes"""
+        
+        return ('fst_web.fs_doc.views.allmanna_rad',
+                [str(self.forfattningssamling.kortnamn), 
+                 str(self.arsutgava), 
+                 str(self.lopnummer)])
+    
+    
+class Myndighetsforeskrift(ForfattningsamlingsDokument):
+    """Main document type in document collections of type 'författningsamling'. 
+
+    See also the domain model RDF definition at: http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#Myndighetsforeskrift
+    """
+
+    class Meta:
+        verbose_name = u"Myndighetsföreskrift"
+        verbose_name_plural = u"Myndighetsföreskrifter"
+
+
+    content = models.FileField(u"PDF-version",
                                upload_to="foreskrift",
                                blank=False,
                                help_text=
@@ -105,53 +176,11 @@ class Myndighetsforeskrift(ForfattningsamlingsDokument):
                                            verbose_name=
                                            u"referenser till bemyndiganden")
 
-    amnesord = models.ManyToManyField('Amnesord', 
-                                      blank=True, 
-                                      verbose_name=u"ämnesord")
-
-    # Optional: specify that another document is changed by this document
-    andrar = models.ForeignKey("self", 
-                               null=True, 
-                               blank=True,
-                               related_name="andringar", 
-                               verbose_name=u"Ändrar")
-
-    omtryck = models.BooleanField(u"Är omtryck", 
-                                  default=False, 
-                                  null=False, 
-                                  blank=True,
-                                  help_text=
-                                  """Anger om denna föreskrift är ett omtryck.""")
 
     celexreferenser = models.ManyToManyField('CelexReferens',
                                              blank=True, 
                                              verbose_name=
                                              u"Bidrar till att genomföra EG-direktiv", related_name="foreskrifter")
-
-    def role_label(self):
-        """Display role of this document in Django GUI"""
-        label = u"Grundförfattning"
-        if self.andrar:
-            label = u"Ändringsförfattning"
-        if self.omtryck:
-            label += " (omtryck)"
-        return label
-    role_label.short_description = u"Roll"
-
-    def ikrafttradandear(self):
-        """Return only year to support additional sorting"""
-        return self.ikrafttradandedatum.year
-
-    @models.permalink
-    def get_absolute_url(self):
-        return ('fst_web.fs_doc.views.foreskrift',
-                [str(self.forfattningssamling.kortnamn), 
-                 str(self.arsutgava), 
-                 str(self.lopnummer)])
-
-    def get_rinfo_uri(self):
-        """Return the canonical URI used by rinfo system."""
-        return settings.FST_PUBL_BASE_URI + self.arsutgava + ":" + self.lopnummer
 
     def to_rdfxml(self):
         """Return metadata as RDF/XML for this document."""
@@ -163,16 +192,21 @@ class Myndighetsforeskrift(ForfattningsamlingsDokument):
                             'rinfo_base_uri': settings.FST_PUBL_BASE_URI})
 
         return template.render(context)
-
-    def __unicode__(self):
-        """Display value for user interface."""
-        return u'%s %s' % (self.identifierare, self.titel)
+    
+    @models.permalink
+    def get_absolute_url(self):
+        """"Construct Django URL path from document attributes"""
+        
+        return ('fst_web.fs_doc.views.foreskrift',
+                [str(self.forfattningssamling.kortnamn), 
+                 str(self.arsutgava), 
+                 str(self.lopnummer)])
 
 
 class Forfattningssamling(models.Model):
     """Document collection of type 'författningsamling'. 
-    
-    See also the rinfo domain model RDF definition at: http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#forfattningssamling
+
+    See also the domain model RDF definition at: http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#forfattningssamling
     """
 
     class Meta:
@@ -202,7 +236,7 @@ class Forfattningssamling(models.Model):
 
 class HasFile(models.Model):
     """Superclass of 'Bilaga' and 'OvrigtDokument' used for uploading files.
-    
+
     This class is defined by the Django model for practical reasons.
     """
 
@@ -216,7 +250,7 @@ class HasFile(models.Model):
 
     def __unicode__(self):
         return u'%s' % (self.titel)
-    
+
 
 class Bilaga(HasFile):
 
@@ -294,7 +328,7 @@ class Amnesord(models.Model):
     class Meta:
         verbose_name = u"Ämnesord"
         verbose_name_plural = u"Ämnesord"
-        
+
     titel = models.CharField(
         max_length=255,
         unique=True,
@@ -371,7 +405,7 @@ class RDFPost(models.Model):
 
 class AtomEntry(models.Model):
     """Class to create entry for Atom feed. 
-    
+
     Automatically created when a document is saved, updated or deleted. For deletion, see the 'create_delete_entry'-signal defined below. For create/update, see 'ModelAdmin.save_model()' in 'rinfo/admin.py'.
     """
 
@@ -394,7 +428,7 @@ class AtomEntry(models.Model):
 
     def to_entryxml(self):
         """XML representation of entry according to Atom standard. 
-        
+
         Uses template in templates/foreskrift_entry.xml
         """
 
@@ -441,4 +475,3 @@ def get_file_md5(opened_file):
         if not data: break
         md5sum.update(data)
     return md5sum.hexdigest()
-

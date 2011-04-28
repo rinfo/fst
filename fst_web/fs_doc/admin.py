@@ -67,6 +67,47 @@ class HasContentFileForm(HasFileForm):
     FILE_FIELD_KEY = 'content'
 
 
+class AllmannaRadAdmin(admin.ModelAdmin):
+    list_display = ('identifierare', 
+                    'arsutgava', 
+                    'lopnummer', 
+                    'titel',
+                    'beslutsdatum', 
+                    'ikrafttradandedatum', 
+                    'utkom_fran_tryck', 
+                    'role_label')
+    list_filter = ('beslutsdatum', 
+                   'ikrafttradandedatum',
+                   'publicerad',
+                   'amnesord',
+                   #'andrar',
+                   'omtryck')
+    ordering = ('-beslutsdatum', 'titel')
+    search_fields = ('titel', 'identifierare',)
+    #inlines = [BilagaInline, OvrigtDokumentInline]
+    readonly_fields = ('publicerad','identifierare',)
+    save_on_top = True
+    fieldsets = ((None, {
+        'fields': (
+            'identifierare',
+            'publicerad',
+            'forfattningssamling',
+            ('arsutgava', 'lopnummer'),
+            'titel',
+            'sammanfattning',
+            'content',
+            ('beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck'),
+            'omtryck',
+            #('omtryck','andrar'),
+            #'bemyndiganden',
+            'amnesord',
+            #'celexreferenser'
+            ),
+        'classes': ['wide', 'extrapretty']
+        }),)
+    filter_horizontal = ('amnesord',)
+
+
 class MyndighetsforeskriftAdmin(admin.ModelAdmin):
 
     form = HasContentFileForm
@@ -159,10 +200,11 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
     actions = [make_published]
 
 
+admin.site.register(AllmannaRad, AllmannaRadAdmin)
+admin.site.register(Myndighetsforeskrift, MyndighetsforeskriftAdmin)
 admin.site.register(Amnesord, AmnesordAdmin)
+admin.site.register(Bemyndigandereferens,BemyndigandereferensAdmin)
 admin.site.register(CelexReferens, CelexReferensAdmin)
 admin.site.register(Forfattningssamling, ForfattningssamlingAdmin)
-admin.site.register(Myndighetsforeskrift, MyndighetsforeskriftAdmin)
-admin.site.register(Bemyndigandereferens,BemyndigandereferensAdmin)
 admin.site.register(AtomEntry)
 
