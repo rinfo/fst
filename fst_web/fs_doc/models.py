@@ -92,6 +92,14 @@ class ForfattningsamlingsDokument(models.Model):
                                related_name="andringar", 
                                verbose_name=u"Ändrar")
 
+    # Optional value: specifies that this document invalidates another document
+    # TODO: change definition to support 1-M relation
+    upphaver = models.ForeignKey("self", 
+                                 null=True, 
+                                 blank=True,
+                                 related_name="upphavningar", 
+                                 verbose_name=u"Upphäver")
+
     # Store checksum of uploaded file
     content_md5 = models.CharField(max_length=32, 
                                    blank=True, 
@@ -155,6 +163,16 @@ class AllmannaRad(ForfattningsamlingsDokument):
                                blank=False,
                                help_text=
                                """Se till att dokumentet är i PDF-format.""")
+
+    #TODO: Define 'allmanna_rad_rdf.xml' and start using this!
+    #def to_rdfxml(self):
+        #"""Return metadata as RDF/XML for this document."""
+
+        #template = loader.get_template('allmanna_rad_rdf.xml')
+        #context = Context({ 'allmanna_rad': self, 
+                            #'publisher_uri':
+                            #settings.FST_ORG_URI})
+        #return template.render(context)
 
     @models.permalink
     def get_absolute_url(self):
