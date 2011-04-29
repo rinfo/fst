@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 import datetime
 from fst_web.fs_doc.models import Myndighetsforeskrift, Forfattningssamling, Amnesord, AtomEntry,AllmannaRad
@@ -16,54 +16,43 @@ def _response(request, template, context):
 def index(request):
     """Visa startsidan."""
 
-    #Senast utgivna (då de utkom från tryck)
     senaste_myndighetsforeskrifter = Myndighetsforeskrift.objects.all().order_by("-utkom_fran_tryck")[:10]
 
     return _response(request, 'index.html', locals())
 
-
 def foreskrift_rdf(request, fskortnamn, arsutgava, lopnummer):
     """Visa RDF-data för enskild föreskrift i författningssamling."""
 
-    # Hämta författningssamlingen
-    fs = Forfattningssamling.objects.get(kortnamn=fskortnamn)
-    # Hämta föreskriften
-    foreskrift = Myndighetsforeskrift.objects.get(arsutgava=arsutgava,lopnummer=lopnummer,forfattningssamling=fs)
+    fs = get_object_or_404(Forfattningssamling,kortnamn=fskortnamn)
+    foreskrift = get_object_or_404(Myndighetsforeskrift,arsutgava=arsutgava,lopnummer=lopnummer,forfattningssamling=fs)
 
-    # Skicka rdf-data för denna post
+    # Return RDF-format
     return HttpResponse(foreskrift.to_rdfxml(), mimetype="application/rdf+xml; charset=utf-8")
 
 
 def allmanna_rad(request, fskortnamn, arsutgava, lopnummer):
     """Visa enskild föreskrift i författningssamling."""
 
-    # Hämta författningssamlingen
-    fs = Forfattningssamling.objects.get(kortnamn=fskortnamn)
-    # Hämta föreskriften
-    foreskrift = AllmannaRad.objects.get(arsutgava=arsutgava,lopnummer=lopnummer,forfattningssamling=fs)
+    fs = get_object_or_404(Forfattningssamling,kortnamn=fskortnamn)
+    foreskrift = get_object_or_404(AllmannaRad,arsutgava=arsutgava,lopnummer=lopnummerforfattningssamling=fs)
 
     return _response(request, 'foreskrift.html', locals())
-
 
 def foreskrift(request, fskortnamn, arsutgava, lopnummer):
     """Visa enskild föreskrift i författningssamling."""
 
-    # Hämta författningssamlingen
-    fs = Forfattningssamling.objects.get(kortnamn=fskortnamn)
-    # Hämta föreskriften
-    foreskrift = Myndighetsforeskrift.objects.get(arsutgava=arsutgava,lopnummer=lopnummer,forfattningssamling=fs)
+    fs = get_object_or_404(Forfattningssamling,kortnamn=fskortnamn)
+    foreskrift = get_object_or_404(Myndighetsforeskrift,arsutgava=arsutgava,lopnummer=lopnummer,forfattningssamling=fs)
 
     return _response(request, 'foreskrift.html', locals())
-
 
 def amnesord(request):
     """Visa föreskrifter indelade efter ämnesord."""
 
-    # Hämta alla ämnesord som har minst en föreskrift kopplad
+    # Get all instances of 'Amnesord' used by at least one document
     amnesord = Amnesord.objects.filter(myndighetsforeskrift__isnull = False).order_by("titel").distinct()
 
     return _response(request, 'per_amnesord.html', locals())
-
 
 def artal(request):
     """Visa föreskrifter indelade efter ikraftträdandeår."""
@@ -71,7 +60,6 @@ def artal(request):
     foreskrifter = Myndighetsforeskrift.objects.all().order_by("-ikrafttradandedatum")
 
     return _response(request, 'per_ar.html', locals())
-
 
 def atomfeed(request):
     """Presentera en postförteckning över aktiviteter i författningssamlingen i
