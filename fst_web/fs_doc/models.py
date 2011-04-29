@@ -22,7 +22,7 @@ class ForfattningsamlingsDokument(models.Model):
 
     class Meta:
         abstract = True
-        
+
     @property
     def identifierare(self):
         return "%s %s:%s" % (self.forfattningssamling.kortnamn,
@@ -60,7 +60,7 @@ class ForfattningsamlingsDokument(models.Model):
         """T.ex. <em>Denna föreskrift beskriver allmänna råd om arkiv hos statliga myndigheter</em>""")
 
     # NOTE: The FST webservice currently only supports document collections 
-    # of type 'forfattningssamling'. 
+    # of type 'forfattningssamling'.
     forfattningssamling = models.ForeignKey('Forfattningssamling', 
                                             blank=False,
                                             verbose_name=u"författningssamling")
@@ -84,24 +84,44 @@ class ForfattningsamlingsDokument(models.Model):
                                       verbose_name=u"ämnesord")
 
 
-    # Optional: specify that another document is changed by this document
+    # Optional value: specifies that this document changes another document
+    # TODO: change definition to support 1-M relation
     andrar = models.ForeignKey("self", 
                                null=True, 
                                blank=True,
                                related_name="andringar", 
                                verbose_name=u"Ändrar")
-    
+
+    # Store checksum of uploaded file
+    content_md5 = models.CharField(max_length=32, 
+                                   blank=True, 
+                                   null=True)
+
+    def get_fst_base_uri(self):
+        """"Create base URI for documents in collection with supplied argument 'kortnamn'
+
+        As specified by: http://dev.lagrummet.se/dokumentation/system/uri-principer.pdf
+        """
+        uri =  str(self.forfattningssamling.kortnamn).lower()
+        uri = uri.replace('å','aa').replace('ä','ae').replace('ö','oe')
+        fst_base_uri = "http://rinfo.lagrummet.se/publ/" + uri + "/"
+        return fst_base_uri
 
     def get_rinfo_uri(self):
-        """Return the canonical URI used by rinfo system.
-        
-        NOTE: The FST webservice currently only supports document collection 
-        of type 'forfattningssamling'. 
+        """Return canonical URI used by rinfo system
+
+        As specified by: http://dev.lagrummet.se/dokumentation/system/uri-principer.pdf
         """
-        return settings.FST_PUBL_BASE_URI + self.arsutgava + ":" + self.lopnummer
+
+        fst_base_uri = self.get_fst_base_uri()
+        return fst_base_uri + self.arsutgava + ":" + self.lopnummer
 
     def role_label(self):
-        """Display role of document in Django GUI"""
+        """Display role of document in Django GUI
+
+        Just a usability enhancement. This is not defined by the RDF model.
+        """
+
         label = u"Grundförfattning"
         if self.andrar:
             label = u"Ändringsförfattning"
@@ -129,27 +149,23 @@ class AllmannaRad(ForfattningsamlingsDokument):
     class Meta:
         verbose_name = u"Allmänna råd"
         verbose_name_plural = u"Allmänna råd"
-    
+
     content = models.FileField(u"PDF-version",
                                upload_to="allmanna_rad",
                                blank=False,
                                help_text=
                                """Se till att dokumentet är i PDF-format.""")
 
-    content_md5 = models.CharField(max_length=32, 
-                                   blank=True, 
-                                   null=True)
-
     @models.permalink
     def get_absolute_url(self):
         """"Construct Django URL path from document attributes"""
-        
+
         return ('fst_web.fs_doc.views.allmanna_rad',
                 [str(self.forfattningssamling.kortnamn), 
                  str(self.arsutgava), 
                  str(self.lopnummer)])
-    
-    
+
+
 class Myndighetsforeskrift(ForfattningsamlingsDokument):
     """Main document type in document collections of type 'författningsamling'. 
 
@@ -166,10 +182,6 @@ class Myndighetsforeskrift(ForfattningsamlingsDokument):
                                blank=False,
                                help_text=
                                """Se till att dokumentet är i PDF-format.""")
-
-    content_md5 = models.CharField(max_length=32, 
-                                   blank=True, 
-                                   null=True)
 
     bemyndiganden = models.ManyToManyField('Bemyndigandereferens',
                                            blank=False, 
@@ -188,15 +200,16 @@ class Myndighetsforeskrift(ForfattningsamlingsDokument):
         template = loader.get_template('foreskrift_rdf.xml')
         context = Context({ 'foreskrift': self, 
                             'publisher_uri':
-                            settings.FST_ORG_URI, 
-                            'rinfo_base_uri': settings.FST_PUBL_BASE_URI})
+                            settings.FST_ORG_URI})
 
+        # Currently not in use!
+                            #, 'rinfo_base_uri': settings.FST_PUBL_BASE_URI})
         return template.render(context)
-    
+
     @models.permalink
     def get_absolute_url(self):
         """"Construct Django URL path from document attributes"""
-        
+
         return ('fst_web.fs_doc.views.foreskrift',
                 [str(self.forfattningssamling.kortnamn), 
                  str(self.arsutgava), 
@@ -224,11 +237,18 @@ class Forfattningssamling(models.Model):
         unique=True,
         help_text="""T.ex. <em>EXFS</em>""")
 
-    identifierare = models.URLField(
-        verify_exists=False,
-        max_length=255,
-        unique=True,
-        help_text=u"Unik identiferare t ex 'http://rinfo.lagrummet.se/serie/fs/exfs'. Erhålls från Domstolsverket")
+    def get_rinfo_uri(self):
+        """"Create URI for this document collection using supplied argument 'kortnamn'
+
+        As specified by: http://dev.lagrummet.se/dokumentation/system/uri-principer.pdf
+        """
+        fst_base_uri = str(self.kortnamn).lower()
+        fst_base_uri = fst_base_uri.replace('å','aa').replace('ä','ae').replace('ö','oe')
+        fst_base_uri = "http://rinfo.lagrummet.se/serie/fs/" + fst_base_uri + "/"
+        return fst_base_uri
+
+    def identifierare(self):
+        return self.get_rinfo_uri()
 
     def __unicode__(self):
         return u'%s %s' % (self.titel, self.kortnamn)
@@ -443,7 +463,9 @@ class AtomEntry(models.Model):
             'rdf_post': self.rdf_post,
             'rdf_url': self.content_object.get_absolute_url() + "rdf",
 
-            'rinfo_base_uri': settings.FST_PUBL_BASE_URI,
+            # Not currently in use!
+            #'rinfo_base_uri': settings.FST_PUBL_BASE_URI,
+
             'fst_site_url': settings.FST_SITE_URL
         })
         return template.render(context)

@@ -46,5 +46,3 @@ FST_DATASET_TITLE = u"Flöde för Exempelmyndighetens författningssamling"
 
 # Första delen av unik identifierare för dokument för denna organisation.
 # Erhålls från rättsinformationsprojektet.
-FST_PUBL_BASE_URI = "http://rinfo.lagrummet.se/publ/exfs/"
-
