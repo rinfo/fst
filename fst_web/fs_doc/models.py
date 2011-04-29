@@ -257,9 +257,9 @@ class Forfattningssamling(models.Model):
 
         As specified by: http://dev.lagrummet.se/dokumentation/system/uri-principer.pdf
         """
-        fst_base_uri = self.kortnamn.lower().encode("utf-8")
-        fst_base_uri = fst_base_uri.replace('å','aa').replace('ä','ae').replace('ö','oe')
-        fst_base_uri = "http://rinfo.lagrummet.se/serie/fs/" + fst_base_uri + "/"
+        uri = self.kortnamn.lower().encode("utf-8")
+        uri = uri.replace('å','aa').replace('ä','ae').replace('ö','oe')
+        fst_base_uri = "http://rinfo.lagrummet.se/serie/fs/" + uri + "/"
         return fst_base_uri
 
     def identifierare(self):
