@@ -4,41 +4,40 @@ from django.conf.urls.defaults import *
 from django.contrib import admin
 import os
 
-
-# Slå på Djangos automatiska administrationssgränssnitt
+# Enable Django admin autodiscovery
 admin.autodiscover()
 
-# Konfigurera URL-routing
+# URL-routing
 
 urlpatterns = patterns('',
-    # Se till att filer i mappen static skickas
+    # Display static files 
     (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': os.path.join(os.path.dirname(__file__), 'static').replace('\\','/')}),
 
-    # Se till att PDF-versionen av föreskrifter i mappen dokument skickas
+    # Get files from server
     (r'^dokument/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT.replace('\\','/')}),
 
-    # Startsidan ("/")
+    # Display start page ("/")
     (r'^$', 'fst_web.fs_doc.views.index'),
 
-    # Enskild föreskrift i RDF-format (t.ex. "/publ/RA-FS/2006:6/rdf"
+    # Display specific document as RDF (t.ex. "/publ/RA-FS/2006:6/rdf"
     (r'^publ/(?P<fskortnamn>.*)/(?P<arsutgava>.*):(?P<lopnummer>.*)/rdf$', 'fst_web.fs_doc.views.foreskrift_rdf'),
 
-    # Enskild föreskrift (t.ex. "/publ/RA-FS/2006:6"
+    # Display info about specific document (t.ex. "/publ/RA-FS/2006:6"
     (r'^publ/(?P<fskortnamn>.*)/(?P<arsutgava>.*):(?P<lopnummer>.*)/$', 'fst_web.fs_doc.views.foreskrift'),
     
-    # Allmänna råd (t.ex. "/publ/RA-FS/2006:6"
+    # Display info about specific document
     (r'^publ/(?P<fskortnamn>.*)/(?P<arsutgava>.*):(?P<lopnummer>.*)/$', 'fst_web.fs_doc.views.allmanna_rad'),
 
-    # Indelade per ämnesord ("/amnesord/")
+    # Display documents sorted by keyword ("/amnesord/")
     (r'^amnesord/$', 'fst_web.fs_doc.views.amnesord'),
 
-    # Indelade per ikraftträdandeår ("/artal/")
+    # Display documents sorted by year ("/artal/")
     (r'^artal/$', 'fst_web.fs_doc.views.artal'),
 
-    # Atom-feed med ändringar i författningssamlingen
+    # Display Atom feed with activity in document collection
     (r'^feed/$', 'fst_web.fs_doc.views.atomfeed'),
 
-    # Slå på administrationsgränssnitt
+    # Enable Django admin
     (r'^admin/', include(admin.site.urls)),
     #(r'^admin/(.*)', admin.site.root),
 )
