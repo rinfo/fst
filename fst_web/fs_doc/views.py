@@ -14,24 +14,24 @@ def _response(request, template, context):
 
 
 def index(request):
-    """Visa startsidan."""
+    """Show start page """
 
     senaste_myndighetsforeskrifter = Myndighetsforeskrift.objects.all().order_by("-utkom_fran_tryck")[:10]
 
     return _response(request, 'index.html', locals())
 
 def foreskrift_rdf(request, fskortnamn, arsutgava, lopnummer):
-    """Visa RDF-data för enskild föreskrift i författningssamling."""
+    """Display RDF representation of document"""
 
     fs = get_object_or_404(Forfattningssamling,kortnamn=fskortnamn)
     foreskrift = get_object_or_404(Myndighetsforeskrift,arsutgava=arsutgava,lopnummer=lopnummer,forfattningssamling=fs)
 
-    # Return RDF-format
+    # Return RDF
     return HttpResponse(foreskrift.to_rdfxml(), mimetype="application/rdf+xml; charset=utf-8")
 
 
 def allmanna_rad(request, fskortnamn, arsutgava, lopnummer):
-    """Visa enskild föreskrift i författningssamling."""
+    """Display document of type 'AllmannaRad' """
 
     fs = get_object_or_404(Forfattningssamling,kortnamn=fskortnamn)
     foreskrift = get_object_or_404(AllmannaRad,arsutgava=arsutgava,lopnummer=lopnummer,forfattningssamling=fs)
@@ -39,15 +39,15 @@ def allmanna_rad(request, fskortnamn, arsutgava, lopnummer):
     return _response(request, 'foreskrift.html', locals())
 
 def foreskrift(request, fskortnamn, arsutgava, lopnummer):
-    """Visa enskild föreskrift i författningssamling."""
-
+    """Display document of type 'Myndighetsforeskrift' """
+    
     fs = get_object_or_404(Forfattningssamling,kortnamn=fskortnamn)
     foreskrift = get_object_or_404(Myndighetsforeskrift,arsutgava=arsutgava,lopnummer=lopnummer,forfattningssamling=fs)
 
     return _response(request, 'foreskrift.html', locals())
 
 def amnesord(request):
-    """Visa föreskrifter indelade efter ämnesord."""
+    """Display documents grouped by keywords """
 
     # Get all instances of 'Amnesord' used by at least one document
     amnesord = Amnesord.objects.filter(myndighetsforeskrift__isnull = False).order_by("titel").distinct()
@@ -55,15 +55,14 @@ def amnesord(request):
     return _response(request, 'per_amnesord.html', locals())
 
 def artal(request):
-    """Visa föreskrifter indelade efter ikraftträdandeår."""
+    """Display documents grouped by year """
 
     foreskrifter = Myndighetsforeskrift.objects.all().order_by("-ikrafttradandedatum")
 
     return _response(request, 'per_ar.html', locals())
 
 def atomfeed(request):
-    """Presentera en postförteckning över aktiviteter i författningssamlingen i
-    Atom-format."""
+    """ Return Atom Feed representing activities in document collection """
 
     entries = AtomEntry.objects.order_by("-updated")
     last_updated = rfc3339_date(entries[0].updated) if entries else ""
