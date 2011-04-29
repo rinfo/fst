@@ -340,7 +340,6 @@ class OvrigtDokument(HasFile):
 
 
 class CelexReferens(models.Model):
-    """Modell för referenser till t.ex. EG-direktiv"""
 
     class Meta:
         verbose_name = u"EG-rättsreferens"
@@ -361,7 +360,6 @@ class CelexReferens(models.Model):
 
 
 class Amnesord(models.Model):
-    """Modell för ämnesord."""
 
     class Meta:
         verbose_name = u"Ämnesord"
@@ -379,7 +377,6 @@ class Amnesord(models.Model):
 
 
 class Bemyndigandereferens(models.Model):
-    """Modell för att hantera bemyndigandereferenser."""
 
     class Meta:
         verbose_name=u"Bemyndigandereferens"
