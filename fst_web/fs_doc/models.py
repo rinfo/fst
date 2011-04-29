@@ -98,7 +98,7 @@ class ForfattningsamlingsDokument(models.Model):
                                    null=True)
 
     def get_fst_base_uri(self):
-        """"Create base URI for documents in collection with supplied argument 'kortnamn'
+        """"Create base URI for documents in collection
 
         As specified by: http://dev.lagrummet.se/dokumentation/system/uri-principer.pdf
         """
@@ -238,7 +238,7 @@ class Forfattningssamling(models.Model):
         help_text="""T.ex. <em>EXFS</em>""")
 
     def get_rinfo_uri(self):
-        """"Create URI for this document collection using supplied argument 'kortnamn'
+        """"Create URI for this document collection
 
         As specified by: http://dev.lagrummet.se/dokumentation/system/uri-principer.pdf
         """
