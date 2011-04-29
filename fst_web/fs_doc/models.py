@@ -110,7 +110,7 @@ class ForfattningsamlingsDokument(models.Model):
 
         As specified by: http://dev.lagrummet.se/dokumentation/system/uri-principer.pdf
         """
-        uri =  str(self.forfattningssamling.kortnamn).lower()
+        uri = self.forfattningssamling.kortnamn.lower().encode("utf-8")
         uri = uri.replace('å','aa').replace('ä','ae').replace('ö','oe')
         fst_base_uri = "http://rinfo.lagrummet.se/publ/" + uri + "/"
         return fst_base_uri
@@ -179,7 +179,7 @@ class AllmannaRad(ForfattningsamlingsDokument):
         """"Construct Django URL path from document attributes"""
 
         return ('fst_web.fs_doc.views.allmanna_rad',
-                [str(self.forfattningssamling.kortnamn), 
+                [self.forfattningssamling.kortnamn, 
                  str(self.arsutgava), 
                  str(self.lopnummer)])
 
@@ -219,9 +219,6 @@ class Myndighetsforeskrift(ForfattningsamlingsDokument):
         context = Context({ 'foreskrift': self, 
                             'publisher_uri':
                             settings.FST_ORG_URI})
-
-        # Currently not in use!
-                            #, 'rinfo_base_uri': settings.FST_PUBL_BASE_URI})
         return template.render(context)
 
     @models.permalink
@@ -229,7 +226,7 @@ class Myndighetsforeskrift(ForfattningsamlingsDokument):
         """"Construct Django URL path from document attributes"""
 
         return ('fst_web.fs_doc.views.foreskrift',
-                [str(self.forfattningssamling.kortnamn), 
+                [self.forfattningssamling.kortnamn, 
                  str(self.arsutgava), 
                  str(self.lopnummer)])
 
@@ -260,7 +257,7 @@ class Forfattningssamling(models.Model):
 
         As specified by: http://dev.lagrummet.se/dokumentation/system/uri-principer.pdf
         """
-        fst_base_uri = str(self.kortnamn).lower()
+        fst_base_uri = self.kortnamn.lower().encode("utf-8")
         fst_base_uri = fst_base_uri.replace('å','aa').replace('ä','ae').replace('ö','oe')
         fst_base_uri = "http://rinfo.lagrummet.se/serie/fs/" + fst_base_uri + "/"
         return fst_base_uri
