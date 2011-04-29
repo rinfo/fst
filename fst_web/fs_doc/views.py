@@ -34,7 +34,7 @@ def allmanna_rad(request, fskortnamn, arsutgava, lopnummer):
     """Visa enskild föreskrift i författningssamling."""
 
     fs = get_object_or_404(Forfattningssamling,kortnamn=fskortnamn)
-    foreskrift = get_object_or_404(AllmannaRad,arsutgava=arsutgava,lopnummer=lopnummerforfattningssamling=fs)
+    foreskrift = get_object_or_404(AllmannaRad,arsutgava=arsutgava,lopnummer=lopnummer,forfattningssamling=fs)
 
     return _response(request, 'foreskrift.html', locals())
 
