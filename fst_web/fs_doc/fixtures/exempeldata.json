@@ -11,7 +11,6 @@
         "pk": 1, 
         "model": "fs_doc.forfattningssamling", 
         "fields": {
-            "identifierare": "http://test.lagrummet.se/serie/fs/exfs", 
             "titel": "Exempelmyndighetens f\u00f6rfattningssamling", 
             "kortnamn": "EXFS"
         }
