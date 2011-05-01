@@ -99,7 +99,7 @@ class RinfoTestCase(TestCase):
         self.failUnlessEqual(response.status_code, 200)
         self.assertEqual(response['content-type'], 
                          'application/atom+xml; charset=utf-8')
-        # Make
+        # No entries yet
         self.assertContains(response, "<entry>", 0)
 
     # Verify that checksum of document in Atom feed is correct
