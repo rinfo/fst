@@ -34,7 +34,6 @@ class RinfoTestCase(TestCase):
 
         # Delete temporary testfolder
         shutil.rmtree(testdocs)
-
         
     # Verify that start page loads and displays correct sample documents
     def test_startsida(self):
