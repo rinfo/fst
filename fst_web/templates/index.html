@@ -4,20 +4,20 @@
 
 {% block content %}
     <h1>{{ organization.name_possessive }} författningssamling</h1>
-    <p>Se nedan för de senast utgivna föreskrifterna.</p>
+    <p>Se nedan för de senast utgivna författningsdokumenten.</p>
     <h2>Senast publicerat</h2>
-    {% if senaste_myndighetsforeskrifter %}
+    {% if latest_documents %}
     <table class="foreskrifter">
         <tr>
-            <th>Beslutad</th>
+            <th>Beslutsdatum</th>
             <th>Föreskrift</th>
             <th>Roll</th>
         </tr>
-        {% for foreskrift in senaste_myndighetsforeskrifter %}
+        {% for doc in latest_documents %}
         <tr>
-            <td>{{foreskrift.beslutsdatum}}</td>
-            <td><a href="{{foreskrift.get_absolute_url}}">{{foreskrift.identifierare}} {{foreskrift.titel}}</a></td>
-            <td>{{foreskrift.role_label}}</td>
+            <td>{{doc.beslutsdatum}}</td>
+            <td><a href="{{doc.get_absolute_url}}">{{doc.identifierare}} {{doc.titel}}</a></td>
+            <td>{{doc.role_label}}</td>
         </tr>
         {% endfor %}
     </table>

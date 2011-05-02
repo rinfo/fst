@@ -14,9 +14,13 @@ def _response(request, template, context):
 
 
 def index(request):
-    """Show start page """
+    """Display start page 
+    
+    List the latest published documents in current document collection.
+    Get both 'Myndighetsforeskrift' and 'AllmannaRad'.
+    """
 
-    senaste_myndighetsforeskrifter = Myndighetsforeskrift.objects.all().order_by("-utkom_fran_tryck")[:10]
+    latest_documents = list(Myndighetsforeskrift.objects.all().order_by("-utkom_fran_tryck")[:10]) + list(AllmannaRad.objects.all().order_by("-utkom_fran_tryck")[:10])
 
     return _response(request, 'index.html', locals())
 
