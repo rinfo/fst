@@ -9,6 +9,13 @@
     }, 
     {
         "pk": 1, 
+        "model": "fs_doc.myndighet", 
+        "fields": {
+            "namn": "Exempelmyndigheten"
+        }
+    }, 
+    {
+        "pk": 1, 
         "model": "fs_doc.forfattningssamling", 
         "fields": {
             "titel": "Exempelmyndighetens f\u00f6rfattningssamling", 
