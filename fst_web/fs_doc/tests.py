@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
-from django.test import TestCase
-import fst_web.fs_doc.models
-from xml.dom.minidom import parse, parseString
 import hashlib
 import os
 import shutil
+from xml.dom.minidom import parse, parseString
+from django.test import TestCase
+from rdflib import Graph, Literal, URIRef, RDF
+from fst_web.fs_doc.rdfviews import DCT, DCES, FOAF, RPUBL, RINFO_BASE
+
 
 class RinfoTestCase(TestCase):
     # Initialize with sample data from fsdoc/fixtures/exempeldata.json
@@ -59,12 +61,13 @@ class RinfoTestCase(TestCase):
     def test_rdfdata(self):
         response = self.client.get('/publ/exfs/2009:1/rdf')
         self.failUnlessEqual(response.status_code, 200)
-        self.assertEqual(response['content-type'], 
+        self.assertEqual(response['content-type'],
                          'application/rdf+xml; charset=utf-8')
-        self.assertContains(response, 
-                            "Föreskrift om administration hos statliga myndigheter")
-        self.assertContains(response, 
-                            "<dces:subject xml:lang=\"sv\">Administration</dces:subject>")
+
+        graph = Graph().parse(data=response.content)
+        ref = URIRef("/publ/exfs/2009:1", RINFO_BASE)
+        self.assertIn((ref, DCT.title, Literal(u"Föreskrift om administration hos statliga myndigheter", lang='sv')), graph)
+        self.assertIn((ref, DCES.subject, Literal(u"Administration", lang='sv')), graph)
 
     # Verify that published 'Myndighetsforeskrift' document has 
     # correct RDF metadata for legal directives (Django class 'CelexReferens')
@@ -73,8 +76,11 @@ class RinfoTestCase(TestCase):
         self.failUnlessEqual(response.status_code, 200)
         self.assertEqual(response['content-type'], 
                          'application/rdf+xml; charset=utf-8')
-        self.assertContains(response, 
-                            "<genomforDirektiv rdf:resource=\"http://rinfo.lagrummet.se/ext/eur-lex/31979L0409\"/>")
+
+        graph = Graph().parse(data=response.content)
+        ref = URIRef("/publ/exfs/2009:1", RINFO_BASE)
+        dir_ref = URIRef("/ext/eur-lex/31979L0409", RINFO_BASE)
+        self.assertIn((ref, RPUBL.genomforDirektiv, dir_ref), graph)
 
     # Verify that published 'Myndighetsforeskrift' document has 
     # correct RDF metadata for property 'omtryck'
@@ -83,14 +89,22 @@ class RinfoTestCase(TestCase):
         self.failUnlessEqual(response.status_code, 200)
         self.assertEqual(response['content-type'],
                          'application/rdf+xml; charset=utf-8')
-        self.assertContains(response, "<omtryckAv rdf:resource=\"http://rinfo.lagrummet.se/publ/exfs/2009:1\"/>")
 
+        graph = Graph().parse(data=response.content)
+        ref = URIRef("/publ/exfs/2009:2", RINFO_BASE)
+        omtryck_ref = URIRef("/publ/exfs/2009:1", RINFO_BASE)
+        self.assertIn((ref, RPUBL.omtryckAv, omtryck_ref), graph)
+
+    def test_no_omtryck(self):
         # No metadata should be genereated unless property 'omtryck' is true
         response = self.client.get('/publ/exfs/2009:3/rdf')
         self.failUnlessEqual(response.status_code, 200)
         self.assertEqual(response['content-type'], 
                          'application/rdf+xml; charset=utf-8')
-        self.assertNotContains(response, "<omtryckAv")
+
+        graph = Graph().parse(data=response.content)
+        ref = URIRef("/publ/exfs/2009:3", RINFO_BASE)
+        self.assertFalse(list(graph.objects(ref, RPUBL.omtryckAv)))
 
     # Verify that an empty Atom feed is created and can be read
     # NOTE - Atom feed is empty until entries are explicitly published
@@ -126,3 +140,4 @@ class RinfoTestCase(TestCase):
                 md5.update(response.content)
                 beraknad_rdfmd5=md5.hexdigest()
                 self.assertEqual(beraknad_rdfmd5, avlast_md5)
+

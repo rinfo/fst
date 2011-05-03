@@ -13,6 +13,8 @@ from django.core.files import File
 from django.forms import TextInput, Textarea
 from django.utils.feedgenerator import rfc3339_date
 
+from fst_web.fs_doc import rdfviews
+
 
 class ForfattningsamlingsDokument(models.Model):
     """Superclass of 'Myndighetsforeskrift' and 'AllmannaRad'.
@@ -125,8 +127,7 @@ class ForfattningsamlingsDokument(models.Model):
         """Return canonical document URI used by rinfo system"""
 
         rinfo_uri = "http://rinfo.lagrummet.se/org/" + \
-                  self.get_slug(self.utgivare.namn) + \
-                  self.arsutgava + ":" + self.lopnummer
+                  self.get_slug(self.utgivare.namn)
         return  rinfo_uri
 
     def role_label(self):
@@ -227,11 +228,7 @@ class Myndighetsforeskrift(ForfattningsamlingsDokument):
 
     def to_rdfxml(self):
         """Return metadata as RDF/XML for this document."""
-
-        template = loader.get_template('foreskrift_rdf.xml')
-        context = Context({ 'foreskrift': self, 
-                            'publisher_uri':self.get_publisher_uri})
-        return template.render(context)
+        return rdfviews.MyndighetsforeskriftDescription(self).to_rdfxml()
 
     @models.permalink
     def get_absolute_url(self):
@@ -488,7 +485,7 @@ class RDFPost(models.Model):
 
     @classmethod
     def create_for(cls, obj):
-        data = obj.to_rdfxml().encode("utf-8")
+        data = obj.to_rdfxml()
         return cls(data=data)
 
 
