@@ -1,0 +1,140 @@
+[
+    {
+        "pk": 1, 
+        "model": "sites.site", 
+        "fields": {
+            "domain": "127.0.0.1:8000", 
+            "name": "localhost"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "fst", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": true, 
+            "is_staff": true, 
+            "last_login": "2011-04-08 15:26:35", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$64965$7fe7bb4763a30640c553f54313748593b0b22d02", 
+            "email": "fst@local.local", 
+            "date_joined": "2011-04-08 15:26:15"
+        }
+    },
+    {
+        "pk": 1, 
+        "model": "fs_doc.forfattningssamling", 
+        "fields": {
+            "identifierare": "http://test.lagrummet.se/serie/fs/exfs", 
+            "titel": "Exempelmyndighetens f\u00f6rfattningssamling", 
+            "kortnamn": "EXFS"
+        }
+    },
+    {
+        "pk": 1, 
+        "model": "fs_doc.amnesord", 
+        "fields": {
+            "titel": "Administration", 
+            "beskrivning": "(definition av \u00e4mnesordet administration...)"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "fs_doc.amnesord", 
+        "fields": {
+            "titel": "Budgetering", 
+            "beskrivning": "(definition av \u00e4mnesordet budgetering...)"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "fs_doc.amnesord", 
+        "fields": {
+            "titel": "Centralisering", 
+            "beskrivning": "(definition av \u00e4mnesordet centralisering...)"
+        }
+    },
+    {
+        "pk": 1, 
+        "model": "fs_doc.bemyndigandereferens", 
+        "fields": {
+            "paragrafnummer": "11", 
+            "sfsnummer": "1234:1", 
+            "titel": "Exempelf\u00f6rordning", 
+            "kommentar": "", 
+            "kapitelnummer": ""
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "fs_doc.bemyndigandereferens", 
+        "fields": {
+            "paragrafnummer": "13", 
+            "sfsnummer": "1234:1", 
+            "titel": "Exempelf\u00f6rordning", 
+            "kommentar": "", 
+            "kapitelnummer": ""
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "fs_doc.bemyndigandereferens", 
+        "fields": {
+            "paragrafnummer": "8c", 
+            "sfsnummer": "1962:700", 
+            "titel": "Brottsbalken", 
+            "kommentar": "Best\u00e4mmelse om dataintr\u00e5ng", 
+            "kapitelnummer": "4"
+        }
+    },
+    {
+        "pk": 1, 
+        "model": "fs_doc.myndighetsforeskrift", 
+        "fields": {
+            "omtryck": false, 
+            "andrar": null, 
+            "arsutgava": "2009", 
+            "bemyndiganden": [
+                1, 
+                3
+            ], 
+            "beslutsdatum": "2009-01-30", 
+            "publicerad": false, 
+            "content": "foreskrift/EXFS-2009-1.pdf", 
+            "lopnummer": "1", 
+            "ikrafttradandedatum": "2009-03-30", 
+            "amnesord": [1], 
+            "utkom_fran_tryck": "2009-02-01", 
+            "forfattningssamling": 1, 
+            "sammanfattning": "", 
+            "content_md5": "5c2c3fc272e57cb1f1c5d9d3d1aeec3b", 
+            "celexreferenser": [
+                1
+            ], 
+            "titel": "F\u00f6reskrift om administration hos statliga myndigheter"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "fs_doc.allmannarad", 
+        "fields": {
+            "omtryck": true, 
+            "arsutgava": "2009", 
+            "beslutsdatum": "2009-04-01", 
+            "publicerad": false, 
+            "content": "foreskrift/EXFS-2009-2.pdf", 
+            "lopnummer": "2", 
+            "ikrafttradandedatum": "2009-04-01", 
+            "amnesord": [2], 
+            "utkom_fran_tryck": "2009-04-01", 
+            "forfattningssamling": 1, 
+            "sammanfattning": "", 
+            "content_md5": "6becd47ccdc1d4441a7d7d45d2111049", 
+            "titel": "F\u00f6reskrift om \u00e4ndring i f\u00f6reskrift 2009:1 om administration hos statliga myndigheter"
+        }
+    }
+]

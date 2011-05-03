@@ -12,7 +12,8 @@
         "model": "fs_doc.forfattningssamling", 
         "fields": {
             "titel": "Exempelmyndighetens f\u00f6rfattningssamling", 
-            "kortnamn": "EXFS"
+            "kortnamn": "EXFS",
+            "slug": "exfs"
         }
     }, 
     {
@@ -103,6 +104,8 @@
             "omtryck": false, 
             "andrar": null, 
             "arsutgava": "2009", 
+            "beslutad_av": 1,
+            "utgivare": 1,
             "bemyndiganden": [
                 1, 
                 3
@@ -132,6 +135,8 @@
             "omtryck": true, 
             "andrar": 1, 
             "arsutgava": "2009", 
+            "beslutad_av": 1,
+            "utgivare": 1,
             "bemyndiganden": [
                 1
             ], 
@@ -162,6 +167,8 @@
             "omtryck": false, 
             "andrar": 1, 
             "arsutgava": "2009", 
+            "beslutad_av": 1,
+            "utgivare": 1,
             "bemyndiganden": [
                 1, 
                 2

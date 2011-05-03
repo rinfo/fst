@@ -11,6 +11,16 @@ from fst_web.fs_doc.models import *
 class ForfattningssamlingAdmin(admin.ModelAdmin):
     list_display = ('titel', 'kortnamn', 'identifierare')
     ordering = ('titel',)
+    fieldsets = ((None, {
+        'fields': (
+            'titel',
+            'kortnamn')}),)
+    
+    def save_model(self, request, obj, form, change):
+        obj.slug = obj.get_slug(obj.kortnamn)
+        super(ForfattningssamlingAdmin, self).save_model(
+            request, obj, form, change)
+        obj.save
 
 
 class CelexReferensAdmin(admin.ModelAdmin):
@@ -207,4 +217,5 @@ admin.site.register(Bemyndigandereferens,BemyndigandereferensAdmin)
 admin.site.register(CelexReferens, CelexReferensAdmin)
 admin.site.register(Forfattningssamling, ForfattningssamlingAdmin)
 admin.site.register(AtomEntry)
+admin.site.register(Myndighet)
 

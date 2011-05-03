@@ -49,7 +49,7 @@ class RinfoTestCase(TestCase):
     # Verify that detail page for document 'Myndighetsforeskrift' loads
     # with correct sample data
     def test_foreskrift(self):
-        response = self.client.get('/publ/EXFS/2009:1/')
+        response = self.client.get('/publ/exfs/2009:1/')
         self.failUnlessEqual(response.status_code, 200)
         self.assertContains(response, 
                             "<h1>EXFS 2009:1 Föreskrift om administration hos statliga myndigheter")
@@ -57,7 +57,7 @@ class RinfoTestCase(TestCase):
     # Verify that published 'Myndighetsforeskrift' document has 
     # correct RDF metadata' for keywords (Django class'Amnesord')
     def test_rdfdata(self):
-        response = self.client.get('/publ/EXFS/2009:1/rdf')
+        response = self.client.get('/publ/exfs/2009:1/rdf')
         self.failUnlessEqual(response.status_code, 200)
         self.assertEqual(response['content-type'], 
                          'application/rdf+xml; charset=utf-8')
@@ -69,7 +69,7 @@ class RinfoTestCase(TestCase):
     # Verify that published 'Myndighetsforeskrift' document has 
     # correct RDF metadata for legal directives (Django class 'CelexReferens')
     def test_egdirektiv(self):
-        response = self.client.get('/publ/EXFS/2009:1/rdf')
+        response = self.client.get('/publ/exfs/2009:1/rdf')
         self.failUnlessEqual(response.status_code, 200)
         self.assertEqual(response['content-type'], 
                          'application/rdf+xml; charset=utf-8')
@@ -79,14 +79,14 @@ class RinfoTestCase(TestCase):
     # Verify that published 'Myndighetsforeskrift' document has 
     # correct RDF metadata for property 'omtryck'
     def test_omtryck(self):
-        response = self.client.get('/publ/EXFS/2009:2/rdf')
+        response = self.client.get('/publ/exfs/2009:2/rdf')
         self.failUnlessEqual(response.status_code, 200)
         self.assertEqual(response['content-type'],
                          'application/rdf+xml; charset=utf-8')
         self.assertContains(response, "<omtryckAv rdf:resource=\"http://rinfo.lagrummet.se/publ/exfs/2009:1\"/>")
 
         # No metadata should be genereated unless property 'omtryck' is true
-        response = self.client.get('/publ/EXFS/2009:3/rdf')
+        response = self.client.get('/publ/exfs/2009:3/rdf')
         self.failUnlessEqual(response.status_code, 200)
         self.assertEqual(response['content-type'], 
                          'application/rdf+xml; charset=utf-8')
@@ -117,11 +117,11 @@ class RinfoTestCase(TestCase):
         avlast_md5 = ""           
         for link in links:
             # Look for specific sample document in feed
-            if link.getAttribute("href")=="/publ/EXFS/2009:1/rdf":
+            if link.getAttribute("href")=="/publ/exfs/2009:1/rdf":
                 # Read document checksum from feed
                 avlast_md5 = link.getAttributeNS(NS_ATOMLE, "md5")
                 # Compare checksum from feed with checksum of current document
-                response = self.client.get('/publ/EXFS/2009:1/rdf')
+                response = self.client.get('/publ/exfs/2009:1/rdf')
                 md5=hashlib.md5()
                 md5.update(response.content)
                 beraknad_rdfmd5=md5.hexdigest()

@@ -27,7 +27,7 @@ def index(request):
 def foreskrift_rdf(request, fskortnamn, arsutgava, lopnummer):
     """Display RDF representation of document"""
 
-    fs = get_object_or_404(Forfattningssamling,kortnamn=fskortnamn)
+    fs = get_object_or_404(Forfattningssamling,slug=fskortnamn)
     foreskrift = get_object_or_404(Myndighetsforeskrift,arsutgava=arsutgava,lopnummer=lopnummer,forfattningssamling=fs)
 
     # Return RDF
@@ -37,7 +37,7 @@ def foreskrift_rdf(request, fskortnamn, arsutgava, lopnummer):
 def allmanna_rad(request, fskortnamn, arsutgava, lopnummer):
     """Display document of type 'AllmannaRad' """
 
-    fs = get_object_or_404(Forfattningssamling,kortnamn=fskortnamn)
+    fs = get_object_or_404(Forfattningssamling,slug=fskortnamn)
     foreskrift = get_object_or_404(AllmannaRad,arsutgava=arsutgava,lopnummer=lopnummer,forfattningssamling=fs)
 
     return _response(request, 'foreskrift.html', locals())
@@ -45,7 +45,7 @@ def allmanna_rad(request, fskortnamn, arsutgava, lopnummer):
 def foreskrift(request, fskortnamn, arsutgava, lopnummer):
     """Display document of type 'Myndighetsforeskrift' """
     
-    fs = get_object_or_404(Forfattningssamling,kortnamn=fskortnamn)
+    fs = get_object_or_404(Forfattningssamling,slug=fskortnamn)
     foreskrift = get_object_or_404(Myndighetsforeskrift,arsutgava=arsutgava,lopnummer=lopnummer,forfattningssamling=fs)
 
     return _response(request, 'foreskrift.html', locals())

@@ -78,7 +78,6 @@ class ForfattningsamlingsDokument(models.Model):
                                   help_text=
                                   """Anger om denna föreskrift är ett omtryck.""")
 
-
     amnesord = models.ManyToManyField('Amnesord', 
                                       blank=True, 
                                       verbose_name=u"ämnesord")
@@ -105,24 +104,30 @@ class ForfattningsamlingsDokument(models.Model):
                                    blank=True, 
                                    null=True)
 
-    def get_fst_base_uri(self):
-        """"Create base URI for documents in collection
+    def get_slug(self,tag):
+        """"Transform identifiers with Swedish characters for URI use
 
         As specified by: http://dev.lagrummet.se/dokumentation/system/uri-principer.pdf
         """
-        uri = self.forfattningssamling.kortnamn.lower().encode("utf-8")
-        uri = uri.replace('å','aa').replace('ä','ae').replace('ö','oe')
-        fst_base_uri = "http://rinfo.lagrummet.se/publ/" + uri + "/"
-        return fst_base_uri
+        tag = tag.lower().encode("utf-8")
+        slug = tag.replace('å','aa').replace('ä','ae').replace('ö','oe').replace(' ','_')
+        return slug
 
     def get_rinfo_uri(self):
-        """Return canonical URI used by rinfo system
+        """Return canonical document URI used by rinfo system"""
 
-        As specified by: http://dev.lagrummet.se/dokumentation/system/uri-principer.pdf
-        """
+        rinfo_uri = "http://rinfo.lagrummet.se/publ/" + \
+                  self.get_slug(self.forfattningssamling.slug) + "/" + \
+                  self.arsutgava + ":" + self.lopnummer 
+        return  rinfo_uri
 
-        fst_base_uri = self.get_fst_base_uri()
-        return fst_base_uri + self.arsutgava + ":" + self.lopnummer
+    def get_publisher_uri(self):
+        """Return canonical document URI used by rinfo system"""
+
+        rinfo_uri = "http://rinfo.lagrummet.se/org/" + \
+                  self.get_slug(self.utgivare.namn) + \
+                  self.arsutgava + ":" + self.lopnummer
+        return  rinfo_uri
 
     def role_label(self):
         """Display role of document in Django GUI
@@ -179,7 +184,7 @@ class AllmannaRad(ForfattningsamlingsDokument):
         """"Construct Django URL path from document attributes"""
 
         return ('fst_web.fs_doc.views.allmanna_rad',
-                [self.forfattningssamling.kortnamn, 
+                [self.forfattningssamling.slug, 
                  str(self.arsutgava), 
                  str(self.lopnummer)])
 
@@ -211,14 +216,21 @@ class Myndighetsforeskrift(ForfattningsamlingsDokument):
                                              blank=True, 
                                              verbose_name=
                                              u"Bidrar till att genomföra EG-direktiv", related_name="foreskrifter")
+    
+    beslutad_av = models.ForeignKey('Myndighet',
+                                    related_name='doc_beslutad_av',
+                                    blank=True)
+
+    utgivare = models.ForeignKey('Myndighet',
+                                 related_name='doc_utgivare',
+                                 blank=True)
 
     def to_rdfxml(self):
         """Return metadata as RDF/XML for this document."""
 
         template = loader.get_template('foreskrift_rdf.xml')
         context = Context({ 'foreskrift': self, 
-                            'publisher_uri':
-                            settings.FST_ORG_URI})
+                            'publisher_uri':self.get_publisher_uri})
         return template.render(context)
 
     @models.permalink
@@ -226,9 +238,41 @@ class Myndighetsforeskrift(ForfattningsamlingsDokument):
         """"Construct Django URL path from document attributes"""
 
         return ('fst_web.fs_doc.views.foreskrift',
-                [self.forfattningssamling.kortnamn, 
+                [self.forfattningssamling.slug, 
                  str(self.arsutgava), 
                  str(self.lopnummer)])
+
+class Myndighet(models.Model):
+    """Organization publishing and/or authorizing documents."""
+
+    class Meta:
+        verbose_name = u"Myndighet"
+        verbose_name_plural = u"Myndigheter"
+
+    namn = models.CharField(
+        max_length=255,
+        unique=True,
+        help_text="""Namn på myndighet, t ex Exempelmyndigheten""")
+
+    def get_slug(self,tag):
+        """"Transform identifiers with Swedish characters for URI use
+
+        As specified by: http://dev.lagrummet.se/dokumentation/system/uri-principer.pdf
+        """
+        tag = tag.lower().encode("utf-8")
+        slug = tag.replace('Å','aa').replace('Ä','ae').replace('ö','oe').replace(' ','_')
+        return slug
+
+    def get_rinfo_uri(self):
+        """Get URI from service provided by rinfo system """
+        slug = self.get_slug(self.myndighetsnamn)
+        uri = "http://rinfo.lagrummet.se/org/" + slug 
+        return uri
+    
+    def __unicode__(self):
+        """Display value for user interface."""
+        return u'%s' %(self.namn)
+
 
 
 class Forfattningssamling(models.Model):
@@ -251,16 +295,29 @@ class Forfattningssamling(models.Model):
         max_length=10,
         unique=True,
         help_text="""T.ex. <em>EXFS</em>""")
+    
+    slug = models.CharField(
+        max_length=20,
+        unique=True,
+        help_text="""T.ex. <em>exfs</em>""")
+
+    def get_slug(self,tag):
+        """"Transform identifiers with Swedish characters for URI use
+
+        As specified by: http://dev.lagrummet.se/dokumentation/system/uri-principer.pdf
+        """
+        tag = tag.lower().encode("utf-8")
+        slug = tag.replace('å','aa').replace('ä','ae').replace('ö','oe').replace(' ','_')
+        return slug
 
     def get_rinfo_uri(self):
         """"Create URI for this document collection
 
         As specified by: http://dev.lagrummet.se/dokumentation/system/uri-principer.pdf
         """
-        uri = self.kortnamn.lower().encode("utf-8")
-        uri = uri.replace('å','aa').replace('ä','ae').replace('ö','oe')
-        fst_base_uri = "http://rinfo.lagrummet.se/serie/fs/" + uri + "/"
-        return fst_base_uri
+        slug = self.get_slug(self.kortnamn)
+        uri = "http://rinfo.lagrummet.se/serier/fs/" + slug 
+        return uri
 
     def identifierare(self):
         return self.get_rinfo_uri()
