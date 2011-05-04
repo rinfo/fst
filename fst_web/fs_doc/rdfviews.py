@@ -17,7 +17,7 @@ def sfs_ref(sfsnum):
     return URIRef("%s/publ/sfs/%s" % (RINFO_BASE, sfsnum))
 
 
-class Description:
+class Description(object):
 
     def to_rdfxml(self):
         graph = self.to_rdf()
@@ -28,19 +28,16 @@ class Description:
         return graph.serialize(format='pretty-xml')
 
 
-class MyndighetsforeskriftDescription(Description):
+class  FSDokumentDescription(Description):
 
     def __init__(self, obj):
         self.obj = obj
+        self.ref = URIRef(obj.get_rinfo_uri())
 
     def  to_rdf(self):
-        obj = self.obj
         graph = Graph()
-
-        foreskrift_ref = URIRef(obj.get_rinfo_uri())
-        add = lambda p, o: graph.add((foreskrift_ref, p, o))
-
-        add(RDF.type, RPUBL.Myndighetsforeskrift)
+        obj = self.obj
+        add = lambda p, o: graph.add((self.ref, p, o))
 
         add(DCT.title, Literal(obj.titel, lang='sv'))
         add(RPUBL.arsutgava, Literal(obj.arsutgava))
@@ -52,21 +49,9 @@ class MyndighetsforeskriftDescription(Description):
 
         if obj.andrar:
             add(RPUBL.andrar, URIRef(obj.andrar.get_rinfo_uri()))
+
         if obj.omtryck:
             add(RPUBL.omtryckAv, URIRef(obj.andrar.get_rinfo_uri()))
-        if obj.celexreferenser.all():
-            for referens in obj.celexreferenser.all():
-                add(RPUBL.genomforDirektiv, eur_lex_ref(referens.celexnummer))
-
-        for bemyndigande in obj.bemyndiganden.all():
-            bemyndigande_ref = BNode()
-            add(RPUBL.bemyndigande, bemyndigande_ref)
-            bemyndigande_add = lambda p, o: graph.add((bemyndigande_ref, p, o))
-            bemyndigande_add(RDF.type, RPUBL.Forfattningsreferens)
-            bemyndigande_add(RPUBL.angerGrundforfattning, sfs_ref(bemyndigande.sfsnummer))
-            if bemyndigande.kapitelnummer:
-                bemyndigande_add(RPUBL.angerKapitelnummer, Literal(bemyndigande.kapitelnummer))
-            bemyndigande_add(RPUBL.angerParagrafnummer, Literal(bemyndigande.paragrafnummer))
 
         for amnesord in obj.amnesord.all():
             add(DCES.subject, Literal(amnesord.titel, lang="sv"))
@@ -82,7 +67,41 @@ class MyndighetsforeskriftDescription(Description):
             dok_add = lambda p, o: graph.add((dok_ref, p, o))
             dok_add(RDF.type, FOAF.Document)
             dok_add(DCT.title, Literal(dok.titel, lang="sv"))
-            dok_add(FOAF.primaryTopic, foreskrift_ref)
+            dok_add(FOAF.primaryTopic, self.ref)
 
         return graph
+
+class AllmanaRadDescription(FSDokumentDescription):
+
+    def to_rdf(self):
+        graph = super(AllmanaRadDescription, self).to_rdf()
+        graph.add((self.ref, RDF.type, RPUBL.AllmannaRad))
+        return graph
+
+
+class MyndighetsforeskriftDescription(FSDokumentDescription):
+
+    def to_rdf(self):
+        graph = super(MyndighetsforeskriftDescription, self).to_rdf()
+        obj = self.obj
+        add = lambda p, o: graph.add((self.ref, p, o))
+
+        add(RDF.type, RPUBL.Myndighetsforeskrift)
+
+        if obj.celexreferenser.all():
+            for referens in obj.celexreferenser.all():
+                add(RPUBL.genomforDirektiv, eur_lex_ref(referens.celexnummer))
+
+        for bemyndigande in obj.bemyndiganden.all():
+            bemyndigande_ref = BNode()
+            add(RPUBL.bemyndigande, bemyndigande_ref)
+            bemyndigande_add = lambda p, o: graph.add((bemyndigande_ref, p, o))
+            bemyndigande_add(RDF.type, RPUBL.Forfattningsreferens)
+            bemyndigande_add(RPUBL.angerGrundforfattning, sfs_ref(bemyndigande.sfsnummer))
+            if bemyndigande.kapitelnummer:
+                bemyndigande_add(RPUBL.angerKapitelnummer, Literal(bemyndigande.kapitelnummer))
+            bemyndigande_add(RPUBL.angerParagrafnummer, Literal(bemyndigande.paragrafnummer))
+
+        return graph
+
 
