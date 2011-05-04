@@ -24,7 +24,7 @@ class ForfattningsamlingsDokument(models.Model):
 
     class Meta:
         abstract = True
-
+        
     @property
     def identifierare(self):
         return "%s %s:%s" % (self.forfattningssamling.kortnamn,
@@ -54,7 +54,7 @@ class ForfattningsamlingsDokument(models.Model):
         help_text="""T.ex. <em>Exempelmyndighetens föreskrifter och
             allmänna råd om arkiv hos statliga myndigheter;</em>""")
 
-    sammanfattning = models.CharField(
+    sammanfattning = models.TextField(
         max_length=512,
         blank=True,
         unique=False,
