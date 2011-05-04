@@ -148,7 +148,6 @@ class ForfattningsamlingsDokument(models.Model):
         """Support additional sorting: by year only"""
         return self.ikrafttradandedatum.year
 
-
     def __unicode__(self):
         """Display value for user interface."""
         return u'%s %s' % (self.identifierare, self.titel)
@@ -160,7 +159,7 @@ class AllmannaRad(ForfattningsamlingsDokument):
     See also the domain model RDF definition at: http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#AllmannaRad
     """
 
-    class Meta:
+    class Meta(ForfattningsamlingsDokument.Meta):
         verbose_name = u"Allmänna råd"
         verbose_name_plural = u"Allmänna råd"
 
@@ -196,7 +195,7 @@ class Myndighetsforeskrift(ForfattningsamlingsDokument):
     See also the domain model RDF definition at: http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#Myndighetsforeskrift
     """
 
-    class Meta:
+    class Meta(ForfattningsamlingsDokument.Meta):
         verbose_name = u"Myndighetsföreskrift"
         verbose_name_plural = u"Myndighetsföreskrifter"
 
@@ -217,7 +216,7 @@ class Myndighetsforeskrift(ForfattningsamlingsDokument):
                                              blank=True, 
                                              verbose_name=
                                              u"Bidrar till att genomföra EG-direktiv", related_name="foreskrifter")
-    
+
     beslutad_av = models.ForeignKey('Myndighet',
                                     related_name='doc_beslutad_av',
                                     blank=True)
@@ -238,6 +237,7 @@ class Myndighetsforeskrift(ForfattningsamlingsDokument):
                 [self.forfattningssamling.slug, 
                  str(self.arsutgava), 
                  str(self.lopnummer)])
+
 
 class Myndighet(models.Model):
     """Organization publishing and/or authorizing documents."""
@@ -265,7 +265,7 @@ class Myndighet(models.Model):
         slug = self.get_slug(self.myndighetsnamn)
         uri = "http://rinfo.lagrummet.se/org/" + slug 
         return uri
-    
+
     def __unicode__(self):
         """Display value for user interface."""
         return u'%s' %(self.namn)
@@ -292,7 +292,7 @@ class Forfattningssamling(models.Model):
         max_length=10,
         unique=True,
         help_text="""T.ex. <em>EXFS</em>""")
-    
+
     slug = models.CharField(
         max_length=20,
         unique=True,
