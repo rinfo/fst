@@ -56,19 +56,6 @@ class  FSDokumentDescription(Description):
         for amnesord in obj.amnesord.all():
             add(DCES.subject, Literal(amnesord.titel, lang="sv"))
 
-        for i, bilaga in enumerate(obj.bilagor.all()):
-            if bilaga.titel:
-                bilaga_ref = URIRef("%s#bilaga_%s" % (obj.get_rinfo_uri(), i+1))
-                add(RPUBL.bilaga, bilaga_ref)
-                graph.add((bilaga_ref, DCT.title, Literal(bilaga.titel))) # no lang?
-
-        for dok in obj.ovriga_dokument.all():
-            dok_ref = URIRef("%s/%s" % (obj.get_rinfo_uri(), dok.file.url))
-            dok_add = lambda p, o: graph.add((dok_ref, p, o))
-            dok_add(RDF.type, FOAF.Document)
-            dok_add(DCT.title, Literal(dok.titel, lang="sv"))
-            dok_add(FOAF.primaryTopic, self.ref)
-
         return graph
 
 class AllmanaRadDescription(FSDokumentDescription):
@@ -101,6 +88,19 @@ class MyndighetsforeskriftDescription(FSDokumentDescription):
             if bemyndigande.kapitelnummer:
                 bemyndigande_add(RPUBL.angerKapitelnummer, Literal(bemyndigande.kapitelnummer))
             bemyndigande_add(RPUBL.angerParagrafnummer, Literal(bemyndigande.paragrafnummer))
+
+        for i, bilaga in enumerate(obj.bilagor.all()):
+            if bilaga.titel:
+                bilaga_ref = URIRef("%s#bilaga_%s" % (obj.get_rinfo_uri(), i+1))
+                add(RPUBL.bilaga, bilaga_ref)
+                graph.add((bilaga_ref, DCT.title, Literal(bilaga.titel))) # no lang?
+
+        for dok in obj.ovriga_dokument.all():
+            dok_ref = URIRef("%s/%s" % (obj.get_rinfo_uri(), dok.file.url))
+            dok_add = lambda p, o: graph.add((dok_ref, p, o))
+            dok_add(RDF.type, FOAF.Document)
+            dok_add(DCT.title, Literal(dok.titel, lang="sv"))
+            dok_add(FOAF.primaryTopic, self.ref)
 
         return graph
 
