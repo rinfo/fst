@@ -24,7 +24,7 @@ class FSDokument(models.Model):
 
     class Meta:
         abstract = True
-        
+
     @property
     def identifierare(self):
         return "%s %s:%s" % (self.forfattningssamling.kortnamn,
@@ -46,7 +46,9 @@ class FSDokument(models.Model):
                                      null=False, 
                                      blank=True,
                                      help_text=
-                                     """Grön bock = publicerad via FST. Rött streck = ej publicerad. OBS! Glöm inte att publicera eventuella ändringar.""")
+                                     """Grön bock = publicerad via FST. 
+                                     Rött streck = ej publicerad. 
+                                     Glöm inte att publicera!""")
 
     titel = models.CharField(
         max_length=512,
@@ -59,7 +61,8 @@ class FSDokument(models.Model):
         blank=True,
         unique=False,
         help_text=
-        """T.ex. <em>Denna föreskrift beskriver allmänna råd om arkiv hos statliga myndigheter</em>""")
+        """T.ex. <em>Denna föreskrift beskriver allmänna råd om arkiv hos 
+        statliga myndigheter</em>""")
 
     # NOTE: The FST webservice currently only supports document collections 
     # of type 'forfattningssamling'.
@@ -127,8 +130,8 @@ class FSDokument(models.Model):
         """Return canonical document URI used by rinfo system"""
 
         rinfo_uri = "http://rinfo.lagrummet.se/org/" + \
-                  "exempelmyndigheten"
-                  #self.get_slug(self.utgivare.namn)
+                  self.get_slug(self.utgivare.namn)
+        #"exempelmyndigheten"
         return  rinfo_uri
 
     def role_label(self):
@@ -170,14 +173,14 @@ class AllmannaRad(FSDokument):
                                help_text=
                                """Se till att dokumentet är i PDF-format.""")
 
-    beslutad_av = models.ForeignKey('AllmannaRad',
+    beslutad_av = models.ForeignKey('Myndighet',
                                     related_name='ar_beslutad_av',
                                     blank=True)
 
-    utgivare = models.ForeignKey('AllmannaRad',
+    utgivare = models.ForeignKey('Myndighet',
                                  related_name='ar_utgivare',
                                  blank=True)
-    
+
     def to_rdfxml(self):
         """Return metadata as RDF/XML for this document."""
         return rdfviews.AllmanaRadDescription(self).to_rdfxml()
@@ -272,7 +275,6 @@ class Myndighet(models.Model):
     def __unicode__(self):
         """Display value for user interface."""
         return u'%s' %(self.namn)
-
 
 
 class Forfattningssamling(models.Model):
