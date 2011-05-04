@@ -186,13 +186,15 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
             published = updated
 
         # Create RDF metadata
-        rdf_post = RDFPost.create_for(obj)
+        rdf_post = RDFPost.get_or_create(obj)
+        rdf_post.data = obj.to_rdfxml()
         rdf_post.save()
 
-        entry = AtomEntry(content_object=obj,
-                          entry_id=obj.get_rinfo_uri(),
-                          updated=updated, published=published,
-                          rdf_post=rdf_post)
+        entry = AtomEntry.get_or_create(obj)
+        entry.entry_id = obj.get_rinfo_uri()
+        entry.updated = updated
+        entry.published = published
+        entry.rdf_post = rdf_post
         entry.save()
 
 

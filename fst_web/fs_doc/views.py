@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
-from django.http import HttpResponse
-from django.shortcuts import render_to_response, get_object_or_404
-from django.template import RequestContext
 import datetime
-from fst_web.fs_doc.models import Myndighetsforeskrift, Forfattningssamling, Amnesord, AtomEntry,AllmannaRad
-from django.utils.feedgenerator import rfc3339_date
 from django.conf import settings
-from django.template import loader, Context
+from django.http import HttpResponse, Http404
+from django.shortcuts import render_to_response, get_object_or_404
+from django.template import  loader, Context, RequestContext
+from django.utils.feedgenerator import rfc3339_date
+from fst_web.fs_doc.models import Forfattningssamling, Myndighetsforeskrift, AllmannaRad, Amnesord, AtomEntry, RDFPost
 
 
 def _response(request, template, context):
@@ -27,11 +26,13 @@ def index(request):
 def foreskrift_rdf(request, fskortnamn, arsutgava, lopnummer):
     """Display RDF representation of document"""
 
-    fs = get_object_or_404(Forfattningssamling,slug=fskortnamn)
-    foreskrift = get_object_or_404(Myndighetsforeskrift,arsutgava=arsutgava,lopnummer=lopnummer,forfattningssamling=fs)
+    foreskrift = Myndighetsforeskrift.objects.get(
+            forfattningssamling__slug=fskortnamn, arsutgava=arsutgava, lopnummer=lopnummer)
 
-    # Return RDF
-    return HttpResponse(foreskrift.to_rdfxml(), mimetype="application/rdf+xml; charset=utf-8")
+    rdf_post = RDFPost.get_for(foreskrift)
+    if not rdf_post:
+        raise Http404
+    return HttpResponse(rdf_post.data, mimetype="application/rdf+xml; charset=utf-8")
 
 
 def allmanna_rad(request, fskortnamn, arsutgava, lopnummer):

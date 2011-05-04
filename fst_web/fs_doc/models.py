@@ -468,39 +468,48 @@ class Bemyndigandereferens(models.Model):
                                          self.paragrafnummer)
 
 
-class RDFPost(models.Model):
+class GenericUniqueMixin(object):
+
+    @classmethod
+    def get_for(cls, obj):
+        obj_type = ContentType.objects.get_for_model(obj)
+        for instance in cls.objects.filter(content_type__pk=obj_type.id, object_id=obj.id):
+            return instance
+
+    @classmethod
+    def get_or_create(cls, obj):
+        return cls.get_for(obj) or cls(content_object=obj)
+
+
+class RDFPost(models.Model, GenericUniqueMixin):
+
+    class Meta:
+        unique_together = ('content_type', 'object_id')
+
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField('object_id', db_index=True)
+    content_object = generic.GenericForeignKey('content_type', 'object_id')
 
     data = models.TextField(blank=False)
     md5 = models.CharField(max_length=32, blank=False)
 
     def save(self, *args, **kwargs):
-        self._add_checksum()
+        self.md5 = hashlib.md5(self.data).hexdigest()
         super(RDFPost, self).save(*args, **kwargs)
-
-    def _add_checksum(self):
-        checksum = hashlib.md5()
-        checksum.update(self.data)
-        self.md5 = checksum.hexdigest()
 
     @property
     def length(self):
         return len(self.data)
 
-    @classmethod
-    def create_for(cls, obj):
-        data = obj.to_rdfxml()
-        return cls(data=data)
 
-
-class AtomEntry(models.Model):
+class AtomEntry(models.Model, GenericUniqueMixin):
     """Class to create entry for Atom feed. 
 
     Automatically created when a document is saved, updated or deleted. For deletion, see the 'create_delete_entry'-signal defined below. For create/update, see 'ModelAdmin.save_model()' in 'rinfo/admin.py'.
     """
 
-    # TODO: check if this is necessary for 1-to-1 generic relationships
-    #class Meta:
-    #    unique_together = ('content_type', 'object_id')
+    class Meta:
+        unique_together = ('content_type', 'object_id')
 
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField('object_id', db_index=True)
