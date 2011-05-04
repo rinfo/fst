@@ -124,15 +124,28 @@ class RDFTestCase(TestCase):
 
     def test_foreskrift(self):
         """Verify that published 'Myndighetsforeskrift' document has correct
-        RDF metadata' for keywords (Django class'Amnesord')"""
+        RDF metadata """
 
         graph = self._get_foreskrift_graph("exfs", "2009", "1")
         ref = URIRef("/publ/exfs/2009:1", RINFO_BASE)
         title = Literal(u"Föreskrift om administration hos statliga myndigheter", lang='sv')
         keyword = Literal(u"Administration", lang='sv')
+        self.assertIn((ref, RDF.type, RPUBL.Myndighetsforeskrift), graph)
         self.assertIn((ref, DCT.title, title), graph)
         self.assertIn((ref, DCES.subject, keyword), graph)
 
+    def test_allmanna_rad(self):
+        """Verify that published 'AllmannaRad' document has correct
+        RDF metadata' """
+
+        graph = self._get_allmana_rad_graph("exfs", "2011", "1")
+        ref = URIRef("/publ/exfs/2011:1", RINFO_BASE)
+        title = Literal(u"Exempelmyndighetens allmänna råd om adminstration", lang='sv')
+        keyword = Literal(u"Administration", lang='sv')
+        self.assertIn((ref, RDF.type, RPUBL.AllmannaRad), graph)
+        self.assertIn((ref, DCT.title, title), graph)
+        self.assertIn((ref, DCES.subject, keyword), graph)
+        
     def test_egdirektiv(self):
         """Verify that published 'Myndighetsforeskrift' document has correct
         RDF metadata for legal directives (Django class 'CelexReferens')"""
@@ -159,8 +172,19 @@ class RDFTestCase(TestCase):
         self.assertFalse(list(graph.objects(ref, RPUBL.omtryckAv)))
 
     def _get_foreskrift_graph(self, fs_slug, arsutgava, lopnummer):
-        foreskrift = models.Myndighetsforeskrift.objects.get(
-                forfattningssamling__slug=fs_slug, arsutgava=arsutgava, lopnummer=lopnummer)
-        return Graph().parse(data=foreskrift.to_rdfxml())
+        return self._get_graph_for_type(models.Myndighetsforeskrift,
+                                        fs_slug, arsutgava, lopnummer)
 
+    def _get_allmana_rad_graph(self, fs_slug, arsutgava, lopnummer):
+        return self._get_graph_for_type(models.AllmannaRad, fs_slug,
+                                        arsutgava, lopnummer)
+
+    def _get_graph_for_type(self, modeltype, fs_slug, arsutgava, lopnummer):
+        foreskrift = modeltype.objects.get(
+                forfattningssamling__slug=fs_slug,
+                arsutgava=arsutgava, lopnummer=lopnummer)
+        return Graph().parse(data=foreskrift.to_rdfxml())
+    
+
+    
 
