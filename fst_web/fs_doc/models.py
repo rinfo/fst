@@ -16,7 +16,7 @@ from django.utils.feedgenerator import rfc3339_date
 from fst_web.fs_doc import rdfviews
 
 
-class ForfattningsamlingsDokument(models.Model):
+class FSDokument(models.Model):
     """Superclass of 'Myndighetsforeskrift' and 'AllmannaRad'.
 
     Defined by the Django model for practical reasons.
@@ -127,7 +127,8 @@ class ForfattningsamlingsDokument(models.Model):
         """Return canonical document URI used by rinfo system"""
 
         rinfo_uri = "http://rinfo.lagrummet.se/org/" + \
-                  self.get_slug(self.utgivare.namn)
+                  "exempelmyndigheten"
+                  #self.get_slug(self.utgivare.namn)
         return  rinfo_uri
 
     def role_label(self):
@@ -153,13 +154,13 @@ class ForfattningsamlingsDokument(models.Model):
         return u'%s %s' % (self.identifierare, self.titel)
 
 
-class AllmannaRad(ForfattningsamlingsDokument):
+class AllmannaRad(FSDokument):
     """Common document type in document collections of type 'författningsamling'.
 
     See also the domain model RDF definition at: http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#AllmannaRad
     """
 
-    class Meta(ForfattningsamlingsDokument.Meta):
+    class Meta(FSDokument.Meta):
         verbose_name = u"Allmänna råd"
         verbose_name_plural = u"Allmänna råd"
 
@@ -169,15 +170,17 @@ class AllmannaRad(ForfattningsamlingsDokument):
                                help_text=
                                """Se till att dokumentet är i PDF-format.""")
 
-    #TODO: Define 'allmanna_rad_rdf.xml' and start using this!
-    #def to_rdfxml(self):
-        #"""Return metadata as RDF/XML for this document."""
+    beslutad_av = models.ForeignKey('AllmannaRad',
+                                    related_name='ar_beslutad_av',
+                                    blank=True)
 
-        #template = loader.get_template('allmanna_rad_rdf.xml')
-        #context = Context({ 'allmanna_rad': self, 
-                            #'publisher_uri':
-                            #settings.FST_ORG_URI})
-        #return template.render(context)
+    utgivare = models.ForeignKey('AllmannaRad',
+                                 related_name='ar_utgivare',
+                                 blank=True)
+    
+    def to_rdfxml(self):
+        """Return metadata as RDF/XML for this document."""
+        return rdfviews.AllmanaRadDescription(self).to_rdfxml()
 
     @models.permalink
     def get_absolute_url(self):
@@ -189,13 +192,13 @@ class AllmannaRad(ForfattningsamlingsDokument):
                  str(self.lopnummer)])
 
 
-class Myndighetsforeskrift(ForfattningsamlingsDokument):
+class Myndighetsforeskrift(FSDokument):
     """Main document type in document collections of type 'författningsamling'. 
 
     See also the domain model RDF definition at: http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#Myndighetsforeskrift
     """
 
-    class Meta(ForfattningsamlingsDokument.Meta):
+    class Meta(FSDokument.Meta):
         verbose_name = u"Myndighetsföreskrift"
         verbose_name_plural = u"Myndighetsföreskrifter"
 
