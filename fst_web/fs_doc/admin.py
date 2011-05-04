@@ -169,34 +169,7 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
         form.save_m2m()
         obj.save()
         # Then create new entry
-        self._create_entry(obj)
-
-    def _create_entry(self, obj):
-        updated = datetime.now()
-
-        # Check if we already published this document
-        obj_type = ContentType.objects.get_for_model(obj)
-        entries = AtomEntry.objects.filter(content_type__pk=obj_type.id,
-                                           object_id=obj.id)
-        for entry in entries.order_by("published"):
-            published = entry.published
-            break
-        else:
-            # For new documents
-            published = updated
-
-        # Create RDF metadata
-        rdf_post = RDFPost.get_or_create(obj)
-        rdf_post.data = obj.to_rdfxml()
-        rdf_post.save()
-
-        entry = AtomEntry.get_or_create(obj)
-        entry.entry_id = obj.get_rinfo_uri()
-        entry.updated = updated
-        entry.published = published
-        entry.rdf_post = rdf_post
-        entry.save()
-
+        generate_entry_for(obj)
 
     #TODO: replace setting of field 'published' with complete atom feed workflow
     def make_published(self, request, queryset):
@@ -210,6 +183,33 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
     make_published.short_description = u"Publicera markerade \
                   föreskrifter via FST"
     actions = [make_published]
+
+
+def generate_entry_for(obj):
+    updated = datetime.now()
+
+    # Check if we already published this document
+    obj_type = ContentType.objects.get_for_model(obj)
+    entries = AtomEntry.objects.filter(content_type__pk=obj_type.id,
+                                        object_id=obj.id)
+    for entry in entries.order_by("published"):
+        published = entry.published
+        break
+    else:
+        # For new documents
+        published = updated
+
+    # Create RDF metadata
+    rdf_post = RDFPost.get_or_create(obj)
+    rdf_post.data = obj.to_rdfxml()
+    rdf_post.save()
+
+    entry = AtomEntry.get_or_create(obj)
+    entry.entry_id = obj.get_rinfo_uri()
+    entry.updated = updated
+    entry.published = published
+    entry.rdf_post = rdf_post
+    entry.save()
 
 
 admin.site.register(AllmannaRad, AllmannaRadAdmin)
