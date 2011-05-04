@@ -104,6 +104,31 @@
             "kapitelnummer": "4"
         }
     }, 
+        {
+        "pk": 1, 
+        "model": "fs_doc.allmannarad", 
+        "fields": {
+            "omtryck": false, 
+            "andrar": null, 
+            "arsutgava": "2011", 
+            "utgivare": 1, 
+            "beslutsdatum": "2011-05-01", 
+            "amnesord": [
+                1
+            ], 
+            "publicerad": false, 
+            "content": "allmanna_rad/EXFS-2011-1_1.pdf", 
+            "sammanfattning": "Exempelmyndighetens allm\u00e4nna r\u00e5d om adminstration", 
+            "ikrafttradandedatum": "2011-06-04", 
+            "upphaver": null, 
+            "utkom_fran_tryck": "2011-05-04", 
+            "forfattningssamling": 1, 
+            "lopnummer": "1", 
+            "content_md5": null, 
+            "beslutad_av": 1, 
+            "titel": "Exempelmyndighetens allm\u00e4nna r\u00e5d om adminstration"
+        }
+    }, 
     {
         "pk": 1, 
         "model": "fs_doc.myndighetsforeskrift", 
