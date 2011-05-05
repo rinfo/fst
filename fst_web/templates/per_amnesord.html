@@ -9,7 +9,8 @@
         <h2>{{ord.titel}}</h2>
         <ul class="foreskrifter">
             {% for foreskrift in ord.myndighetsforeskrift_set.all %}
-            <li><a href="{{foreskrift.get_absolute_url}}">{{foreskrift.fsnummer}} {{foreskrift.titel}}</a></li>
+            <li><a href="{{foreskrift.get_absolute_url}}">{{foreskrift.fsnummer}} 
+            {{foreskrift.titel}}</a></li>
             {% endfor %}
         </ul>
     {% endfor %}

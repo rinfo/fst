@@ -119,25 +119,24 @@ class FSDokument(models.Model):
         return slug
 
     def get_rinfo_uri(self):
-        """Return canonical document URI used by rinfo system"""
+        """Return canonical document URI"""
 
         rinfo_uri = "http://rinfo.lagrummet.se/publ/" + \
-                  self.get_slug(self.forfattningssamling.slug) + "/" + \
+                  self.forfattningssamling.slug + "/" + \
                   self.arsutgava + ":" + self.lopnummer 
         return  rinfo_uri
 
     def get_publisher_uri(self):
-        """Return canonical document URI used by rinfo system"""
+        """Return URI for publishing organization"""
 
         rinfo_uri = "http://rinfo.lagrummet.se/org/" + \
                   self.get_slug(self.utgivare.namn)
-        #"exempelmyndigheten"
         return  rinfo_uri
 
     def role_label(self):
         """Display role of document in Django GUI
 
-        Just a usability enhancement. This is not defined by the RDF model.
+        This is a just usability enhancement and not defined by RDF model.
         """
 
         label = u"Grundförfattning"
