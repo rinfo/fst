@@ -30,9 +30,6 @@ FST_SITE_URL = "http://127.0.0.1:8000"
 # Organisationsinformation.
 FST_ORG_NAME = u"Exempelmyndigheten"
 FST_ORG_NAME_POSSESSIVE = u"Exempelmyndighetens"
-# Unik identifierare i URI-format för organisationen som utfärdar föreskrifter
-# i denna applikation. Erhålls från rättsinformationsprojektet.
-FST_ORG_URI = "http://rinfo.lagrummet.se/org/exempelmyndigheten"
 
 # Kontaktinformation. Används i Atom-flödet.
 FST_ORG_CONTACT_NAME = u"Erik Exempelson"
