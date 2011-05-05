@@ -199,7 +199,7 @@ def generate_atom_entry_for(obj):
         # For new documents
         published = updated
 
-    #rdf_post = generate_rdf_post_for(obj)
+    # Get RDF representation of object
     rdf_post = RDFPost.get_for(obj) 
     
     entry = AtomEntry.get_or_create(obj)

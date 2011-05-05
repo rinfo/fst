@@ -543,7 +543,7 @@ class AtomEntry(models.Model, GenericUniqueMixin):
 
             'doc': self.content_object,
             'rdf_post': self.rdf_post,
-            'rdf_url': self.content_object.get_absolute_url() + "rdf",
+            'rdf_url': None if self.deleted else self.content_object.get_absolute_url() + "rdf",
             'fst_site_url': settings.FST_SITE_URL
         })
         return template.render(context)
@@ -553,6 +553,10 @@ def create_delete_entry(sender, instance, **kwargs):
     """Create a special entry when a
     'Myndighetsforeskrift' is deleted. This entry will be picked up by
     Rättsinformationssystemet (and others), allowing for quick corrections of already collected information."""
+    
+    existing_entry = AtomEntry.get_for(instance)
+    if existing_entry:
+        existing_entry.delete()
 
     entry = AtomEntry(
         content_object=instance,
