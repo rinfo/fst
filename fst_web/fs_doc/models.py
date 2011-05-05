@@ -130,7 +130,11 @@ class FSDokument(models.Model):
         """Return URI for publishing organization"""
 
         rinfo_uri = "http://rinfo.lagrummet.se/org/" + \
-                  self.get_slug(self.utgivare.namn)
+                  self.get_slug(settings.FST_ORG_NAME)
+        # NOTE: Concrete subclasses that want to 
+        # set 'utgivare' on documents can override 
+        # this and call 'self.get_slug(self.utgivare.namn)' instead.
+        
         return  rinfo_uri
 
     def role_label(self):
@@ -540,10 +544,6 @@ class AtomEntry(models.Model, GenericUniqueMixin):
             'doc': self.content_object,
             'rdf_post': self.rdf_post,
             'rdf_url': self.content_object.get_absolute_url() + "rdf",
-
-            # Not currently in use!
-            #'rinfo_base_uri': settings.FST_PUBL_BASE_URI,
-
             'fst_site_url': settings.FST_SITE_URL
         })
         return template.render(context)
