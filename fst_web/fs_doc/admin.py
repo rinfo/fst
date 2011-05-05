@@ -169,7 +169,7 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
         form.save_m2m()
         obj.save()
         # Then create new entry
-        generate_entry_for(obj)
+        generate_atom_entry_for(obj)
 
     #TODO: replace setting of field 'published' with complete atom feed workflow
     def make_published(self, request, queryset):
@@ -184,8 +184,7 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
                   föreskrifter via FST"
     actions = [make_published]
 
-
-def generate_entry_for(obj):
+def generate_atom_entry_for(obj):
     updated = datetime.now()
 
     # Check if we already published this document
@@ -199,10 +198,7 @@ def generate_entry_for(obj):
         # For new documents
         published = updated
 
-    # Create RDF metadata
-    rdf_post = RDFPost.get_or_create(obj)
-    rdf_post.data = obj.to_rdfxml()
-    rdf_post.save()
+    rdf_post = generate_rdf_post(obj)
 
     entry = AtomEntry.get_or_create(obj)
     entry.entry_id = obj.get_rinfo_uri()
@@ -210,6 +206,13 @@ def generate_entry_for(obj):
     entry.published = published
     entry.rdf_post = rdf_post
     entry.save()
+
+def generate_rdf_post(obj):
+    # Create RDF metadata
+    rdf_post = RDFPost.get_or_create(obj)
+    rdf_post.data = obj.to_rdfxml()
+    rdf_post.save()
+    return rdf_post
 
 
 admin.site.register(AllmannaRad, AllmannaRadAdmin)

@@ -524,7 +524,6 @@ class AtomEntry(models.Model, GenericUniqueMixin):
 
     rdf_post = models.OneToOneField(RDFPost, null=True, blank=True)
 
-
     def to_entryxml(self):
         """XML representation of entry according to Atom standard. 
 

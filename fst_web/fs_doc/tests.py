@@ -6,7 +6,7 @@ from xml.dom.minidom import parse, parseString
 from django.test import TestCase
 from rdflib import Graph, Literal, URIRef, RDF
 from fst_web.fs_doc import models
-from fst_web.fs_doc.admin import generate_entry_for
+from fst_web.fs_doc.admin import generate_atom_entry_for
 from fst_web.fs_doc.rdfviews import DCT, DCES, FOAF, RPUBL, RINFO_BASE
 
 
@@ -72,7 +72,7 @@ class WebTestCase(TestCase):
         foreskrift = models.Myndighetsforeskrift.objects.get(
                 forfattningssamling__slug="exfs", arsutgava="2009", lopnummer="1")
         # TODO: this will change to "on publish"
-        generate_entry_for(foreskrift)
+        generate_atom_entry_for(foreskrift)
 
         response = self.client.get('/publ/exfs/2009:1/rdf')
         self.failUnlessEqual(response.status_code, 200)
