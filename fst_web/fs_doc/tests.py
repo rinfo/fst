@@ -6,7 +6,7 @@ from xml.dom.minidom import parse, parseString
 from django.test import TestCase
 from rdflib import Graph, Literal, URIRef, RDF
 from fst_web.fs_doc import models
-from fst_web.fs_doc.admin import generate_atom_entry_for
+from fst_web.fs_doc.admin import generate_atom_entry_for, generate_rdf_post_for
 from fst_web.fs_doc.rdfviews import DCT, DCES, FOAF, RPUBL, RINFO_BASE
 
 
@@ -49,12 +49,12 @@ class WebTestCase(TestCase):
         response = self.client.get('/')
         self.failUnlessEqual(response.status_code, 200)
         self.assertContains(response,
-                "EXFS 2009:1 Föreskrift om administration hos statliga myndigheter")
+                            "EXFS 2009:1 Föreskrift om administration hos statliga myndigheter")
         self.assertContains(response,
-                "EXFS 2009:2 Föreskrift om ändring i föreskrift 2009:1 om "
-                "administration hos statliga myndigheter")
+                            "EXFS 2009:2 Föreskrift om ändring i föreskrift 2009:1 om "
+                            "administration hos statliga myndigheter")
         self.assertContains(response,
-                "EXFS 2009:3 Föreskrift om budgetering hos statliga myndigheter")
+                            "EXFS 2009:3 Föreskrift om budgetering hos statliga myndigheter")
 
     def test_foreskrift(self):
         """Verify that detail page for document 'Myndighetsforeskrift' loads
@@ -63,22 +63,23 @@ class WebTestCase(TestCase):
         response = self.client.get('/publ/exfs/2009:1/')
         self.failUnlessEqual(response.status_code, 200)
         self.assertContains(response,
-                "<h1>EXFS 2009:1 Föreskrift om administration hos statliga myndigheter")
+                            "<h1>EXFS 2009:1 Föreskrift om administration hos statliga myndigheter")
 
     def test_get_rdf(self):
         """Verify that published 'Myndighetsforeskrift' document has RDF
         metadata"""
         # Generate an RDFPost since it's not included in the fixture
         foreskrift = models.Myndighetsforeskrift.objects.get(
-                forfattningssamling__slug="exfs", arsutgava="2009", lopnummer="1")
-        # TODO: this will change to "on publish"
+            forfattningssamling__slug="exfs", arsutgava="2009", lopnummer="1")
+        generate_rdf_post_for(foreskrift)
+        # Generate atom entry
         generate_atom_entry_for(foreskrift)
 
+        # Try to read feed 
         response = self.client.get('/publ/exfs/2009:1/rdf')
         self.failUnlessEqual(response.status_code, 200)
         self.assertEqual(response['content-type'],
                          'application/rdf+xml; charset=utf-8')
-
 
 class FeedTestCase(TestCase):
     # Sample data loaded from ./fixtures/
@@ -151,7 +152,7 @@ class RDFTestCase(TestCase):
         self.assertIn((ref, RDF.type, RPUBL.AllmannaRad), graph)
         self.assertIn((ref, DCT.title, title), graph)
         self.assertIn((ref, DCES.subject, keyword), graph)
-        
+
     def test_egdirektiv(self):
         """Verify that published 'Myndighetsforeskrift' document has correct
         RDF metadata for legal directives (Django class 'CelexReferens')"""
@@ -187,10 +188,9 @@ class RDFTestCase(TestCase):
 
     def _get_graph_for_type(self, modeltype, fs_slug, arsutgava, lopnummer):
         foreskrift = modeltype.objects.get(
-                forfattningssamling__slug=fs_slug,
-                arsutgava=arsutgava, lopnummer=lopnummer)
+            forfattningssamling__slug=fs_slug,
+            arsutgava=arsutgava, lopnummer=lopnummer)
         return Graph().parse(data=foreskrift.to_rdfxml())
-    
 
-    
+
 
