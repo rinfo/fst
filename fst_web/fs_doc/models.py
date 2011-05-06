@@ -558,14 +558,14 @@ def create_delete_entry(sender, instance, **kwargs):
     if existing_entry:
         existing_entry.delete()
 
-    entry = AtomEntry(
+    deleted_entry = AtomEntry(
         content_object=instance,
         updated=datetime.now(),
         published=datetime.now(),
         deleted=datetime.now(),
         entry_id=instance.get_rinfo_uri())
 
-    entry.save()
+    deleted_entry.save()
 
 post_delete.connect(create_delete_entry, sender=Myndighetsforeskrift,
                     dispatch_uid="fst_web.fs_doc.create_delete_signal")
