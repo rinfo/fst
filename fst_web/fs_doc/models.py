@@ -41,7 +41,7 @@ class FSDokument(models.Model):
                                  blank=False,
                                  help_text="T.ex. <em>1</em>")
 
-    publicerad = models.BooleanField(u"Publicerad", 
+    is_published = models.BooleanField(u"Publicerad", 
                                      default=False, 
                                      null=False, 
                                      blank=True,

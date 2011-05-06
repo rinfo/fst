@@ -15,7 +15,7 @@ class ForfattningssamlingAdmin(admin.ModelAdmin):
         'fields': (
             'titel',
             'kortnamn')}),)
-    
+
     def save_model(self, request, obj, form, change):
         obj.slug = obj.get_slug(obj.kortnamn)
         super(ForfattningssamlingAdmin, self).save_model(
@@ -88,19 +88,19 @@ class AllmannaRadAdmin(admin.ModelAdmin):
                     'role_label')
     list_filter = ('beslutsdatum', 
                    'ikrafttradandedatum',
-                   'publicerad',
+                   'is_published',
                    'amnesord',
                    #'andrar',
                    'omtryck')
     ordering = ('-beslutsdatum', 'titel')
     search_fields = ('titel', 'identifierare',)
     #inlines = [BilagaInline, OvrigtDokumentInline]
-    readonly_fields = ('publicerad','identifierare',)
+    readonly_fields = ('is_published','identifierare',)
     save_on_top = True
     fieldsets = ((None, {
         'fields': (
             'identifierare',
-            'publicerad',
+            'is_published',
             'forfattningssamling',
             ('arsutgava', 'lopnummer'),
             'titel',
@@ -132,19 +132,19 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
                     'role_label')
     list_filter = ('beslutsdatum', 
                    'ikrafttradandedatum',
-                   'publicerad',
+                   'is_published',
                    'amnesord',
                    'andrar',
                    'omtryck')
     ordering = ('-beslutsdatum', 'titel')
     search_fields = ('titel', 'identifierare',)
     inlines = [BilagaInline, OvrigtDokumentInline]
-    readonly_fields = ('publicerad','identifierare',)
+    readonly_fields = ('is_published','identifierare',)
     save_on_top = True
     fieldsets = ((None, {
         'fields': (
             'identifierare',
-            'publicerad',
+            'is_published',
             'forfattningssamling',
             ('arsutgava', 'lopnummer'),
             'titel',
@@ -170,42 +170,46 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
         obj.save()
         # Now save RDF representation and Atom post
         generate_rdf_post_for(obj)
-        generate_atom_entry_for(obj)
+        generate_atom_entry_for(obj, update_only=True)
 
     #TODO: replace setting of field 'published' with complete atom feed workflow
     def make_published(self, request, queryset):
-        rows_updated = queryset.update(publicerad=True)
-        if rows_updated == 1:
-            message_bit = "1 föreskrift"
-        else:
-            message_bit = "%s föreskrifter" % rows_updated
+
+        for i, obj in enumerate(queryset):
+            generate_atom_entry_for(obj)
+            obj.is_published = True
+
+        message_bit = ("%s föreskrifter" % (i+1)) if i else "1 föreskrift"
         self.message_user(request, "%s har publicerats." % message_bit)
 
     make_published.short_description = u"Publicera markerade \
                   föreskrifter via FST"
     actions = [make_published]
 
-def generate_atom_entry_for(obj):
+def generate_atom_entry_for(obj, update_only=False):
     updated = datetime.now()
 
     # Check if we already published this document
     obj_type = ContentType.objects.get_for_model(obj)
     entries = AtomEntry.objects.filter(content_type__pk=obj_type.id,
-                                        object_id=obj.id)
+                                       object_id=obj.id)
+    # Find entry for object
     for entry in entries.order_by("published"):
-        published = entry.published
+        entry_published = entry.published
         break
     else:
+        if update_only:
+            return
         # For new documents
-        published = updated
-
+        entry_published = updated
+    
     # Get RDF representation of object
     rdf_post = RDFPost.get_for(obj) 
-    
+
     entry = AtomEntry.get_or_create(obj)
     entry.entry_id = obj.get_rinfo_uri()
     entry.updated = updated
-    entry.published = published
+    entry.published = entry_published
     entry.rdf_post = rdf_post
     entry.save()
 
@@ -225,4 +229,3 @@ admin.site.register(CelexReferens, CelexReferensAdmin)
 admin.site.register(Forfattningssamling, ForfattningssamlingAdmin)
 admin.site.register(AtomEntry)
 admin.site.register(Myndighet)
-

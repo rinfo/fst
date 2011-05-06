@@ -116,7 +116,7 @@
             "amnesord": [
                 1
             ], 
-            "publicerad": false, 
+            "is_published": false, 
             "content": "allmanna_rad/EXFS-2011-1_1.pdf", 
             "sammanfattning": "Exempelmyndighetens allm\u00e4nna r\u00e5d om adminstration", 
             "ikrafttradandedatum": "2011-06-04", 
@@ -143,7 +143,7 @@
                 3
             ], 
             "beslutsdatum": "2009-01-30", 
-            "publicerad": false, 
+            "is_published": false, 
             "content": "foreskrift/EXFS-2009-1.pdf", 
             "lopnummer": "1", 
             "ikrafttradandedatum": "2009-03-30", 
@@ -173,7 +173,7 @@
                 1
             ], 
             "beslutsdatum": "2009-04-01", 
-            "publicerad": false, 
+            "is_published": false, 
             "content": "foreskrift/EXFS-2009-2.pdf", 
             "lopnummer": "2", 
             "ikrafttradandedatum": "2009-04-01", 
@@ -206,7 +206,7 @@
                 2
             ], 
             "beslutsdatum": "2009-04-30", 
-            "publicerad": false, 
+            "is_published": false, 
             "content": "foreskrift/EXFS-2009-3.pdf", 
             "lopnummer": "3", 
             "ikrafttradandedatum": "2009-04-30", 

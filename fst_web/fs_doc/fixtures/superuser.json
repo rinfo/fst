@@ -103,7 +103,7 @@
                 3
             ], 
             "beslutsdatum": "2009-01-30", 
-            "publicerad": false, 
+            "is_published": false, 
             "content": "foreskrift/EXFS-2009-1.pdf", 
             "lopnummer": "1", 
             "ikrafttradandedatum": "2009-03-30", 
@@ -125,7 +125,7 @@
             "omtryck": true, 
             "arsutgava": "2009", 
             "beslutsdatum": "2009-04-01", 
-            "publicerad": false, 
+            "is_published": false, 
             "content": "foreskrift/EXFS-2009-2.pdf", 
             "lopnummer": "2", 
             "ikrafttradandedatum": "2009-04-01", 
