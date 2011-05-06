@@ -12,6 +12,7 @@ from fst_web.fs_doc.rdfviews import DCT, DCES, FOAF, RPUBL, RINFO_BASE
 
 NS_ATOM = "http://www.w3.org/2005/Atom"
 NS_ATOMLE = "http://purl.org/atompub/link-extensions/1.0"
+NS_AT = "http://purl.org/atompub/tombstones/1.0"
 
 
 class WebTestCase(TestCase):
@@ -65,65 +66,116 @@ class WebTestCase(TestCase):
         self.assertContains(response,
                             "<h1>EXFS 2009:1 Föreskrift om administration hos statliga myndigheter")
 
-    def test_get_rdf(self):
-        """Verify that published 'Myndighetsforeskrift' document has RDF
-        metadata"""
-        # Generate an RDFPost since it's not included in the fixture
-        foreskrift = models.Myndighetsforeskrift.objects.get(
-            forfattningssamling__slug="exfs", arsutgava="2009", lopnummer="1")
-        generate_rdf_post_for(foreskrift)
-        # Generate atom entry
-        generate_atom_entry_for(foreskrift)
-
-        # Try to read feed 
-        response = self.client.get('/publ/exfs/2009:1/rdf')
-        self.failUnlessEqual(response.status_code, 200)
-        self.assertEqual(response['content-type'],
-                         'application/rdf+xml; charset=utf-8')
-
-class FeedTestCase(TestCase):
-    # Sample data loaded from ./fixtures/
-    fixtures = ['exempeldata.json']
-
-    def test_empty_feed(self):
-        """Verify that an empty Atom feed is created and can be read NOTE -
-        Atom feed is empty until entries are explicitly published"""
+    def test_feed(self):
+        """Verify that Atom feed is created and can be read """
 
         response = self.client.get('/feed/')
         self.failUnlessEqual(response.status_code, 200)
         self.assertEqual(response['content-type'],
                          'application/atom+xml; charset=utf-8')
         dom = parseString(response.content)
-        # One feed element
+        # Feed has exactly one root element
         self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'feed')), 1)
         # No entries yet
         self.assertFalse(dom.getElementsByTagNameNS(NS_ATOM, 'entry'))
 
+    def test_get_rdf(self):
+        """Verify that we can load RDF data for a published document"""
+
+        # Get document to publish
+        foreskrift = models.Myndighetsforeskrift.objects.get(
+            forfattningssamling__slug="exfs", arsutgava="2009", lopnummer="1")
+        generate_rdf_post_for(foreskrift)
+        # Publish document. TODO - use explicit publish method here!
+        generate_atom_entry_for(foreskrift)
+
+        # Check that RDF representation exists
+        response = self.client.get('/publ/exfs/2009:1/rdf')
+        self.failUnlessEqual(response.status_code, 200)
+        self.assertEqual(response['content-type'],
+                         'application/rdf+xml; charset=utf-8')
+
+
+class FeedTestCase(TestCase):
+    # Sample data loaded from ./fixtures/
+    fixtures = ['exempeldata.json']
+
+    def setUp(self):
+        # Publish some of the documents from fixture
+        foreskrift1 = models.Myndighetsforeskrift.objects.get(
+            forfattningssamling__slug="exfs", arsutgava="2009", lopnummer="1")
+        generate_rdf_post_for(foreskrift1)
+        #TODO - explicitly publish document
+        generate_atom_entry_for(foreskrift1)
+
+        foreskrift2 = models.Myndighetsforeskrift.objects.get(
+            forfattningssamling__slug="exfs", arsutgava="2009", lopnummer="2")
+        generate_rdf_post_for(foreskrift2)
+        #TODO - explicitly publish document
+        generate_atom_entry_for(foreskrift2)
+
+    def test_feed_has_entries(self):
+        """Verify that an Atom feed with entries is created from sample data"""
+
+        # Get feed and parse content
+        response = self.client.get('/feed/')
+        self.failUnlessEqual(response.status_code, 200)
+        dom = parseString(response.content)
+
+        # Feed has exactly one root element
+        self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'feed')), 1)
+        # Feed has two published entries
+        self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'entry')), 2)
+
     def test_entry_link_md5(self):
-        """Verify that checksum of document in Atom feed is correct NOTE - Atom
-        feed is empty until entries are explicitly published"""
+        """Verify that checksum of document in Atom feed is correct"""
 
         # Get Atom feed
         response = self.client.get('/feed/')
         self.failUnlessEqual(response.status_code, 200)
 
-        # TODO: publish a document to produce an entry, then run this
-        ## Get links to documents in Atom feed
-        #dom = parseString(response.content)
-        #links = dom.getElementsByTagNameNS(NS_ATOM, 'link')
-        #avlast_md5 = ""
-        #for link in links:
-        #    # Look for specific sample document in feed
-        #    if link.getAttribute("href").endswith("/publ/exfs/2009:1/rdf"):
-        #        # Read document checksum from feed
-        #        avlast_md5 = link.getAttributeNS(NS_ATOMLE, "md5")
-        #        # Compare checksum from feed with checksum of current document
-        #        response = self.client.get('/publ/exfs/2009:1/rdf')
-        #        md5=hashlib.md5()
-        #        md5.update(response.content)
-        #        beraknad_rdfmd5=md5.hexdigest()
-        #        self.assertEqual(beraknad_rdfmd5, avlast_md5)
+        # Get links to documents in Atom feed
+        dom = parseString(response.content)
+        links = dom.getElementsByTagNameNS(NS_ATOM, 'link')
+        avlast_md5 = ""
+        for link in links:
+            # Look for specific sample document in feed
+            if link.getAttribute("href").endswith("/publ/exfs/2009:1"):
+                # Read document checksum from feed
+                avlast_md5 = link.getAttributeNS(NS_ATOMLE, "md5")
+                # Compare checksum from feed with checksum of current document
+                response = self.client.get('/publ/exfs/2009:1')
+                md5=hashlib.md5()
+                md5.update(response.content)
+                beraknad_rdfmd5=md5.hexdigest()
+                self.assertEqual(beraknad_rdfmd5, avlast_md5)
 
+    def test_delete_feedentry(self):
+        """Verify that entries can be deleted and replaced by special entry"""
+
+        # Get feed and parse content
+        response = self.client.get('/feed/')
+        self.failUnlessEqual(response.status_code, 200)
+        dom = parseString(response.content)
+        
+        # Check that two document entries exist
+        self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'entry')), 2)
+        
+        # Delete one document
+        foreskrift2 = models.Myndighetsforeskrift.objects.get(
+            forfattningssamling__slug="exfs", arsutgava="2009", lopnummer="2")
+        foreskrift2.delete()
+
+        # Get feed and parse content again
+        response = self.client.get('/feed/')
+        self.failUnlessEqual(response.status_code, 200)
+        dom = parseString(response.content)
+
+        # Only one document entry exists
+        self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'entry')), 1)
+
+        # Special entry signaling deletion exists
+        self.assertTrue(dom.getElementsByTagNameNS(NS_AT, 'deleted-entry'))
 
 class RDFTestCase(TestCase):
 
@@ -191,6 +243,4 @@ class RDFTestCase(TestCase):
             forfattningssamling__slug=fs_slug,
             arsutgava=arsutgava, lopnummer=lopnummer)
         return Graph().parse(data=foreskrift.to_rdfxml())
-
-
 
