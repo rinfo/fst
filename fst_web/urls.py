@@ -23,10 +23,7 @@ urlpatterns = patterns('',
     (r'^publ/(?P<fs_dokument_slug>.*)/rdf$', 'fst_web.fs_doc.views.fs_dokument_rdf'),
 
     # Display info about specific document (t.ex. "/publ/RA-FS/2006:6"
-    (r'^publ/(?P<fskortnamn>.*)/(?P<arsutgava>.*):(?P<lopnummer>.*)/$', 'fst_web.fs_doc.views.foreskrift'),
-    
-    # Display info about specific document
-    (r'^publ/(?P<fskortnamn>.*)/(?P<arsutgava>.*):(?P<lopnummer>.*)/$', 'fst_web.fs_doc.views.allmanna_rad'),
+    (r'^publ/(?P<fs_dokument_slug>.*)/$', 'fst_web.fs_doc.views.fs_dokument'),
 
     # Display documents sorted by keyword ("/amnesord/")
     (r'^amnesord/$', 'fst_web.fs_doc.views.amnesord'),

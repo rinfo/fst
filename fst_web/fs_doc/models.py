@@ -109,6 +109,13 @@ class FSDokument(models.Model):
                                    blank=True,
                                    null=True)
 
+    @models.permalink
+    def get_absolute_url(self):
+        """"Construct Django URL path from document attributes"""
+
+        return ('fst_web.fs_doc.views.fs_dokument',
+                [self.get_fs_dokument_slug()])
+
     def get_fs_dokument_slug(self):
         return "%s/%s:%s" % (self.forfattningssamling.slug,
                       self.arsutgava,
@@ -184,15 +191,6 @@ class AllmannaRad(FSDokument):
         """Return metadata as RDF/XML for this document."""
         return rdfviews.AllmanaRadDescription(self).to_rdfxml()
 
-    @models.permalink
-    def get_absolute_url(self):
-        """"Construct Django URL path from document attributes"""
-
-        return ('fst_web.fs_doc.views.allmanna_rad',
-                [self.forfattningssamling.slug,
-                 str(self.arsutgava),
-                 str(self.lopnummer)])
-
 
 class Myndighetsforeskrift(FSDokument):
     """Main document type in document collections of type 'författningsamling'.
@@ -234,15 +232,6 @@ class Myndighetsforeskrift(FSDokument):
     def to_rdfxml(self):
         """Return metadata as RDF/XML for this document."""
         return rdfviews.MyndighetsforeskriftDescription(self).to_rdfxml()
-
-    @models.permalink
-    def get_absolute_url(self):
-        """"Construct Django URL path from document attributes"""
-
-        return ('fst_web.fs_doc.views.foreskrift',
-                [self.forfattningssamling.slug,
-                 str(self.arsutgava),
-                 str(self.lopnummer)])
 
 
 class Myndighet(models.Model):
