@@ -11,6 +11,7 @@ from fst_web.fs_doc.rdfviews import DCT, DCES, FOAF, RPUBL, RINFO_BASE
 
 
 NS_ATOM = "http://www.w3.org/2005/Atom"
+NS_ATOM_FH = "http://purl.org/syndication/history/1.0"
 NS_ATOMLE = "http://purl.org/atompub/link-extensions/1.0"
 NS_AT = "http://purl.org/atompub/tombstones/1.0"
 
@@ -117,15 +118,16 @@ class FeedTestCase(TestCase):
     def test_feed_has_entries(self):
         """Verify that an Atom feed with entries is created from sample data"""
 
-        # Get feed and parse content
-        response = self.client.get('/feed/')
-        self.failUnlessEqual(response.status_code, 200)
-        dom = parseString(response.content)
+        dom = self._get_parsed_feed('/feed/')
 
         # Feed has exactly one root element
         self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'feed')), 1)
         # Feed has two published entries
         self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'entry')), 2)
+
+    def test_feed_is_complete(self):
+        dom = self._get_parsed_feed('/feed/')
+        self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM_FH, 'complete')), 1)
 
     def test_entry_link_md5(self):
         """Verify that checksum of document in Atom feed is correct"""
@@ -153,10 +155,7 @@ class FeedTestCase(TestCase):
     def test_delete_feedentry(self):
         """Verify that entries can be deleted and replaced by special entry"""
 
-        # Get feed and parse content
-        response = self.client.get('/feed/')
-        self.failUnlessEqual(response.status_code, 200)
-        dom = parseString(response.content)
+        dom = self._get_parsed_feed('/feed/')
         
         # Check that two document entries exist
         self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'entry')), 2)
@@ -166,16 +165,22 @@ class FeedTestCase(TestCase):
             forfattningssamling__slug="exfs", arsutgava="2009", lopnummer="2")
         foreskrift2.delete()
 
-        # Get feed and parse content again
-        response = self.client.get('/feed/')
-        self.failUnlessEqual(response.status_code, 200)
-        dom = parseString(response.content)
+        dom = self._get_parsed_feed('/feed/')
 
         # Only one document entry exists
         self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'entry')), 1)
 
         # Special entry signaling deletion exists
         self.assertTrue(dom.getElementsByTagNameNS(NS_AT, 'deleted-entry'))
+
+    def _get_parsed_feed(self, path):
+        # Get Atom feed
+        response = self.client.get(path)
+        self.failUnlessEqual(response.status_code, 200)
+        self.assertEqual(response['content-type'],
+                         'application/atom+xml; charset=utf-8')
+        return parseString(response.content)
+
 
 class RDFTestCase(TestCase):
 
