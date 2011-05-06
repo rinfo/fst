@@ -30,24 +30,24 @@ class FSDokument(models.Model):
         return "%s %s:%s" % (self.forfattningssamling.kortnamn,
                              self.arsutgava, self.lopnummer)
 
-    arsutgava = models.CharField("Årsutgåva", 
+    arsutgava = models.CharField("Årsutgåva",
                                  max_length=13,
-                                 unique=False, 
+                                 unique=False,
                                  blank=False,
                                  help_text="T.ex. <em>2010</em>")
-    lopnummer = models.CharField("Löpnummer", 
+    lopnummer = models.CharField("Löpnummer",
                                  max_length=3,
-                                 unique=False, 
+                                 unique=False,
                                  blank=False,
                                  help_text="T.ex. <em>1</em>")
 
-    is_published = models.BooleanField(u"Publicerad", 
-                                     default=False, 
-                                     null=False, 
+    is_published = models.BooleanField(u"Publicerad",
+                                     default=False,
+                                     null=False,
                                      blank=True,
                                      help_text=
-                                     """Grön bock = publicerad via FST. 
-                                     Rött streck = ej publicerad. 
+                                     """Grön bock = publicerad via FST.
+                                     Rött streck = ej publicerad.
                                      Glöm inte att publicera!""")
 
     titel = models.CharField(
@@ -61,12 +61,12 @@ class FSDokument(models.Model):
         blank=True,
         unique=False,
         help_text=
-        """T.ex. <em>Denna föreskrift beskriver allmänna råd om arkiv hos 
+        """T.ex. <em>Denna föreskrift beskriver allmänna råd om arkiv hos
         statliga myndigheter</em>""")
 
-    # NOTE: The FST webservice currently only supports document collections 
+    # NOTE: The FST webservice currently only supports document collections
     # of type 'forfattningssamling'.
-    forfattningssamling = models.ForeignKey('Forfattningssamling', 
+    forfattningssamling = models.ForeignKey('Forfattningssamling',
                                             blank=False,
                                             verbose_name=u"författningssamling")
 
@@ -76,65 +76,60 @@ class FSDokument(models.Model):
 
     utkom_fran_tryck = models.DateField("Utkom från tryck", blank=False)
 
-    omtryck = models.BooleanField(u"Är omtryck", 
-                                  default=False, 
-                                  null=False, 
+    omtryck = models.BooleanField(u"Är omtryck",
+                                  default=False,
+                                  null=False,
                                   blank=True,
                                   help_text=
                                   """Anger om denna föreskrift är ett omtryck.""")
 
-    amnesord = models.ManyToManyField('Amnesord', 
-                                      blank=True, 
+    amnesord = models.ManyToManyField('Amnesord',
+                                      blank=True,
                                       verbose_name=u"ämnesord")
 
 
     # Optional value: specifies that this document changes another document
     # TODO: change definition to support 1-M relation
-    andrar = models.ForeignKey("self", 
-                               null=True, 
+    andrar = models.ForeignKey("self",
+                               null=True,
                                blank=True,
-                               related_name="andringar", 
+                               related_name="andringar",
                                verbose_name=u"Ändrar")
 
     # Optional value: specifies that this document invalidates another document
     # TODO: change definition to support 1-M relation
-    upphaver = models.ForeignKey("self", 
-                                 null=True, 
+    upphaver = models.ForeignKey("self",
+                                 null=True,
                                  blank=True,
-                                 related_name="upphavningar", 
+                                 related_name="upphavningar",
                                  verbose_name=u"Upphäver")
 
     # Store checksum of uploaded file
-    content_md5 = models.CharField(max_length=32, 
-                                   blank=True, 
+    content_md5 = models.CharField(max_length=32,
+                                   blank=True,
                                    null=True)
 
-    def get_slug(self,tag):
-        """"Transform identifiers with Swedish characters for URI use
-
-        As specified by: http://dev.lagrummet.se/dokumentation/system/uri-principer.pdf
-        """
-        tag = tag.lower().encode("utf-8")
-        slug = tag.replace('å','aa').replace('ä','ae').replace('ö','oe').replace(' ','_')
-        return slug
+    def get_fs_dokument_slug(self):
+        return "%s/%s:%s" % (self.forfattningssamling.slug,
+                      self.arsutgava,
+                      self.lopnummer)
 
     def get_rinfo_uri(self):
         """Return canonical document URI"""
 
         rinfo_uri = "http://rinfo.lagrummet.se/publ/" + \
-                  self.forfattningssamling.slug + "/" + \
-                  self.arsutgava + ":" + self.lopnummer 
+                  self.get_fs_dokument_slug()
         return  rinfo_uri
 
     def get_publisher_uri(self):
         """Return URI for publishing organization"""
 
         rinfo_uri = "http://rinfo.lagrummet.se/org/" + \
-                  self.get_slug(settings.FST_ORG_NAME)
-        # NOTE: Concrete subclasses that want to 
-        # set 'utgivare' on documents can override 
-        # this and call 'self.get_slug(self.utgivare.namn)' instead.
-        
+                  to_slug(settings.FST_ORG_NAME)
+        # NOTE: Concrete subclasses that want to
+        # set 'utgivare' on documents can override
+        # this and call 'to_slug(self.utgivare.namn)' instead.
+
         return  rinfo_uri
 
     def role_label(self):
@@ -163,7 +158,8 @@ class FSDokument(models.Model):
 class AllmannaRad(FSDokument):
     """Common document type in document collections of type 'författningsamling'.
 
-    See also the domain model RDF definition at: http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#AllmannaRad
+    See also the domain model RDF definition at:
+    http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#AllmannaRad
     """
 
     class Meta(FSDokument.Meta):
@@ -193,15 +189,16 @@ class AllmannaRad(FSDokument):
         """"Construct Django URL path from document attributes"""
 
         return ('fst_web.fs_doc.views.allmanna_rad',
-                [self.forfattningssamling.slug, 
-                 str(self.arsutgava), 
+                [self.forfattningssamling.slug,
+                 str(self.arsutgava),
                  str(self.lopnummer)])
 
 
 class Myndighetsforeskrift(FSDokument):
-    """Main document type in document collections of type 'författningsamling'. 
+    """Main document type in document collections of type 'författningsamling'.
 
-    See also the domain model RDF definition at: http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#Myndighetsforeskrift
+    See also the domain model RDF definition at:
+    http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#Myndighetsforeskrift
     """
 
     class Meta(FSDokument.Meta):
@@ -216,13 +213,13 @@ class Myndighetsforeskrift(FSDokument):
                                """Se till att dokumentet är i PDF-format.""")
 
     bemyndiganden = models.ManyToManyField('Bemyndigandereferens',
-                                           blank=False, 
+                                           blank=False,
                                            verbose_name=
                                            u"referenser till bemyndiganden")
 
 
     celexreferenser = models.ManyToManyField('CelexReferens',
-                                             blank=True, 
+                                             blank=True,
                                              verbose_name=
                                              u"Bidrar till att genomföra EG-direktiv", related_name="foreskrifter")
 
@@ -243,8 +240,8 @@ class Myndighetsforeskrift(FSDokument):
         """"Construct Django URL path from document attributes"""
 
         return ('fst_web.fs_doc.views.foreskrift',
-                [self.forfattningssamling.slug, 
-                 str(self.arsutgava), 
+                [self.forfattningssamling.slug,
+                 str(self.arsutgava),
                  str(self.lopnummer)])
 
 
@@ -271,8 +268,8 @@ class Myndighet(models.Model):
 
     def get_rinfo_uri(self):
         """Get URI from service provided by rinfo system """
-        slug = self.get_slug(self.myndighetsnamn)
-        uri = "http://rinfo.lagrummet.se/org/" + slug 
+        slug = to_slug(self.myndighetsnamn)
+        uri = "http://rinfo.lagrummet.se/org/" + slug
         return uri
 
     def __unicode__(self):
@@ -281,9 +278,10 @@ class Myndighet(models.Model):
 
 
 class Forfattningssamling(models.Model):
-    """Document collection of type 'författningsamling'. 
+    """Document collection of type 'författningsamling'.
 
-    See also the domain model RDF definition at: http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#forfattningssamling
+    See also the domain model RDF definition at:
+    http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#forfattningssamling
     """
 
     class Meta:
@@ -306,22 +304,13 @@ class Forfattningssamling(models.Model):
         unique=True,
         help_text="""T.ex. <em>exfs</em>""")
 
-    def get_slug(self,tag):
-        """"Transform identifiers with Swedish characters for URI use
-
-        As specified by: http://dev.lagrummet.se/dokumentation/system/uri-principer.pdf
-        """
-        tag = tag.lower().encode("utf-8")
-        slug = tag.replace('å','aa').replace('ä','ae').replace('ö','oe').replace(' ','_')
-        return slug
-
     def get_rinfo_uri(self):
         """"Create URI for this document collection
 
         As specified by: http://dev.lagrummet.se/dokumentation/system/uri-principer.pdf
         """
-        slug = self.get_slug(self.kortnamn)
-        uri = "http://rinfo.lagrummet.se/serier/fs/" + slug 
+        slug = to_slug(self.kortnamn)
+        uri = "http://rinfo.lagrummet.se/serier/fs/" + slug
         return uri
 
     def identifierare(self):
@@ -355,13 +344,13 @@ class Bilaga(HasFile):
         verbose_name = u"Bilaga"
         verbose_name_plural = u"Bilagor"
 
-    foreskrift = models.ForeignKey('Myndighetsforeskrift', 
-                                   blank=False, 
+    foreskrift = models.ForeignKey('Myndighetsforeskrift',
+                                   blank=False,
                                    related_name='bilagor')
 
-    titel = models.CharField("Titel", 
-                             max_length=512, 
-                             blank=True, 
+    titel = models.CharField("Titel",
+                             max_length=512,
+                             blank=True,
                              null=True,
                              help_text="""T.ex. <em>Bilaga 1</em>""")
 
@@ -382,8 +371,8 @@ class OvrigtDokument(HasFile):
         verbose_name = u"Övrigt dokument"
         verbose_name_plural = u"Övriga dokument"
 
-    foreskrift = models.ForeignKey('Myndighetsforeskrift', 
-                                   blank=False, 
+    foreskrift = models.ForeignKey('Myndighetsforeskrift',
+                                   blank=False,
                                    related_name='ovriga_dokument')
 
     titel = models.CharField("Titel", max_length=512, blank=False, null=False,
@@ -444,21 +433,21 @@ class Bemyndigandereferens(models.Model):
     titel = models.CharField(max_length=255,
                              help_text="""T.ex. <em>Arkivförordningen</em>""")
 
-    sfsnummer = models.CharField("SFS-nummer", 
-                                 max_length=10, 
+    sfsnummer = models.CharField("SFS-nummer",
+                                 max_length=10,
                                  blank=False,
                                  help_text="T.ex. <em>1991:446</em>")
 
-    kapitelnummer = models.CharField(max_length=10, 
+    kapitelnummer = models.CharField(max_length=10,
                                      blank=True,
                                      help_text="T.ex. <em>12</em>")
 
     # Paragrafnummer, t.ex. "11"
-    paragrafnummer = models.CharField(max_length=10, 
+    paragrafnummer = models.CharField(max_length=10,
                                       blank=True,
                                       help_text="T.ex. <em>12</em>")
 
-    kommentar = models.CharField(max_length=255, 
+    kommentar = models.CharField(max_length=255,
                                  blank=True,
                                  help_text=
                                  """T.ex. <em>rätt att meddela föreskrifter om notarietjänstgöring och notariemeritering</em>""")
@@ -468,8 +457,8 @@ class Bemyndigandereferens(models.Model):
             kap_text = " kap. "
         else:
             kap_text = " "
-        return u"%s (%s) %s %s %s §" % (self.titel, self.sfsnummer, 
-                                         self.kapitelnummer, kap_text, 
+        return u"%s (%s) %s %s %s §" % (self.titel, self.sfsnummer,
+                                         self.kapitelnummer, kap_text,
                                          self.paragrafnummer)
 
 
@@ -495,6 +484,7 @@ class RDFPost(models.Model, GenericUniqueMixin):
     object_id = models.PositiveIntegerField('object_id', db_index=True)
     content_object = generic.GenericForeignKey('content_type', 'object_id')
 
+    slug = models.CharField(max_length=64, blank=False)
     data = models.TextField(blank=False)
     md5 = models.CharField(max_length=32, blank=False)
 
@@ -508,9 +498,11 @@ class RDFPost(models.Model, GenericUniqueMixin):
 
 
 class AtomEntry(models.Model, GenericUniqueMixin):
-    """Class to create entry for Atom feed. 
+    """Class to create entry for Atom feed.
 
-    Automatically created when a document is saved, updated or deleted. For deletion, see the 'create_delete_entry'-signal defined below. For create/update, see 'ModelAdmin.save_model()' in 'rinfo/admin.py'.
+    Automatically created when a document is saved, updated or deleted. For
+    deletion, see the 'create_delete_entry'-signal defined below. For
+    create/update, see 'ModelAdmin.save_model()' in 'rinfo/admin.py'.
     """
 
     class Meta:
@@ -529,7 +521,7 @@ class AtomEntry(models.Model, GenericUniqueMixin):
     rdf_post = models.OneToOneField(RDFPost, null=True, blank=True)
 
     def to_entryxml(self):
-        """XML representation of entry according to Atom standard. 
+        """XML representation of entry according to Atom standard.
 
         Uses template in templates/foreskrift_entry.xml
         """
@@ -550,12 +542,14 @@ class AtomEntry(models.Model, GenericUniqueMixin):
 
 
 def create_delete_entry(sender, instance, **kwargs):
-    """Create a special entry when a
-    'Myndighetsforeskrift' is deleted. This entry will be picked up by
-    Rättsinformationssystemet (and others), allowing for quick corrections of already collected information."""
-    
+    """Create a special entry when a 'Myndighetsforeskrift' is deleted.
+
+    This entry will be picked up by Rättsinformationssystemet (and others),
+    allowing for quick corrections of already collected information."""
+
     existing_entry = AtomEntry.get_for(instance)
     if existing_entry:
+        existing_entry.rdf_post.delete()
         existing_entry.delete()
 
     deleted_entry = AtomEntry(
@@ -570,6 +564,9 @@ def create_delete_entry(sender, instance, **kwargs):
 post_delete.connect(create_delete_entry, sender=Myndighetsforeskrift,
                     dispatch_uid="fst_web.fs_doc.create_delete_signal")
 
+post_delete.connect(create_delete_entry, sender=AllmannaRad,
+                    dispatch_uid="fst_web.fs_doc.create_delete_signal")
+
 
 def get_file_md5(opened_file):
     md5sum = hashlib.md5()
@@ -579,3 +576,15 @@ def get_file_md5(opened_file):
         if not data: break
         md5sum.update(data)
     return md5sum.hexdigest()
+
+
+def to_slug(tag):
+    """"Transform identifiers with Swedish characters for URI use.
+
+    As specified by: http://dev.lagrummet.se/dokumentation/system/uri-principer.pdf
+    """
+    tag = tag.lower().encode("utf-8")
+    slug = tag.replace('å','aa').replace('ä','ae').replace('ö','oe').replace(' ','_')
+    return slug
+
+

@@ -17,7 +17,7 @@ class ForfattningssamlingAdmin(admin.ModelAdmin):
             'kortnamn')}),)
 
     def save_model(self, request, obj, form, change):
-        obj.slug = obj.get_slug(obj.kortnamn)
+        obj.slug = to_slug(obj.kortnamn)
         super(ForfattningssamlingAdmin, self).save_model(
             request, obj, form, change)
         obj.save
@@ -77,7 +77,34 @@ class HasContentFileForm(HasFileForm):
     FILE_FIELD_KEY = 'content'
 
 
-class AllmannaRadAdmin(admin.ModelAdmin):
+class FSDokumentAdminMixin(object):
+
+    def save_model(self, request, obj, form, change):
+        """Create an AtomEntry object when 'Myndighetsforeskrift' is saved or
+        updated. See 'create_delete_entry' in 'rinfo/models.py' for
+        deletion."""
+
+        # Save the document and it's relations to other objects
+        super(FSDokumentAdminMixin, self).save_model(
+            request, obj, form, change)
+        form.save_m2m()
+        obj.save()
+        # Now save RDF representation and Atom post
+        generate_rdf_post_for(obj)
+        generate_atom_entry_for(obj, update_only=True)
+
+    def make_published(self, request, queryset):
+        """Puslish selected documents by creating Atom entries."""
+        for i, obj in enumerate(queryset):
+            generate_atom_entry_for(obj)
+            obj.is_published = True
+        self.message_user(request, "%s dokument har publicerats." % (i+1))
+
+    make_published.short_description = u"Publicera markerade dokument via FST"
+    actions = [make_published]
+
+
+class AllmannaRadAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
     list_display = ('identifierare', 
                     'arsutgava', 
                     'lopnummer', 
@@ -118,7 +145,7 @@ class AllmannaRadAdmin(admin.ModelAdmin):
     filter_horizontal = ('amnesord',)
 
 
-class MyndighetsforeskriftAdmin(admin.ModelAdmin):
+class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
 
     form = HasContentFileForm
 
@@ -160,31 +187,6 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin):
         }),)
     filter_horizontal = ('bemyndiganden','amnesord','celexreferenser')
 
-    def save_model(self, request, obj, form, change):
-        """Create an AtomEntry object when 'Myndighetsforeskrift' is saved or updated. See 'create_delete_entry' in 'rinfo/models.py' for deletion."""
-
-        # Save the document and it's relations to other objects
-        super(MyndighetsforeskriftAdmin, self).save_model(
-            request, obj, form, change)
-        form.save_m2m()
-        obj.save()
-        # Now save RDF representation and Atom post
-        generate_rdf_post_for(obj)
-        generate_atom_entry_for(obj, update_only=True)
-
-    #TODO: replace setting of field 'published' with complete atom feed workflow
-    def make_published(self, request, queryset):
-
-        for i, obj in enumerate(queryset):
-            generate_atom_entry_for(obj)
-            obj.is_published = True
-
-        message_bit = ("%s föreskrifter" % (i+1)) if i else "1 föreskrift"
-        self.message_user(request, "%s har publicerats." % message_bit)
-
-    make_published.short_description = u"Publicera markerade \
-                  föreskrifter via FST"
-    actions = [make_published]
 
 def generate_atom_entry_for(obj, update_only=False):
     updated = datetime.now()
@@ -202,9 +204,9 @@ def generate_atom_entry_for(obj, update_only=False):
             return
         # For new documents
         entry_published = updated
-    
+
     # Get RDF representation of object
-    rdf_post = RDFPost.get_for(obj) 
+    rdf_post = RDFPost.get_for(obj)
 
     entry = AtomEntry.get_or_create(obj)
     entry.entry_id = obj.get_rinfo_uri()
@@ -213,9 +215,11 @@ def generate_atom_entry_for(obj, update_only=False):
     entry.rdf_post = rdf_post
     entry.save()
 
+
 def generate_rdf_post_for(obj):
     # Create RDF metadata
     rdf_post = RDFPost.get_or_create(obj)
+    rdf_post.slug = obj.get_fs_dokument_slug()
     rdf_post.data = obj.to_rdfxml()
     rdf_post.save()
     return rdf_post

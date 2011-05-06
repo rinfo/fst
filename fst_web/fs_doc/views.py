@@ -13,8 +13,8 @@ def _response(request, template, context):
 
 
 def index(request):
-    """Display start page 
-    
+    """Display start page
+
     List the latest published documents in current document collection.
     Get both 'Myndighetsforeskrift' and 'AllmannaRad'.
     """
@@ -23,15 +23,11 @@ def index(request):
 
     return _response(request, 'index.html', locals())
 
-def foreskrift_rdf(request, fskortnamn, arsutgava, lopnummer):
+def fs_dokument_rdf(request, fs_dokument_slug):
     """Display RDF representation of document"""
 
-    foreskrift = Myndighetsforeskrift.objects.get(
-            forfattningssamling__slug=fskortnamn, arsutgava=arsutgava, lopnummer=lopnummer)
-
-    rdf_post = RDFPost.get_for(foreskrift)
-    if not rdf_post:
-        raise Http404
+    rdf_post = get_object_or_404(RDFPost, slug=fs_dokument_slug)
+    fs_dokument = rdf_post.content_object
     return HttpResponse(rdf_post.data, mimetype="application/rdf+xml; charset=utf-8")
 
 
@@ -45,7 +41,7 @@ def allmanna_rad(request, fskortnamn, arsutgava, lopnummer):
 
 def foreskrift(request, fskortnamn, arsutgava, lopnummer):
     """Display document of type 'Myndighetsforeskrift' """
-    
+
     fs = get_object_or_404(Forfattningssamling,slug=fskortnamn)
     foreskrift = get_object_or_404(Myndighetsforeskrift,arsutgava=arsutgava,lopnummer=lopnummer,forfattningssamling=fs)
 

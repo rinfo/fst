@@ -20,7 +20,7 @@ urlpatterns = patterns('',
     (r'^$', 'fst_web.fs_doc.views.index'),
 
     # Display specific document as RDF (t.ex. "/publ/RA-FS/2006:6/rdf"
-    (r'^publ/(?P<fskortnamn>.*)/(?P<arsutgava>.*):(?P<lopnummer>.*)/rdf$', 'fst_web.fs_doc.views.foreskrift_rdf'),
+    (r'^publ/(?P<fs_dokument_slug>.*)/rdf$', 'fst_web.fs_doc.views.fs_dokument_rdf'),
 
     # Display info about specific document (t.ex. "/publ/RA-FS/2006:6"
     (r'^publ/(?P<fskortnamn>.*)/(?P<arsutgava>.*):(?P<lopnummer>.*)/$', 'fst_web.fs_doc.views.foreskrift'),
