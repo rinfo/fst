@@ -5,11 +5,12 @@ from os import path
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': path.join(path.dirname(__file__), 'database/fst_demo.db').replace('\\','/') #Path to sqlite 3 db-file
+        'NAME': path.join(path.dirname(__file__), 
+                          'database/fst_demo.db').replace('\\','/') 
+        #Path to sqlite 3 db-file
     }
 }
 
@@ -40,6 +41,3 @@ FST_ORG_CONTACT_EMAIL = "lagrum@exempelmyndigheten.se"
 # rättsinformationsprojektet.
 FST_DATASET_URI = "tag:exempelmyndigheten.se,2009:rinfo:feed"
 FST_DATASET_TITLE = u"Flöde för Exempelmyndighetens författningssamling"
-
-# Första delen av unik identifierare för dokument för denna organisation.
-# Erhålls från rättsinformationsprojektet.
