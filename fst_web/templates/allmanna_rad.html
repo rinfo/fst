@@ -1,0 +1,87 @@
+{% extends "site_base.html" %}
+
+{% block title %}{{foreskrift.titel}}{% endblock %}
+
+
+{% block content %}
+
+    <h1>{{foreskrift.identifierare}} {{foreskrift.titel|safe}}</h1>
+    <p class="type">{{foreskrift.role_label}}</p>
+
+    <p class="download"><a href="{{site.url}}/{{foreskrift.content.url}}">Ladda ner ner {{foreskrift.identifierare}} som PDF</a></p>
+
+    <table class="fsdata">
+        <tr>
+            <th scope="row">Identifierare</th>
+            <td>{{foreskrift.identifierare}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Beslutad</th>
+            <td>{{foreskrift.beslutsdatum}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Ikraffträdandedag</th>
+            <td>{{foreskrift.ikrafttradandedatum}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Utkom från tryck</th>
+            <td>{{foreskrift.utkom_fran_tryck}}</td>
+        </tr>
+         {% if foreskrift.amnesord %}
+        <tr>
+            <th scope="row">Ämnesord</th>
+            <td>{% for ord in foreskrift.amnesord.all %}{{ord.titel}}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+        </tr>
+        {% endif %}
+         {% if foreskrift.andrar %}
+        <tr>
+            <th scope="row">Ändrar</th>
+            <td><a href="{{foreskrift.andrar.get_absolute_url}}">{{foreskrift.andrar}}</a></td>
+        </tr>
+        {% endif %}
+    </table>
+
+    {% if foreskrift.andringar.all %}
+    <h2>Ändringar</h2>
+    <ul class="andringar">
+        {% for andringsforeskrift in foreskrift.andringar.all %}
+        <li><a href="{{andringsforeskrift.get_absolute_url}}">{{andringsforeskrift}}{% if andringsforeskrift.omtryck %} (omtryck){% endif %}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if foreskrift.bilagor.all %}
+        <h2>Bilagor</h2>
+        <ul>
+            {% for bilaga in foreskrift.bilagor.all %}
+                <li>
+                    {% if bilaga.file %}
+                        <p class="download">
+                            <a href="{{site.url}}/{{bilaga.file.url}}">Ladda ner {{ bilaga.titel }} som PDF</a>
+                        </p>
+                    {% else %}
+                        <p>{{ bilaga.titel }}</p>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if foreskrift.ovriga_dokument.all %}
+        <h2>Övriga dokument</h2>
+        <ul>
+            {% for dok in foreskrift.ovriga_dokument.all %}
+                <li>
+                    {% if dok.file %}
+                        <p class="download">
+                            <a href="{{site.url}}/{{dok.file.url}}">Ladda ner {{ dok.titel }} som PDF</a>
+                        </p>
+                    {% else %}
+                        <p>{{ dok.titel }}</p>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+{% endblock %}
