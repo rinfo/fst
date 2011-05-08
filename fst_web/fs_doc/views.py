@@ -36,9 +36,12 @@ def fs_dokument(request, fs_dokument_slug):
 
     rdf_post = get_object_or_404(RDFPost, slug=fs_dokument_slug)
     fs_dokument = rdf_post.content_object
-    # TODO: switch template on content_type
-    #return _response(request, 'foreskrift.html', locals())
-    return _response(request, 'allmanna_rad.html', dict(foreskrift=fs_dokument))
+    if rdf_post.content_type.id == 9:
+        return _response(request, 'allmanna_rad.html', dict(foreskrift=fs_dokument))
+    elif rdf_post.content_type.id == 10:
+        return _response(request, 'foreskrift.html', dict(foreskrift=fs_dokument))
+    else:
+        pass
 
 def amnesord(request):
     """Display documents grouped by keywords """
