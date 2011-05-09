@@ -37,20 +37,19 @@ def fs_dokument(request, fs_dokument_slug):
     rdf_post = get_object_or_404(RDFPost, slug=fs_dokument_slug)
     fs_dokument = rdf_post.content_object
     if rdf_post.content_type.id == 9:
-        return _response(request, 'allmanna_rad.html', dict(foreskrift=fs_dokument))
+        return _response(request, 'allmanna_rad.html', dict(doc=fs_dokument))
     elif rdf_post.content_type.id == 10:
-        return _response(request, 'foreskrift.html', dict(foreskrift=fs_dokument))
+        return _response(request, 'foreskrift.html', dict(doc=fs_dokument))
     else:
         pass
 
 def amnesord(request):
     """Display documents grouped by keywords """
 
-    #foreskrifter = list(Myndighetsforeskrift.objects.all()) + list(AllmannaRad.objects.all())
-    # Get all instances of 'Amnesord' used by at least one document
-    #amnesord = list(Amnesord.objects.filter(myndighetsforeskrift__isnull = False).order_by("titel").distinct()) + list(Amnesord.objects.filter(allmannarad__isnull = False).order_by("titel").distinct())
-    amnesord = Amnesord.objects.filter(
-        myndighetsforeskrift__isnull = False).order_by("titel").distinct()
+    # Get all keywords used by at least one document
+    amnesord = set(list(Amnesord.objects.filter(myndighetsforeskrift__isnull = False).order_by("titel").distinct()) + list(Amnesord.objects.filter(allmannarad__isnull = False).order_by("titel").distinct()))
+    # Create a dictionary on keywords for all documents
+    docs_by_keywords = dict((kw,kw.myndighetsforeskrift_set.all()) for kw in (amnesord))
 
     return _response(request, 'per_amnesord.html', locals())
 

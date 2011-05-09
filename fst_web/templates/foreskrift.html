@@ -1,71 +1,71 @@
 {% extends "site_base.html" %}
 
-{% block title %}{{foreskrift.titel}}{% endblock %}
+{% block title %}{{doc.titel}}{% endblock %}
 
 
 {% block content %}
 
-    <h1>{{foreskrift.identifierare}} {{foreskrift.titel|safe}}</h1>
-    <p class="type">{{foreskrift.role_label}}</p>
+    <h1>{{doc.identifierare}} {{doc.titel|safe}}</h1>
+    <p class="type">{{doc.role_label}}</p>
 
-    <p class="download"><a href="{{site.url}}/{{foreskrift.content.url}}">Ladda ner ner {{foreskrift.identifierare}} som PDF</a></p>
+    <p class="download"><a href="{{site.url}}/{{doc.content.url}}">Ladda ner ner {{doc.identifierare}} som PDF</a></p>
 
     <table class="fsdata">
         <tr>
             <th scope="row">Identifierare</th>
-            <td>{{foreskrift.identifierare}}</td>
+            <td>{{doc.identifierare}}</td>
         </tr>
         <tr>
             <th scope="row">Beslutad</th>
-            <td>{{foreskrift.beslutsdatum}}</td>
+            <td>{{doc.beslutsdatum}}</td>
         </tr>
         <tr>
             <th scope="row">Ikraffträdandedag</th>
-            <td>{{foreskrift.ikrafttradandedatum}}</td>
+            <td>{{doc.ikrafttradandedatum}}</td>
         </tr>
         <tr>
             <th scope="row">Utkom från tryck</th>
-            <td>{{foreskrift.utkom_fran_tryck}}</td>
+            <td>{{doc.utkom_fran_tryck}}</td>
         </tr>
-        {% if foreskrift.bemyndiganden %}
+        {% if doc.bemyndiganden %}
         <tr>
             <th scope="row">Bemyndiganden</th>
-            <td>{% for para in foreskrift.bemyndiganden.all %}{% if para.kapitelnummer %}{{para.kapitelnummer}} kap. {% endif %}{{para.paragrafnummer}} § {{para.titel}} ({{para.sfsnummer}}){% if not forloop.last %}, {% endif %}{% endfor %}</td>
+            <td>{% for para in doc.bemyndiganden.all %}{% if para.kapitelnummer %}{{para.kapitelnummer}} kap. {% endif %}{{para.paragrafnummer}} § {{para.titel}} ({{para.sfsnummer}}){% if not forloop.last %}, {% endif %}{% endfor %}</td>
         </tr>
         {% endif %}
-        {% if foreskrift.amnesord %}
+        {% if doc.amnesord %}
         <tr>
             <th scope="row">Ämnesord</th>
-            <td>{% for ord in foreskrift.amnesord.all %}{{ord.titel}}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+            <td>{% for ord in doc.amnesord.all %}{{ord.titel}}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
         </tr>
         {% endif %}
-        {% if foreskrift.celexreferenser.all %}
+        {% if doc.celexreferenser.all %}
         <tr>
             <th scope="row">Relaterade EG-direktiv</th>
-            <td><ul>{% for referens in foreskrift.celexreferenser.all %}<li><a href="http://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=CELEX:{{referens.celexnummer}}:SV:HTML">{{referens}}</a></li>{% endfor %}</ul></td>
+            <td><ul>{% for referens in doc.celexreferenser.all %}<li><a href="http://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=CELEX:{{referens.celexnummer}}:SV:HTML">{{referens}}</a></li>{% endfor %}</ul></td>
         </tr>
         {% endif %}
-        {% if foreskrift.andrar %}
+        {% if doc.andrar %}
         <tr>
             <th scope="row">Ändrar</th>
-            <td><a href="{{foreskrift.andrar.get_absolute_url}}">{{foreskrift.andrar}}</a></td>
+            <td><a href="{{doc.andrar.get_absolute_url}}">{{doc.andrar}}</a></td>
         </tr>
         {% endif %}
     </table>
 
-    {% if foreskrift.andringar.all %}
+    {% if fdocandringar.all %}
     <h2>Ändringar</h2>
     <ul class="andringar">
-        {% for andringsforeskrift in foreskrift.andringar.all %}
-        <li><a href="{{andringsforeskrift.get_absolute_url}}">{{andringsforeskrift}}{% if andringsforeskrift.omtryck %} (omtryck){% endif %}</a></li>
+        {% for andringsdoc in doc.andringar.all %}
+        <li><a href="{{andringsdoc.get_absolute_url}}">{{andringsdoc}}{% if andringsdoc.omtryck %} (omtryck){% endif %}</a></li>
         {% endfor %}
     </ul>
     {% endif %}
 
-    {% if foreskrift.bilagor.all %}
+    {% if doc.bilagor.all %}
         <h2>Bilagor</h2>
         <ul>
-            {% for bilaga in foreskrift.bilagor.all %}
+            {% for bilaga in doc.bilagor.all %}
                 <li>
                     {% if bilaga.file %}
                         <p class="download">
@@ -79,10 +79,10 @@
         </ul>
     {% endif %}
 
-    {% if foreskrift.ovriga_dokument.all %}
+    {% if fdocovriga_dokument.all %}
         <h2>Övriga dokument</h2>
         <ul>
-            {% for dok in foreskrift.ovriga_dokument.all %}
+            {% for dok in doc.ovriga_dokument.all %}
                 <li>
                     {% if dok.file %}
                         <p class="download">
