@@ -98,6 +98,7 @@ class FSDokumentAdminMixin(object):
         for i, obj in enumerate(queryset):
             generate_atom_entry_for(obj)
             obj.is_published = True
+            obj.save()
         self.message_user(request, "%s dokument har publicerats." % (i+1))
 
     make_published.short_description = u"Publicera markerade dokument via FST"
