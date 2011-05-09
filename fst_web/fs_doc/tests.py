@@ -37,6 +37,8 @@ class WebTestCase(TestCase):
                     testdocs)
         shutil.copy(os.path.join(base, "fixtures/foreskrift/EXFS-2009-3.pdf"),
                     testdocs)
+        shutil.copy(os.path.join(base, "fixtures/allmanna_rad/EXFS-2011-1.pdf"),
+                    testdocs)
 
     def tearDown(self):
         base = os.path.join(os.path.dirname(__file__))
@@ -57,15 +59,22 @@ class WebTestCase(TestCase):
                             "administration hos statliga myndigheter")
         self.assertContains(response,
                             "EXFS 2009:3 Föreskrift om budgetering hos statliga myndigheter")
+        self.assertContains(response,
+                            "EXFS 2011:1 Exempelmyndighetens allmänna råd om adminstration")
 
     def test_foreskrift(self):
-        """Verify that detail page for document 'Myndighetsforeskrift' loads
-        with correct sample data"""
+        """Verify that detail page for documents load
+        with correct sample data for all document types"""
 
         response = self.client.get('/publ/exfs/2009:1/')
         self.failUnlessEqual(response.status_code, 200)
         self.assertContains(response,
                             "<h1>EXFS 2009:1 Föreskrift om administration hos statliga myndigheter")
+        
+        response = self.client.get('/publ/exfs/2011:1/')
+        self.failUnlessEqual(response.status_code, 200)
+        self.assertContains(response,
+                            "<h1>EXFS 2011:1 Exempelmyndighetens allmänna råd om adminstration")
 
     def test_feed(self):
         """Verify that Atom feed is created and can be read """
