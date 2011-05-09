@@ -70,7 +70,7 @@ class WebTestCase(TestCase):
         self.failUnlessEqual(response.status_code, 200)
         self.assertContains(response,
                             "<h1>EXFS 2009:1 Föreskrift om administration hos statliga myndigheter")
-        
+
         response = self.client.get('/publ/exfs/2011:1/')
         self.failUnlessEqual(response.status_code, 200)
         self.assertContains(response,
@@ -165,10 +165,10 @@ class FeedTestCase(TestCase):
         """Verify that entries can be deleted and replaced by special entry"""
 
         dom = self._get_parsed_feed('/feed/')
-        
+
         # Check that two document entries exist
         self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'entry')), 2)
-        
+
         # Delete one document
         foreskrift2 = models.Myndighetsforeskrift.objects.get(
             forfattningssamling__slug="exfs", arsutgava="2009", lopnummer="2")
@@ -257,4 +257,3 @@ class RDFTestCase(TestCase):
             forfattningssamling__slug=fs_slug,
             arsutgava=arsutgava, lopnummer=lopnummer)
         return Graph().parse(data=foreskrift.to_rdfxml())
-

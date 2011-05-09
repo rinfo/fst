@@ -46,15 +46,18 @@ def fs_dokument(request, fs_dokument_slug):
 def amnesord(request):
     """Display documents grouped by keywords """
 
+    #foreskrifter = list(Myndighetsforeskrift.objects.all()) + list(AllmannaRad.objects.all())
     # Get all instances of 'Amnesord' used by at least one document
-    amnesord = Amnesord.objects.filter(myndighetsforeskrift__isnull = False).order_by("titel").distinct()
+    #amnesord = list(Amnesord.objects.filter(myndighetsforeskrift__isnull = False).order_by("titel").distinct()) + list(Amnesord.objects.filter(allmannarad__isnull = False).order_by("titel").distinct())
+    amnesord = Amnesord.objects.filter(
+        myndighetsforeskrift__isnull = False).order_by("titel").distinct()
 
     return _response(request, 'per_amnesord.html', locals())
 
 def artal(request):
     """Display documents grouped by year """
 
-    foreskrifter = Myndighetsforeskrift.objects.all().order_by("-ikrafttradandedatum")
+    foreskrifter = list(Myndighetsforeskrift.objects.all().order_by("-ikrafttradandedatum")) + list(AllmannaRad.objects.all().order_by("-ikrafttradandedatum"))
 
     return _response(request, 'per_ar.html', locals())
 
