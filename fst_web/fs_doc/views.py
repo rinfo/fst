@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import datetime
+from itertools import chain
+from operator import attrgetter
 from django.conf import settings
 from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response, get_object_or_404
@@ -47,10 +49,14 @@ def amnesord(request):
     """Display documents grouped by keywords """
 
     # Get all keywords used by at least one document
-    amnesord = set(list(Amnesord.objects.filter(myndighetsforeskrift__isnull = False).order_by("titel").distinct()) + list(Amnesord.objects.filter(allmannarad__isnull = False).order_by("titel").distinct()))
-    # Create a dictionary on keywords for all documents
-    docs_by_keywords = dict((kw,kw.myndighetsforeskrift_set.all()) for kw in (amnesord))
-
+    amnesord = list(Amnesord.objects.filter(myndighetsforeskrift__isnull = False).order_by("titel").distinct()) + list(Amnesord.objects.filter(allmannarad__isnull = False).order_by("titel").distinct())
+    
+    # Create a dictionary on keywords for all types of documents   
+    dk = {}
+    for kw in (amnesord):
+        dk[kw] = list(kw.myndighetsforeskrift_set.all().order_by("titel")) + list(kw.allmannarad_set.all().order_by("titel"))
+    docs_by_keywords = dk 
+    
     return _response(request, 'per_amnesord.html', locals())
 
 def artal(request):
