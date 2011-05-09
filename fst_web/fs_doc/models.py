@@ -42,11 +42,11 @@ class FSDokument(models.Model):
                                  help_text="T.ex. <em>1</em>")
 
     is_published = models.BooleanField(u"Publicerad",
-                                     default=False,
-                                     null=False,
-                                     blank=True,
-                                     help_text=
-                                     """Grön bock = publicerad via FST.
+                                       default=False,
+                                       null=False,
+                                       blank=True,
+                                       help_text=
+                                       """Grön bock = publicerad via FST.
                                      Rött streck = ej publicerad.
                                      Glöm inte att publicera!""")
 
@@ -118,8 +118,8 @@ class FSDokument(models.Model):
 
     def get_fs_dokument_slug(self):
         return "%s/%s:%s" % (self.forfattningssamling.slug,
-                      self.arsutgava,
-                      self.lopnummer)
+                             self.arsutgava,
+                             self.lopnummer)
 
     def get_rinfo_uri(self):
         """Return canonical document URI"""
@@ -575,5 +575,4 @@ def to_slug(tag):
     tag = tag.lower().encode("utf-8")
     slug = tag.replace('å','aa').replace('ä','ae').replace('ö','oe').replace(' ','_')
     return slug
-
 

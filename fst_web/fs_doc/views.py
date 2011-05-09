@@ -58,13 +58,13 @@ def amnesord(request):
 
     # Get all keywords used by at least one document
     fk_list= list(Amnesord.objects.filter(
-                 myndighetsforeskrift__isnull = False).
+        myndighetsforeskrift__isnull = False).
                   order_by("titel").
                   distinct())
     ak_list = list(Amnesord.objects.filter(
-                 allmannarad__isnull = False).
-                  order_by("titel").
-                  distinct())
+        allmannarad__isnull = False).
+                   order_by("titel").
+                   distinct())
     amnesord = sorted(chain(fk_list,ak_list),key=attrgetter('titel'))
 
     # Create a dictionary on keywords for all types of documents   
@@ -87,7 +87,7 @@ def artal(request):
     fs_documents =  sorted(
         chain(f_list,a_list),
         key=attrgetter('ikrafttradandedatum'),reverse=True)
-    
+
     return _response(request, 'per_ar.html', locals())
 
 def atomfeed(request):

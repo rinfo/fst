@@ -88,7 +88,7 @@ class WebTestCase(TestCase):
         # Documents listed by year
         self.assertContains(response,'<li><a href="/publ/exfs/2009:3/">')
         self.assertContains(response,'<li><a href="/publ/exfs/2011:1/">')
-        
+
     def test_amnesord(self):
         """Verify that listing by year load
         with correct sample data for all document types"""
@@ -162,7 +162,8 @@ class FeedTestCase(TestCase):
 
     def test_feed_is_complete(self):
         dom = self._get_parsed_feed('/feed/')
-        self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM_FH, 'complete')), 1)
+        self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM_FH,
+                                                         'complete')),1)
 
     def test_entry_link_md5(self):
         """Verify that checksum of document in Atom feed is correct"""
@@ -227,7 +228,8 @@ class RDFTestCase(TestCase):
 
         graph = self._get_foreskrift_graph("exfs", "2009", "1")
         ref = URIRef("/publ/exfs/2009:1", RINFO_BASE)
-        title = Literal(u"Föreskrift om administration hos statliga myndigheter", lang='sv')
+        title = Literal(u"Föreskrift om administration hos statliga myndigheter",
+                        lang='sv')
         keyword = Literal(u"Administration", lang='sv')
         self.assertIn((ref, RDF.type, RPUBL.Myndighetsforeskrift), graph)
         self.assertIn((ref, DCT.title, title), graph)
@@ -239,7 +241,8 @@ class RDFTestCase(TestCase):
 
         graph = self._get_allmana_rad_graph("exfs", "2011", "1")
         ref = URIRef("/publ/exfs/2011:1", RINFO_BASE)
-        title = Literal(u"Exempelmyndighetens allmänna råd om adminstration", lang='sv')
+        title = Literal(u"Exempelmyndighetens allmänna råd om adminstration",
+                        lang='sv')
         keyword = Literal(u"Centralisering", lang='sv')
         self.assertIn((ref, RDF.type, RPUBL.AllmannaRad), graph)
         self.assertIn((ref, DCT.title, title), graph)
