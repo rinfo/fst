@@ -17,7 +17,7 @@ def _response(request, template, context):
 def index(request):
     """Display start page
 
-    List the latest published documents in current document collection.
+    List the latest documents in current document collection.
     Get both 'Myndighetsforeskrift' and 'AllmannaRad'.
     """
 
@@ -44,7 +44,7 @@ def fs_dokument_rdf(request, fs_dokument_slug):
 def fs_dokument(request, fs_dokument_slug):
     """Display document subclassing 'FSDokument' """
 
-    rdf_post = get_object_or_404(RDFPost, slug=fs_dokument_slug)
+    rdf_post= get_object_or_404(RDFPost, slug=fs_dokument_slug)
     fs_dokument = rdf_post.content_object
     if rdf_post.content_type.id == 9:
         return _response(request, 'allmanna_rad.html', dict(doc=fs_dokument))
@@ -57,15 +57,15 @@ def amnesord(request):
     """Display documents grouped by keywords """
 
     # Get all keywords used by at least one document
-    amnesord = \
-             list(Amnesord.objects.filter(
+    fk_list= list(Amnesord.objects.filter(
                  myndighetsforeskrift__isnull = False).
                   order_by("titel").
-                  distinct()) + \
-             list(Amnesord.objects.filter(
+                  distinct())
+    ak_list = list(Amnesord.objects.filter(
                  allmannarad__isnull = False).
                   order_by("titel").
                   distinct())
+    amnesord = sorted(chain(fk_list,ak_list),key=attrgetter('titel'))
 
     # Create a dictionary on keywords for all types of documents   
     docs_by_keywords = {}
@@ -84,7 +84,7 @@ def artal(request):
                   order_by("-ikrafttradandedatum"))
     a_list = list(AllmannaRad.objects.all().
                   order_by("-ikrafttradandedatum"))
-    foreskrifter =  sorted(
+    fs_documents =  sorted(
         chain(f_list,a_list),
         key=attrgetter('ikrafttradandedatum'),reverse=True)
     

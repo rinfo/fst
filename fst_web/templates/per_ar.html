@@ -3,11 +3,11 @@
 {% block title %}{{ organization.name_possessive }} föreskrifter per ikraftträdandeår{% endblock %}
 
 {% block content %}
-    <h1>Föreskrifter per ikraftträdandeår</h1>
+    <h1>Författningar och allmänna råd</h1>
     
-    <p>Här hittar du våra föreskrifter indelade efter ikraftträdandeår.</p>
+    <p>Författningsdokument indelade efter ikraftträdandeår.</p>
 
-    {% regroup foreskrifter by ikrafttradandear as foreskrifter_per_ar %}
+    {% regroup fs_documents by ikrafttradandear as foreskrifter_per_ar %}
 
     {% for ikrafttradandear in foreskrifter_per_ar %}
         <h2>{{ikrafttradandear.grouper}}</h2>
