@@ -21,7 +21,14 @@ def index(request):
     Get both 'Myndighetsforeskrift' and 'AllmannaRad'.
     """
 
-    latest_documents = list(Myndighetsforeskrift.objects.all().order_by("-utkom_fran_tryck")[:10]) + list(AllmannaRad.objects.all().order_by("-utkom_fran_tryck")[:10])
+    f_list = list(Myndighetsforeskrift.objects.all().order_by(
+        "-beslutsdatum")[:10])
+    a_list = list(AllmannaRad.objects.all().order_by(
+        "-beslutsdatum")[:10])
+    latest_documents =  sorted(
+        chain(f_list,a_list),
+        key=attrgetter('beslutsdatum'),
+        reverse=True)
 
     return _response(request, 'index.html', locals())
 
@@ -30,7 +37,8 @@ def fs_dokument_rdf(request, fs_dokument_slug):
 
     rdf_post = get_object_or_404(RDFPost, slug=fs_dokument_slug)
     fs_dokument = rdf_post.content_object
-    return HttpResponse(rdf_post.data, mimetype="application/rdf+xml; charset=utf-8")
+    return HttpResponse(rdf_post.data, 
+                        mimetype="application/rdf+xml;charset=utf-8")
 
 
 def fs_dokument(request, fs_dokument_slug):
@@ -49,21 +57,37 @@ def amnesord(request):
     """Display documents grouped by keywords """
 
     # Get all keywords used by at least one document
-    amnesord = list(Amnesord.objects.filter(myndighetsforeskrift__isnull = False).order_by("titel").distinct()) + list(Amnesord.objects.filter(allmannarad__isnull = False).order_by("titel").distinct())
+    amnesord = \
+             list(Amnesord.objects.filter(
+                 myndighetsforeskrift__isnull = False).
+                  order_by("titel").
+                  distinct()) + \
+             list(Amnesord.objects.filter(
+                 allmannarad__isnull = False).
+                  order_by("titel").
+                  distinct())
 
     # Create a dictionary on keywords for all types of documents   
-    dk = {}
+    docs_by_keywords = {}
     for kw in (amnesord):
-        dk[kw] = list(kw.myndighetsforeskrift_set.all().order_by("titel")) + list(kw.allmannarad_set.all().order_by("titel"))
-    docs_by_keywords = dk 
+        f_list = list(kw.myndighetsforeskrift_set.all().order_by("titel"))
+        a_list = list(kw.allmannarad_set.all().order_by("titel"))
+        doc_list = sorted(chain(f_list,a_list),key=attrgetter('titel'))
+        docs_by_keywords[kw] = doc_list
 
     return _response(request, 'per_amnesord.html', locals())
 
 def artal(request):
     """Display documents grouped by year """
 
-    foreskrifter = list(Myndighetsforeskrift.objects.all().order_by("-ikrafttradandedatum")) + list(AllmannaRad.objects.all().order_by("-ikrafttradandedatum"))
-
+    f_list = list(Myndighetsforeskrift.objects.all().
+                  order_by("-ikrafttradandedatum"))
+    a_list = list(AllmannaRad.objects.all().
+                  order_by("-ikrafttradandedatum"))
+    foreskrifter =  sorted(
+        chain(f_list,a_list),
+        key=attrgetter('ikrafttradandedatum'),reverse=True)
+    
     return _response(request, 'per_ar.html', locals())
 
 def atomfeed(request):
@@ -82,4 +106,3 @@ def atomfeed(request):
     context = Context(locals())
 
     return HttpResponse(template.render(context), mimetype="application/atom+xml; charset=utf-8")
-

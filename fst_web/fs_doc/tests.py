@@ -129,7 +129,7 @@ class WebTestCase(TestCase):
         response = self.client.get('/publ/exfs/2009:1/rdf')
         self.failUnlessEqual(response.status_code, 200)
         self.assertEqual(response['content-type'],
-                         'application/rdf+xml; charset=utf-8')
+                         'application/rdf+xml;charset=utf-8')
 
 
 class FeedTestCase(TestCase):
