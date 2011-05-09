@@ -17,7 +17,7 @@
             "utgivare": 1, 
             "beslutsdatum": "2011-05-01", 
             "amnesord": [
-                1
+                1,3
             ], 
             "content": "allmanna_rad/EXFS-2011-1.pdf", 
             "sammanfattning": "Exempelmyndighetens allm\u00e4nna r\u00e5d om adminstration", 
@@ -111,7 +111,6 @@
             "utgivare": 1, 
             "beslutsdatum": "2009-04-30", 
             "amnesord": [
-                1, 
                 2
             ], 
             "celexreferenser": [], 

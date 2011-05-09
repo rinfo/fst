@@ -240,7 +240,7 @@ class RDFTestCase(TestCase):
         graph = self._get_allmana_rad_graph("exfs", "2011", "1")
         ref = URIRef("/publ/exfs/2011:1", RINFO_BASE)
         title = Literal(u"Exempelmyndighetens allmänna råd om adminstration", lang='sv')
-        keyword = Literal(u"Administration", lang='sv')
+        keyword = Literal(u"Centralisering", lang='sv')
         self.assertIn((ref, RDF.type, RPUBL.AllmannaRad), graph)
         self.assertIn((ref, DCT.title, title), graph)
         self.assertIn((ref, DCES.subject, keyword), graph)

@@ -50,13 +50,13 @@ def amnesord(request):
 
     # Get all keywords used by at least one document
     amnesord = list(Amnesord.objects.filter(myndighetsforeskrift__isnull = False).order_by("titel").distinct()) + list(Amnesord.objects.filter(allmannarad__isnull = False).order_by("titel").distinct())
-    
+
     # Create a dictionary on keywords for all types of documents   
     dk = {}
     for kw in (amnesord):
         dk[kw] = list(kw.myndighetsforeskrift_set.all().order_by("titel")) + list(kw.allmannarad_set.all().order_by("titel"))
     docs_by_keywords = dk 
-    
+
     return _response(request, 'per_amnesord.html', locals())
 
 def artal(request):
@@ -82,5 +82,4 @@ def atomfeed(request):
     context = Context(locals())
 
     return HttpResponse(template.render(context), mimetype="application/atom+xml; charset=utf-8")
-
 
