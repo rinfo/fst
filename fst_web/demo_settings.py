@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-from os import path
+import os
+ROOT = os.path.abspath(os.path.dirname(__file__))
+path = lambda *args: os.path.join(ROOT, *args)
 
 # These are the default DEMO settings for FST webservice (fst_web)
 # Replace this file with a file named 'local_settings.py' for production use
@@ -12,9 +14,7 @@ TEMPLATE_DEBUG = DEBUG
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': path.join(path.dirname(__file__), 
-                          'database/fst_demo.db').replace('\\','/') 
-        #Path to sqlite 3 db-file
+        'NAME': path('database/fst_demo.db') # Name of sqlite 3 db-file
     }
 }
 
