@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
-# DUMMY Django settings for FST Web (fst_web).
 from os import path
 
+# These are the default DEMO settings for FST webservice (fst_web)
+# Replace this file with a file named 'local_settings.py' for production use
+
+
+# NOTE! Always set this to FALSE before deploying
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -14,8 +18,6 @@ DATABASES = {
     }
 }
 
-MEDIA_ROOT = path.join(path.dirname(__file__), 'uploads')
-
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
 )
@@ -23,7 +25,7 @@ ADMINS = (
 MANAGERS = ADMINS
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'skapa-en-egen-unik-nyckel'
+SECRET_KEY = '2i!!@xy4goq72irz5ldb%gmogc4w&#bgx64j6q9%l)r9^4i-v-'
 
 # Webbplatsens adress och port (utan avslutande '/').
 FST_SITE_URL = "http://127.0.0.1:8000"
