@@ -87,15 +87,6 @@ class FSDokument(models.Model):
                                       blank=True,
                                       verbose_name=u"ämnesord")
 
-
-    # Optional value: specifies that this document changes another document
-    # TODO: change definition to support 1-M relation
-    andrar = models.ForeignKey("self",
-                               null=True,
-                               blank=True,
-                               related_name="andringar",
-                               verbose_name=u"Ändrar")
-
     # Optional value: specifies that this document invalidates another document
     # TODO: change definition to support 1-M relation
     upphaver = models.ForeignKey("self",
@@ -146,8 +137,8 @@ class FSDokument(models.Model):
         """
 
         label = u"Grundförfattning"
-        if self.andrar:
-            label = u"Ändringsförfattning"
+        #if self.andrar:
+        #    label = u"Ändringsförfattning"
         if self.omtryck:
             label += " (omtryck)"
         return label
@@ -161,6 +152,8 @@ class FSDokument(models.Model):
         """Display value for user interface."""
         return u'%s %s' % (self.identifierare, self.titel)
 
+class Andringar_foreskrift:
+    pass
 
 class AllmannaRad(FSDokument):
     """Common document type in document collections of type 'författningsamling'.
@@ -575,4 +568,3 @@ def to_slug(tag):
     tag = tag.lower().encode("utf-8")
     slug = tag.replace('å','aa').replace('ä','ae').replace('ö','oe').replace(' ','_')
     return slug
-

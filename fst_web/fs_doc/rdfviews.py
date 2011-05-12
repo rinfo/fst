@@ -47,11 +47,11 @@ class  FSDokumentDescription(Description):
         add(RPUBL.utkomFranTryck, Literal(obj.utkom_fran_tryck))
         add(DCT.publisher, URIRef(obj.get_publisher_uri()))
 
-        if obj.andrar:
-            add(RPUBL.andrar, URIRef(obj.andrar.get_rinfo_uri()))
+        #if obj.andrar:
+            #add(RPUBL.andrar, URIRef(obj.andrar.get_rinfo_uri()))
 
-        if obj.omtryck:
-            add(RPUBL.omtryckAv, URIRef(obj.andrar.get_rinfo_uri()))
+        #if obj.omtryck:
+            #add(RPUBL.omtryckAv, URIRef(obj.andrar.get_rinfo_uri()))
 
         for amnesord in obj.amnesord.all():
             add(DCES.subject, Literal(amnesord.titel, lang="sv"))

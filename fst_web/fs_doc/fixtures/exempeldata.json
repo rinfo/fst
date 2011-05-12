@@ -11,8 +11,7 @@
         "pk": 1, 
         "model": "fs_doc.allmannarad", 
         "fields": {
-            "omtryck": false, 
-            "andrar": null, 
+            "omtryck": false,  
             "arsutgava": "2011", 
             "utgivare": 1, 
             "beslutsdatum": "2011-05-01", 
@@ -37,7 +36,6 @@
         "model": "fs_doc.myndighetsforeskrift", 
         "fields": {
             "omtryck": false, 
-            "andrar": null, 
             "arsutgava": "2009", 
             "bemyndiganden": [
                 1, 
@@ -68,8 +66,7 @@
         "pk": 2, 
         "model": "fs_doc.myndighetsforeskrift", 
         "fields": {
-            "omtryck": true, 
-            "andrar": 1, 
+            "omtryck": true,  
             "arsutgava": "2009", 
             "bemyndiganden": [
                 1
@@ -102,7 +99,6 @@
         "model": "fs_doc.myndighetsforeskrift", 
         "fields": {
             "omtryck": false, 
-            "andrar": 1, 
             "arsutgava": "2009", 
             "bemyndiganden": [
                 1, 
@@ -250,7 +246,7 @@
         "model": "fs_doc.rdfpost", 
         "fields": {
             "md5": "df0fe87b46ee068f9e456b8433b0598f", 
-            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<rdf:RDF\n  xmlns=\"http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#\"\n  xmlns:dct=\"http://purl.org/dc/terms/\"\n  xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n  xmlns:dces=\"http://purl.org/dc/elements/1.1/\"\n>\n  <Myndighetsforeskrift rdf:about=\"http://rinfo.lagrummet.se/publ/exfs/2009:2\">\n    <dct:publisher rdf:resource=\"http://rinfo.lagrummet.se/org/exempelmyndigheten\"/>\n    <andrar rdf:resource=\"http://rinfo.lagrummet.se/publ/exfs/2009:1\"/>\n    <bemyndigande>\n      <Forfattningsreferens>\n        <angerParagrafnummer>11</angerParagrafnummer>\n        <angerGrundforfattning rdf:resource=\"http://rinfo.lagrummet.se/publ/sfs/1234:1\"/>\n      </Forfattningsreferens>\n    </bemyndigande>\n    <lopnummer>2</lopnummer>\n    <genomforDirektiv rdf:resource=\"http://rinfo.lagrummet.se/ext/eur-lex/32001L0400\"/>\n    <genomforDirektiv rdf:resource=\"http://rinfo.lagrummet.se/ext/eur-lex/31979L0409\"/>\n    <genomforDirektiv rdf:resource=\"http://rinfo.lagrummet.se/ext/eur-lex/32008L0300\"/>\n    <utkomFranTryck rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-04-01</utkomFranTryck>\n    <dces:subject xml:lang=\"sv\">Administration</dces:subject>\n    <dct:title xml:lang=\"sv\">F\u00f6reskrift om \u00e4ndring i f\u00f6reskrift 2009:1 om administration hos statliga myndigheter</dct:title>\n    <arsutgava>2009</arsutgava>\n    <omtryckAv rdf:resource=\"http://rinfo.lagrummet.se/publ/exfs/2009:1\"/>\n    <ikrafttradandedatum rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-04-01</ikrafttradandedatum>\n    <beslutsdatum rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-04-01</beslutsdatum>\n  </Myndighetsforeskrift>\n</rdf:RDF>\n", 
+            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<rdf:RDF\n  xmlns=\"http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#\"\n  xmlns:dct=\"http://purl.org/dc/terms/\"\n  xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n  xmlns:dces=\"http://purl.org/dc/elements/1.1/\"\n>\n  <Myndighetsforeskrift rdf:about=\"http://rinfo.lagrummet.se/publ/exfs/2009:2\">\n    <dct:publisher rdf:resource=\"http://rinfo.lagrummet.se/org/exempelmyndigheten\"/>\n    <bemyndigande>\n      <Forfattningsreferens>\n        <angerParagrafnummer>11</angerParagrafnummer>\n        <angerGrundforfattning rdf:resource=\"http://rinfo.lagrummet.se/publ/sfs/1234:1\"/>\n      </Forfattningsreferens>\n    </bemyndigande>\n    <lopnummer>2</lopnummer>\n    <genomforDirektiv rdf:resource=\"http://rinfo.lagrummet.se/ext/eur-lex/32001L0400\"/>\n    <genomforDirektiv rdf:resource=\"http://rinfo.lagrummet.se/ext/eur-lex/31979L0409\"/>\n    <genomforDirektiv rdf:resource=\"http://rinfo.lagrummet.se/ext/eur-lex/32008L0300\"/>\n    <utkomFranTryck rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-04-01</utkomFranTryck>\n    <dces:subject xml:lang=\"sv\">Administration</dces:subject>\n    <dct:title xml:lang=\"sv\">F\u00f6reskrift om \u00e4ndring i f\u00f6reskrift 2009:1 om administration hos statliga myndigheter</dct:title>\n    <arsutgava>2009</arsutgava>\n    <omtryckAv rdf:resource=\"http://rinfo.lagrummet.se/publ/exfs/2009:1\"/>\n    <ikrafttradandedatum rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-04-01</ikrafttradandedatum>\n    <beslutsdatum rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-04-01</beslutsdatum>\n  </Myndighetsforeskrift>\n</rdf:RDF>\n", 
             "object_id": 2, 
             "content_type": 10, 
             "slug": "exfs/2009:2"
@@ -261,7 +257,7 @@
         "model": "fs_doc.rdfpost", 
         "fields": {
             "md5": "a8e8d396373fc37ad19c2d6df41a00a8", 
-            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<rdf:RDF\n  xmlns=\"http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#\"\n  xmlns:dct=\"http://purl.org/dc/terms/\"\n  xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n  xmlns:dces=\"http://purl.org/dc/elements/1.1/\"\n>\n  <Myndighetsforeskrift rdf:about=\"http://rinfo.lagrummet.se/publ/exfs/2009:3\">\n    <dct:title xml:lang=\"sv\">F\u00f6reskrift om budgetering hos statliga myndigheter</dct:title>\n    <dct:publisher rdf:resource=\"http://rinfo.lagrummet.se/org/exempelmyndigheten\"/>\n    <andrar rdf:resource=\"http://rinfo.lagrummet.se/publ/exfs/2009:1\"/>\n    <arsutgava>2009</arsutgava>\n    <ikrafttradandedatum rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-04-30</ikrafttradandedatum>\n    <beslutsdatum rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-04-30</beslutsdatum>\n    <dces:subject xml:lang=\"sv\">Budgetering</dces:subject>\n    <dces:subject xml:lang=\"sv\">Administration</dces:subject>\n    <bemyndigande>\n      <Forfattningsreferens>\n        <angerParagrafnummer>13</angerParagrafnummer>\n        <angerGrundforfattning rdf:resource=\"http://rinfo.lagrummet.se/publ/sfs/1234:1\"/>\n      </Forfattningsreferens>\n    </bemyndigande>\n    <bemyndigande>\n      <Forfattningsreferens>\n        <angerParagrafnummer>11</angerParagrafnummer>\n        <angerGrundforfattning rdf:resource=\"http://rinfo.lagrummet.se/publ/sfs/1234:1\"/>\n      </Forfattningsreferens>\n    </bemyndigande>\n    <utkomFranTryck rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-04-30</utkomFranTryck>\n    <lopnummer>3</lopnummer>\n  </Myndighetsforeskrift>\n</rdf:RDF>\n", 
+            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<rdf:RDF\n  xmlns=\"http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#\"\n  xmlns:dct=\"http://purl.org/dc/terms/\"\n  xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n  xmlns:dces=\"http://purl.org/dc/elements/1.1/\"\n>\n  <Myndighetsforeskrift rdf:about=\"http://rinfo.lagrummet.se/publ/exfs/2009:3\">\n    <dct:title xml:lang=\"sv\">F\u00f6reskrift om budgetering hos statliga myndigheter</dct:title>\n    <dct:publisher rdf:resource=\"http://rinfo.lagrummet.se/org/exempelmyndigheten\"/>\n    <arsutgava>2009</arsutgava>\n    <ikrafttradandedatum rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-04-30</ikrafttradandedatum>\n    <beslutsdatum rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-04-30</beslutsdatum>\n    <dces:subject xml:lang=\"sv\">Budgetering</dces:subject>\n    <dces:subject xml:lang=\"sv\">Administration</dces:subject>\n    <bemyndigande>\n      <Forfattningsreferens>\n        <angerParagrafnummer>13</angerParagrafnummer>\n        <angerGrundforfattning rdf:resource=\"http://rinfo.lagrummet.se/publ/sfs/1234:1\"/>\n      </Forfattningsreferens>\n    </bemyndigande>\n    <bemyndigande>\n      <Forfattningsreferens>\n        <angerParagrafnummer>11</angerParagrafnummer>\n        <angerGrundforfattning rdf:resource=\"http://rinfo.lagrummet.se/publ/sfs/1234:1\"/>\n      </Forfattningsreferens>\n    </bemyndigande>\n    <utkomFranTryck rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-04-30</utkomFranTryck>\n    <lopnummer>3</lopnummer>\n  </Myndighetsforeskrift>\n</rdf:RDF>\n", 
             "object_id": 3, 
             "content_type": 10, 
             "slug": "exfs/2009:3"

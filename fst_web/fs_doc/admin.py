@@ -162,7 +162,7 @@ class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                    'ikrafttradandedatum',
                    'is_published',
                    'amnesord',
-                   'andrar',
+                   #'andrar',
                    'omtryck')
     ordering = ('-beslutsdatum', 'titel')
     search_fields = ('titel', 'identifierare',)
@@ -179,7 +179,8 @@ class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
             'sammanfattning',
             'content',
             ('beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck'),
-            ('omtryck','andrar'),
+            #('omtryck','andrar'),
+            ('omtryck'),
             'bemyndiganden',
             'amnesord',
             'celexreferenser'
