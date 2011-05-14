@@ -150,7 +150,7 @@ class AllmannaRadAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
              }),
         (u'Dokument som ändras, upphävs eller konsolideras av detta dokument',
          {
-             'fields': ('andringar',),
+             'fields': ('andringar','upphavningar'),
              'description': u'Ange eventuella andra dokument påverkas',
              'classes': ['collapse', 'wide', 'extrapretty']}
          ),
@@ -161,7 +161,7 @@ class AllmannaRadAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
              'classes': ['collapse', 'wide', 'extrapretty']
          })
     )
-    filter_horizontal = ('amnesord', 'andringar')
+    filter_horizontal = ('amnesord', 'andringar', 'upphavningar')
 
 
 class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
@@ -204,7 +204,7 @@ class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
              }),
         (u'Författningsdokument som ändras, upphävs eller konsolideras',
          {
-             'fields': ('andringar',),
+             'fields': ('andringar', 'upphavningar'),
              'description': u'Ange eventuella andra dokument påverkas',
              'classes': ['collapse', 'wide', 'extrapretty']}
          ),
@@ -215,7 +215,7 @@ class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
              'classes': ['collapse', 'wide', 'extrapretty']
          })
     )
-    filter_horizontal = ('bemyndiganden', 'amnesord', 'celexreferenser')
+    filter_horizontal = ('bemyndiganden', 'amnesord', 'andringar', 'upphavningar','celexreferenser')
 
 
 def generate_atom_entry_for(obj, update_only=False):
