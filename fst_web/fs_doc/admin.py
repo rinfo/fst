@@ -34,8 +34,9 @@ class AmnesordAdmin(admin.ModelAdmin):
     ordering = ('titel',)
     search_fields = ('titel', 'beskrivning',)
 
+
 class BemyndigandereferensAdmin(admin.ModelAdmin):
-    list_display = ('sfsnummer','titel','kapitelnummer','paragrafnummer')
+    list_display = ('sfsnummer', 'titel', 'kapitelnummer', 'paragrafnummer')
     ordering = ('titel',)
     search_fields = ('titel', 'sfsnummer',)
 
@@ -67,6 +68,7 @@ class BilagaInline(HasFileInline):
     model = Bilaga
     classes = ['collapse', 'collapsed']
 
+
 class OvrigtDokumentInline(HasFileInline):
     model = OvrigtDokument
     classes = ['collapse', 'collapsed']
@@ -93,28 +95,36 @@ class FSDokumentAdminMixin(object):
         generate_rdf_post_for(obj)
         generate_atom_entry_for(obj, update_only=True)
 
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "forfattningssamling":
+            kwargs["initial"] = Forfattningssamling.objects.filter(id=1)
+        return super(
+            FSDokumentAdminMixin, self).formfield_for_foreignkey(
+                db_field, request, **kwargs)
+
     def make_published(self, request, queryset):
         """Puslish selected documents by creating Atom entries."""
         for i, obj in enumerate(queryset):
             generate_atom_entry_for(obj)
             obj.is_published = True
             obj.save()
-        self.message_user(request, "%s dokument har publicerats." % (i+1))
+            self.message_user(
+                request, "%s dokument har publicerats." % (i + 1))
 
     make_published.short_description = u"Publicera markerade dokument via FST"
     actions = [make_published]
 
 
 class AllmannaRadAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
-    list_display = ('identifierare', 
-                    'arsutgava', 
-                    'lopnummer', 
+    list_display = ('identifierare',
+                    'arsutgava',
+                    'lopnummer',
                     'titel',
-                    'beslutsdatum', 
-                    'ikrafttradandedatum', 
-                    'utkom_fran_tryck', 
+                    'beslutsdatum',
+                    'ikrafttradandedatum',
+                    'utkom_fran_tryck',
                     'role_label')
-    list_filter = ('beslutsdatum', 
+    list_filter = ('beslutsdatum',
                    'ikrafttradandedatum',
                    'is_published',
                    'amnesord',
@@ -123,42 +133,50 @@ class AllmannaRadAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
     ordering = ('-beslutsdatum', 'titel')
     search_fields = ('titel', 'identifierare',)
     #inlines = [BilagaInline, OvrigtDokumentInline]
-    readonly_fields = ('is_published','identifierare',)
+    readonly_fields = ('is_published', 'identifierare',)
     save_on_top = True
-    fieldsets = ((None, {
-        'fields': (
-            'identifierare',
-            'is_published',
-            'forfattningssamling',
-            ('arsutgava', 'lopnummer'),
-            'titel',
-            'sammanfattning',
-            'content',
-            ('beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck'),
-            'omtryck',
-            #('omtryck','andrar'),
-            #'bemyndiganden',
-            'amnesord',
-            #'celexreferenser'
-            ),
-        'classes': ['wide', 'extrapretty']
-        }),)
-    filter_horizontal = ('amnesord',)
+    fieldsets = (
+        (None,
+         {
+             'fields': (
+                 'is_published',
+                 'identifierare',
+                 ('forfattningssamling', 'arsutgava', 'lopnummer'),
+                 ('titel', 'sammanfattning'),
+                 ('content', 'omtryck'),
+                 ('beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck'),
+                 ),
+             'classes': ['wide', 'extrapretty']
+             }),
+        (u'Dokument som ändras, upphävs eller konsolideras av detta dokument',
+         {
+             'fields': ('andringar',),
+             'description': u'Ange eventuella andra dokument påverkas',
+             'classes': ['collapse', 'wide', 'extrapretty']}
+         ),
+        (u'Ämnesord (myndighetens kategorisering)',
+         {
+             'fields': (
+                 'amnesord',),
+             'classes': ['collapse', 'wide', 'extrapretty']
+         })
+    )
+    filter_horizontal = ('amnesord', 'andringar')
 
 
 class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
 
     form = HasContentFileForm
 
-    list_display = ('identifierare', 
-                    'arsutgava', 
-                    'lopnummer', 
+    list_display = ('identifierare',
+                    'arsutgava',
+                    'lopnummer',
                     'titel',
-                    'beslutsdatum', 
-                    'ikrafttradandedatum', 
-                    'utkom_fran_tryck', 
+                    'beslutsdatum',
+                    'ikrafttradandedatum',
+                    'utkom_fran_tryck',
                     'role_label')
-    list_filter = ('beslutsdatum', 
+    list_filter = ('beslutsdatum',
                    'ikrafttradandedatum',
                    'is_published',
                    'amnesord',
@@ -167,27 +185,37 @@ class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
     ordering = ('-beslutsdatum', 'titel')
     search_fields = ('titel', 'identifierare',)
     inlines = [BilagaInline, OvrigtDokumentInline]
-    readonly_fields = ('is_published','identifierare',)
+    readonly_fields = ('is_published', 'identifierare',)
     save_on_top = True
-    fieldsets = ((None, {
-        'fields': (
-            'identifierare',
-            'is_published',
-            'forfattningssamling',
-            ('arsutgava', 'lopnummer'),
-            'titel',
-            'sammanfattning',
-            'content',
-            ('beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck'),
-            #('omtryck','andrar'),
-            ('omtryck'),
-            'bemyndiganden',
-            'amnesord',
-            'celexreferenser'
-            ),
-        'classes': ['wide', 'extrapretty']
-        }),)
-    filter_horizontal = ('bemyndiganden','amnesord','celexreferenser')
+    fieldsets = (
+        (None,
+         {
+             'fields': (
+                 'is_published',
+                 'identifierare',
+                 ('forfattningssamling', 'arsutgava', 'lopnummer'),
+                 ('titel', 'sammanfattning'),
+                 ('content', 'omtryck'),
+                 ('beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck'),
+                 'bemyndiganden',
+                 'celexreferenser'
+                 ),
+             'classes': ['wide', 'extrapretty']
+             }),
+        (u'Författningsdokument som ändras, upphävs eller konsolideras',
+         {
+             'fields': ('andringar',),
+             'description': u'Ange eventuella andra dokument påverkas',
+             'classes': ['collapse', 'wide', 'extrapretty']}
+         ),
+        (u'Ämnesord (myndighetens kategorisering)',
+         {
+             'fields': (
+                 'amnesord',),
+             'classes': ['collapse', 'wide', 'extrapretty']
+         })
+    )
+    filter_horizontal = ('bemyndiganden', 'amnesord', 'celexreferenser')
 
 
 def generate_atom_entry_for(obj, update_only=False):
@@ -230,7 +258,7 @@ def generate_rdf_post_for(obj):
 admin.site.register(AllmannaRad, AllmannaRadAdmin)
 admin.site.register(Myndighetsforeskrift, MyndighetsforeskriftAdmin)
 admin.site.register(Amnesord, AmnesordAdmin)
-admin.site.register(Bemyndigandereferens,BemyndigandereferensAdmin)
+admin.site.register(Bemyndigandereferens, BemyndigandereferensAdmin)
 admin.site.register(CelexReferens, CelexReferensAdmin)
 admin.site.register(Forfattningssamling, ForfattningssamlingAdmin)
 admin.site.register(AtomEntry)
