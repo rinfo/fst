@@ -89,4 +89,3 @@ try:
     from local_settings import *
 except ImportError:
     from demo_settings import *
-

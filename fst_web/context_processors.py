@@ -1,6 +1,7 @@
 # -*- coding: UTF-8 -*-
 from django.conf import settings
 
+
 def add_request_vars(request):
     return {
         'organization': dict(
@@ -9,4 +10,3 @@ def add_request_vars(request):
         'site': dict(
                 url=settings.FST_SITE_URL)
     }
-

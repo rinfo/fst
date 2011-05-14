@@ -8,8 +8,8 @@ TEMPLATE_DEBUG = DEBUG
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': path.join(path.dirname(__file__), 
-                          'database/fst_demo.db').replace('\\','/') 
+        'NAME': path.join(path.dirname(__file__),
+                          'database/fst_demo.db').replace('\\','/')
         #Path to sqlite 3 db-file
     }
 }

@@ -100,7 +100,7 @@ class WebTestCase(TestCase):
         self.assertContains(response,"<h2>Budgetering</h2>")
         # Documents listed by keywords
         self.assertContains(response,'<li><a href="/publ/exfs/2009:3/">')
-        #self.assertContains(response,'<li><a href="/publ/exfs/2011:1/">')
+        self.assertContains(response,'<li><a href="/publ/exfs/2011:1/">')
 
     def test_feed(self):
         """Verify that Atom feed is created and can be read """
