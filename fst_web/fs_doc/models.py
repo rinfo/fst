@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 from datetime import datetime
 import hashlib
@@ -34,6 +35,7 @@ class FSDokument(models.Model):
                                  max_length=13,
                                  unique=False,
                                  blank=False,
+                                 default=2011,
                                  help_text="T.ex. <em>2010</em>")
     lopnummer = models.CharField("Löpnummer",
                                  max_length=3,
@@ -41,14 +43,15 @@ class FSDokument(models.Model):
                                  blank=False,
                                  help_text="T.ex. <em>1</em>")
 
-    is_published = models.BooleanField(u"Publicerad",
+    is_published = models.BooleanField(u"Publicerad via FST",
                                        default=False,
                                        null=False,
                                        blank=True,
-                                       help_text=
-                                       """Grön bock = publicerad via FST.
-                                     Rött streck = ej publicerad.
-                                     Glöm inte att publicera!""")
+                                       help_text=\
+                                       """Grön bock = publicerad. \
+                                       Rött streck = ej publicerad. \
+                                       Glöm inte att publicera dina ändringar!
+                                     """)
 
     titel = models.CharField(
         max_length=512,
@@ -68,7 +71,8 @@ class FSDokument(models.Model):
     # of type 'forfattningssamling'.
     forfattningssamling = models.ForeignKey('Forfattningssamling',
                                             blank=False,
-                                            verbose_name=u"författningssamling")
+                                            verbose_name=
+                                            u"författningssamling")
 
     beslutsdatum = models.DateField("Beslutsdatum", blank=False)
 
@@ -81,28 +85,12 @@ class FSDokument(models.Model):
                                   null=False,
                                   blank=True,
                                   help_text=
-                                  """Anger om denna föreskrift är ett omtryck.""")
+                                  """Anger om denna föreskrift \
+                                  är ett omtryck.""")
 
     amnesord = models.ManyToManyField('Amnesord',
                                       blank=True,
                                       verbose_name=u"ämnesord")
-
-
-    # Optional value: specifies that this document changes another document
-    # TODO: change definition to support 1-M relation
-    andrar = models.ForeignKey("self",
-                               null=True,
-                               blank=True,
-                               related_name="andringar",
-                               verbose_name=u"Ändrar")
-
-    # Optional value: specifies that this document invalidates another document
-    # TODO: change definition to support 1-M relation
-    upphaver = models.ForeignKey("self",
-                                 null=True,
-                                 blank=True,
-                                 related_name="upphavningar",
-                                 verbose_name=u"Upphäver")
 
     # Store checksum of uploaded file
     content_md5 = models.CharField(max_length=32,
@@ -146,7 +134,7 @@ class FSDokument(models.Model):
         """
 
         label = u"Grundförfattning"
-        if self.andrar:
+        if (self.andringar.select_related().count()>0):
             label = u"Ändringsförfattning"
         if self.omtryck:
             label += " (omtryck)"
@@ -163,7 +151,7 @@ class FSDokument(models.Model):
 
 
 class AllmannaRad(FSDokument):
-    """Common document type in document collections of type 'författningsamling'.
+    """Common document type in documentcollection of type 'författningsamling'.
 
     See also the domain model RDF definition at:
     http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#AllmannaRad
@@ -181,11 +169,33 @@ class AllmannaRad(FSDokument):
 
     beslutad_av = models.ForeignKey('Myndighet',
                                     related_name='ar_beslutad_av',
+                                    null=True,  # TODO: add GUI to set this!
                                     blank=True)
 
     utgivare = models.ForeignKey('Myndighet',
                                  related_name='ar_utgivare',
+                                 null=True,  # TODO: add GUI to set this!
                                  blank=True)
+
+    andringar = models.ManyToManyField('self',
+                                       blank=True,
+                                       symmetrical=False,
+                                       related_name='andringar_allmannarad',
+                                       verbose_name=u"Ändrar")
+
+    upphavningar = models.ManyToManyField('self',
+                                          blank=True,
+                                          symmetrical=False,
+                                          related_name=
+                                          'upphavningar_allmannarad',
+                                          verbose_name=u"Upphäver")
+
+    konsolideringar = models.ManyToManyField('self',
+                                          blank=True,
+                                          symmetrical=False,
+                                          related_name=
+                                          'konsolideringar_allmannarad',
+                                          verbose_name=u"Konsoliderar")
 
     def to_rdfxml(self):
         """Return metadata as RDF/XML for this document."""
@@ -203,7 +213,6 @@ class Myndighetsforeskrift(FSDokument):
         verbose_name = u"Myndighetsföreskrift"
         verbose_name_plural = u"Myndighetsföreskrifter"
 
-
     content = models.FileField(u"PDF-version",
                                upload_to="foreskrift",
                                blank=False,
@@ -215,20 +224,43 @@ class Myndighetsforeskrift(FSDokument):
                                            verbose_name=
                                            u"referenser till bemyndiganden")
 
-
     celexreferenser = models.ManyToManyField('CelexReferens',
                                              blank=True,
+                                             related_name="foreskrifter",
                                              verbose_name=
-                                             u"Bidrar till att genomföra EG-direktiv", related_name="foreskrifter")
+                                             u"Bidrar till att genomföra \
+                                             EG-direktiv")
 
     beslutad_av = models.ForeignKey('Myndighet',
                                     related_name='doc_beslutad_av',
+                                    null=True,  # TODO: add GUI to set this!
                                     blank=True)
 
     utgivare = models.ForeignKey('Myndighet',
                                  related_name='doc_utgivare',
+                                 null=True,  # TODO: add GUI to set this!
                                  blank=True)
 
+    andringar = models.ManyToManyField('self',
+                                       blank=True,
+                                       symmetrical=False,
+                                       related_name='andringar_foreskrift',
+                                       verbose_name=u"Ändrar")
+
+    upphavningar = models.ManyToManyField('self',
+                                          blank=True,
+                                          symmetrical=False,
+                                          related_name=\
+                                          'upphavningar_foreskrift',
+                                          verbose_name=u"Upphäver")
+    
+    konsolideringar = models.ManyToManyField('self',
+                                          blank=True,
+                                          symmetrical=False,
+                                          related_name=
+                                          'konsolideringar_foreskrift',
+                                          verbose_name=u"Konsoliderar")
+    
     def to_rdfxml(self):
         """Return metadata as RDF/XML for this document."""
         return rdfviews.MyndighetsforeskriftDescription(self).to_rdfxml()
@@ -246,13 +278,15 @@ class Myndighet(models.Model):
         unique=True,
         help_text="""Namn på myndighet, t ex Exempelmyndigheten""")
 
-    def get_slug(self,tag):
+    def get_slug(self, tag):
         """"Transform identifiers with Swedish characters for URI use
 
-        As specified by: http://dev.lagrummet.se/dokumentation/system/uri-principer.pdf
+        As specified by:
+        http://dev.lagrummet.se/dokumentation/system/uri-principer.pdf
         """
         tag = tag.lower().encode("utf-8")
-        slug = tag.replace('Å','aa').replace('Ä','ae').replace('ö','oe').replace(' ','_')
+        slug = tag.replace('Å', 'aa').replace('Ä', 'ae').\
+             replace('ö', 'oe').replace(' ', '_')
         return slug
 
     def get_rinfo_uri(self):
@@ -263,7 +297,7 @@ class Myndighet(models.Model):
 
     def __unicode__(self):
         """Display value for user interface."""
-        return u'%s' %(self.namn)
+        return u'%s' % (self.namn)
 
 
 class Forfattningssamling(models.Model):
@@ -296,7 +330,8 @@ class Forfattningssamling(models.Model):
     def get_rinfo_uri(self):
         """"Create URI for this document collection
 
-        As specified by: http://dev.lagrummet.se/dokumentation/system/uri-principer.pdf
+        As specified by:
+        http://dev.lagrummet.se/dokumentation/system/uri-principer.pdf
         """
         slug = to_slug(self.kortnamn)
         uri = "http://rinfo.lagrummet.se/serier/fs/" + slug
@@ -347,10 +382,11 @@ class Bilaga(HasFile):
                             upload_to="bilaga",
                             blank=True, null=True,
                             help_text=
-                            """Om ingen fil anges förutsätts bilagan vara en del av föreskriftsdokumentet.""")
+                            """Om ingen fil anges förutsätts bilagan \
+                            vara en del av föreskriftsdokumentet.""")
 
     def get_rinfo_uri(self):
-        ordinal = 1 # FIXME: compute ordinal
+        ordinal = 1  # FIXME: compute ordinal
         return self.foreskrift.get_rinfo_uri() + "#bilaga_%s" % ordinal
 
 
@@ -413,6 +449,48 @@ class Amnesord(models.Model):
         return self.titel
 
 
+class Andringar_foreskrift(models.Model):
+    from_doc=models.ForeignKey('Myndighetsforeskrift',
+                               related_name='changing')
+    to_doc=models.ForeignKey('Myndighetsforeskrift',
+                             related_name='changed')
+
+
+class Andringar_allmannarad(models.Model):
+    from_doc=models.ForeignKey('AllmannaRad',
+                               related_name='changing')
+    to_doc=models.ForeignKey('AllmannaRad',
+                             related_name='changed')
+
+
+class Upphavningar_foreskrift(models.Model):
+    from_doc=models.ForeignKey('Myndighetsforeskrift',
+                               related_name= 'cancelling')
+    to_doc=models.ForeignKey('Myndighetsforeskrift',
+                             related_name='cancelled')
+
+
+class Upphavningar_allmannarad(models.Model):
+    from_doc=models.ForeignKey('AllmannaRad',
+                               related_name='cancelling')
+    to_doc=models.ForeignKey('AllmannaRad',
+                             related_name='cancelled')
+
+
+class Konsolideringar_foreskrift(models.Model):
+    from_doc=models.ForeignKey('Myndighetsforeskrift',
+                               related_name= 'consolidating')
+    to_doc=models.ForeignKey('Myndighetsforeskrift',
+                             related_name='consolidated')
+
+
+class Konsolideringar_allmannarad(models.Model):
+    from_doc=models.ForeignKey('AllmannaRad',
+                               related_name='consolidating')
+    to_doc=models.ForeignKey('AllmannaRad',
+                             related_name='consolidated')
+
+
 class Bemyndigandereferens(models.Model):
 
     class Meta:
@@ -439,7 +517,9 @@ class Bemyndigandereferens(models.Model):
     kommentar = models.CharField(max_length=255,
                                  blank=True,
                                  help_text=
-                                 """T.ex. <em>rätt att meddela föreskrifter om notarietjänstgöring och notariemeritering</em>""")
+                                 """T.ex. <em>rätt att meddela föreskrifter om\
+                                 notarietjänstgöring och \
+                                 notariemeritering</em>""")
 
     def __unicode__(self):
         if self.kapitelnummer:
@@ -456,7 +536,8 @@ class GenericUniqueMixin(object):
     @classmethod
     def get_for(cls, obj):
         obj_type = ContentType.objects.get_for_model(obj)
-        for instance in cls.objects.filter(content_type__pk=obj_type.id, object_id=obj.id):
+        for instance in cls.objects.filter(content_type__pk=obj_type.id,
+                                           object_id=obj.id):
             return instance
 
     @classmethod
@@ -524,7 +605,9 @@ class AtomEntry(models.Model, GenericUniqueMixin):
 
             'doc': self.content_object,
             'rdf_post': self.rdf_post,
-            'rdf_url': None if self.deleted else self.content_object.get_absolute_url() + "rdf",
+            'rdf_url': \
+            None if self.deleted \
+            else self.content_object.get_absolute_url() + "rdf", \
             'fst_site_url': settings.FST_SITE_URL
         })
         return template.render(context)
@@ -562,7 +645,8 @@ def get_file_md5(opened_file):
     block_size = 128 * md5sum.block_size
     while True:
         data = opened_file.read(block_size)
-        if not data: break
+        if not data:
+            break
         md5sum.update(data)
     return md5sum.hexdigest()
 
@@ -570,9 +654,10 @@ def get_file_md5(opened_file):
 def to_slug(tag):
     """"Transform identifiers with Swedish characters for URI use.
 
-    As specified by: http://dev.lagrummet.se/dokumentation/system/uri-principer.pdf
+    As specified by:
+    http://dev.lagrummet.se/dokumentation/system/uri-principer.pdf
     """
     tag = tag.lower().encode("utf-8")
-    slug = tag.replace('å','aa').replace('ä','ae').replace('ö','oe').replace(' ','_')
+    slug = tag.replace('å', 'aa').replace('ä', 'ae').\
+         replace('ö', 'oe').replace(' ', '_')
     return slug
-

@@ -11,20 +11,21 @@
         "pk": 1, 
         "model": "fs_doc.allmannarad", 
         "fields": {
-            "andringar": [],
-            "konsolideringar": [],
-            "upphavningar": [],
-            "omtryck": false,  
+            "andringar": [], 
+            "omtryck": false, 
             "arsutgava": "2011", 
             "utgivare": 1, 
             "beslutsdatum": "2011-05-01", 
-            "amnesord": [
-                1,3
-            ], 
+            "upphavningar": [], 
             "content": "allmanna_rad/EXFS-2011-1.pdf", 
             "sammanfattning": "Exempelmyndighetens allm\u00e4nna r\u00e5d om adminstration", 
             "ikrafttradandedatum": "2011-06-04", 
+            "amnesord": [
+                1, 
+                3
+            ], 
             "utkom_fran_tryck": "2011-05-04", 
+            "konsolideringar": [], 
             "forfattningssamling": 1, 
             "lopnummer": "1", 
             "content_md5": "1003515a72e551e157e87f03a64c8344", 
@@ -37,9 +38,7 @@
         "pk": 1, 
         "model": "fs_doc.myndighetsforeskrift", 
         "fields": {
-            "andringar": [],
-            "konsolideringar": [],
-            "upphavningar": [],
+            "andringar": [], 
             "omtryck": false, 
             "arsutgava": "2009", 
             "bemyndiganden": [
@@ -48,16 +47,18 @@
             ], 
             "utgivare": 1, 
             "beslutsdatum": "2009-01-30", 
-            "amnesord": [
-                1
-            ], 
+            "upphavningar": [], 
             "celexreferenser": [
                 1
             ], 
             "content": "foreskrift/EXFS-2009-1.pdf", 
             "sammanfattning": "", 
             "ikrafttradandedatum": "2009-03-30", 
+            "amnesord": [
+                1
+            ], 
             "utkom_fran_tryck": "2009-02-01", 
+            "konsolideringar": [], 
             "forfattningssamling": 1, 
             "lopnummer": "1", 
             "content_md5": "5c2c3fc272e57cb1f1c5d9d3d1aeec3b", 
@@ -70,19 +71,17 @@
         "pk": 2, 
         "model": "fs_doc.myndighetsforeskrift", 
         "fields": {
-            "andringar": [1],
-            "konsolideringar": [],
-            "upphavningar": [],
-            "omtryck": true,  
+            "andringar": [
+                1
+            ], 
+            "omtryck": true, 
             "arsutgava": "2009", 
             "bemyndiganden": [
                 1
             ], 
             "utgivare": 1, 
             "beslutsdatum": "2009-04-01", 
-            "amnesord": [
-                1
-            ], 
+            "upphavningar": [], 
             "celexreferenser": [
                 1, 
                 2, 
@@ -91,7 +90,11 @@
             "content": "foreskrift/EXFS-2009-2.pdf", 
             "sammanfattning": "", 
             "ikrafttradandedatum": "2009-04-01", 
+            "amnesord": [
+                1
+            ], 
             "utkom_fran_tryck": "2009-04-01", 
+            "konsolideringar": [], 
             "forfattningssamling": 1, 
             "lopnummer": "2", 
             "content_md5": "6becd47ccdc1d4441a7d7d45d2111049", 
@@ -104,9 +107,7 @@
         "pk": 3, 
         "model": "fs_doc.myndighetsforeskrift", 
         "fields": {
-            "andringar": [],
-            "konsolideringar": [],
-            "upphavningar": [],
+            "andringar": [], 
             "omtryck": false, 
             "arsutgava": "2009", 
             "bemyndiganden": [
@@ -115,14 +116,16 @@
             ], 
             "utgivare": 1, 
             "beslutsdatum": "2009-04-30", 
-            "amnesord": [
-                2
-            ], 
+            "upphavningar": [], 
             "celexreferenser": [], 
             "content": "foreskrift/EXFS-2009-3.pdf", 
             "sammanfattning": "", 
             "ikrafttradandedatum": "2009-04-30", 
+            "amnesord": [
+                2
+            ], 
             "utkom_fran_tryck": "2009-04-30", 
+            "konsolideringar": [], 
             "forfattningssamling": 1, 
             "lopnummer": "3", 
             "content_md5": "38f6775435ee332650f718435ed0c6f9", 
@@ -249,7 +252,7 @@
             "slug": "exfs/2009:1"
         }
     }, 
-     {
+    {
         "pk": 2, 
         "model": "fs_doc.rdfpost", 
         "fields": {
@@ -282,7 +285,6 @@
             "slug": "exfs/2011:1"
         }
     }, 
-
     {
         "pk": 22, 
         "model": "auth.permission", 
@@ -500,30 +502,30 @@
         }
     }, 
     {
-        "pk": 55, 
+        "pk": 52, 
         "model": "auth.permission", 
         "fields": {
-            "codename": "add_atomentry", 
-            "name": "Can add atom entry", 
-            "content_type": 19
+            "codename": "add_rdfpost", 
+            "name": "Can add rdf post", 
+            "content_type": 18
         }
     }, 
     {
-        "pk": 56, 
+        "pk": 53, 
         "model": "auth.permission", 
         "fields": {
-            "codename": "change_atomentry", 
-            "name": "Can change atom entry", 
-            "content_type": 19
+            "codename": "change_rdfpost", 
+            "name": "Can change rdf post", 
+            "content_type": 18
         }
     }, 
     {
-        "pk": 57, 
+        "pk": 54, 
         "model": "auth.permission", 
         "fields": {
-            "codename": "delete_atomentry", 
-            "name": "Can delete atom entry", 
-            "content_type": 19
+            "codename": "delete_rdfpost", 
+            "name": "Can delete rdf post", 
+            "content_type": 18
         }
     }, 
     {
@@ -551,6 +553,60 @@
             "codename": "delete_bemyndigandereferens", 
             "name": "Can delete Bemyndigandereferens", 
             "content_type": 17
+        }
+    }, 
+    {
+        "pk": 73, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_atomentry", 
+            "name": "Can add atom entry", 
+            "content_type": 25
+        }
+    }, 
+    {
+        "pk": 74, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_atomentry", 
+            "name": "Can change atom entry", 
+            "content_type": 25
+        }
+    }, 
+    {
+        "pk": 75, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_atomentry", 
+            "name": "Can delete atom entry", 
+            "content_type": 25
+        }
+    }, 
+    {
+        "pk": 67, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_bemyndigandereferens", 
+            "name": "Can add Bemyndigandereferens", 
+            "content_type": 23
+        }
+    }, 
+    {
+        "pk": 68, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_bemyndigandereferens", 
+            "name": "Can change Bemyndigandereferens", 
+            "content_type": 23
+        }
+    }, 
+    {
+        "pk": 69, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_bemyndigandereferens", 
+            "name": "Can delete Bemyndigandereferens", 
+            "content_type": 23
         }
     }, 
     {
@@ -635,6 +691,60 @@
         }
     }, 
     {
+        "pk": 64, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_konsolideringar_allmannarad", 
+            "name": "Can add konsolideringar_allmannarad", 
+            "content_type": 22
+        }
+    }, 
+    {
+        "pk": 65, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_konsolideringar_allmannarad", 
+            "name": "Can change konsolideringar_allmannarad", 
+            "content_type": 22
+        }
+    }, 
+    {
+        "pk": 66, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_konsolideringar_allmannarad", 
+            "name": "Can delete konsolideringar_allmannarad", 
+            "content_type": 22
+        }
+    }, 
+    {
+        "pk": 61, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_konsolideringar_foreskrift", 
+            "name": "Can add konsolideringar_foreskrift", 
+            "content_type": 21
+        }
+    }, 
+    {
+        "pk": 62, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_konsolideringar_foreskrift", 
+            "name": "Can change konsolideringar_foreskrift", 
+            "content_type": 21
+        }
+    }, 
+    {
+        "pk": 63, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_konsolideringar_foreskrift", 
+            "name": "Can delete konsolideringar_foreskrift", 
+            "content_type": 21
+        }
+    }, 
+    {
         "pk": 31, 
         "model": "auth.permission", 
         "fields": {
@@ -716,30 +826,84 @@
         }
     }, 
     {
-        "pk": 52, 
+        "pk": 70, 
         "model": "auth.permission", 
         "fields": {
             "codename": "add_rdfpost", 
             "name": "Can add rdf post", 
-            "content_type": 18
+            "content_type": 24
         }
     }, 
     {
-        "pk": 53, 
+        "pk": 71, 
         "model": "auth.permission", 
         "fields": {
             "codename": "change_rdfpost", 
             "name": "Can change rdf post", 
-            "content_type": 18
+            "content_type": 24
         }
     }, 
     {
-        "pk": 54, 
+        "pk": 72, 
         "model": "auth.permission", 
         "fields": {
             "codename": "delete_rdfpost", 
             "name": "Can delete rdf post", 
-            "content_type": 18
+            "content_type": 24
+        }
+    }, 
+    {
+        "pk": 58, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_upphavningar_allmannarad", 
+            "name": "Can add upphavningar_allmannarad", 
+            "content_type": 20
+        }
+    }, 
+    {
+        "pk": 59, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_upphavningar_allmannarad", 
+            "name": "Can change upphavningar_allmannarad", 
+            "content_type": 20
+        }
+    }, 
+    {
+        "pk": 60, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_upphavningar_allmannarad", 
+            "name": "Can delete upphavningar_allmannarad", 
+            "content_type": 20
+        }
+    }, 
+    {
+        "pk": 55, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_atomentry", 
+            "name": "Can add atom entry", 
+            "content_type": 19
+        }
+    }, 
+    {
+        "pk": 56, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_atomentry", 
+            "name": "Can change atom entry", 
+            "content_type": 19
+        }
+    }, 
+    {
+        "pk": 57, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_atomentry", 
+            "name": "Can delete atom entry", 
+            "content_type": 19
         }
     }, 
     {
@@ -806,7 +970,7 @@
             "is_active": true, 
             "is_superuser": true, 
             "is_staff": true, 
-            "last_login": "2011-05-06 20:57:22", 
+            "last_login": "2011-05-15 00:42:55", 
             "groups": [], 
             "user_permissions": [], 
             "password": "sha1$64965$7fe7bb4763a30640c553f54313748593b0b22d02", 

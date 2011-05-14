@@ -10,7 +10,7 @@ admin.autodiscover()
 # URL-routing
 
 urlpatterns = patterns('',
-                       # Display static files 
+                       # Display static files
                        (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': os.path.join(os.path.dirname(__file__), 'static').replace('\\','/')}),
 
                        # Get files from server
@@ -22,7 +22,7 @@ urlpatterns = patterns('',
                        # Display specific document as RDF
                        (r'^publ/(?P<fs_dokument_slug>.*)/rdf$', 'fst_web.fs_doc.views.fs_dokument_rdf'),
 
-                       # Display info about specific document 
+                       # Display info about specific document
                        (r'^publ/(?P<fs_dokument_slug>.*)/$', 'fst_web.fs_doc.views.fs_dokument'),
 
                        # Display documents sorted by keyword ("/amnesord/")

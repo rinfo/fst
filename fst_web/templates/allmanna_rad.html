@@ -33,23 +33,8 @@
             <td>{% for ord in doc.amnesord.all %}{{ord.titel}}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
         </tr>
         {% endif %}
-         {% if doc.andrar %}
-        <tr>
-            <th scope="row">Ändrar</th>
-            <td><a href="{{doc.andrar.get_absolute_url}}">{{doc.andrar}}</a></td>
-        </tr>
-        {% endif %}
     </table>
-
-    {% if doc.andringar.all %}
-    <h2>Ändringar</h2>
-    <ul class="andringar">
-        {% for andringsdoc in doc.andringar.all %}
-        <li><a href="{{andringsdoc.get_absolute_url}}">{{andringsdoc}}{% if andringsdoc.omtryck %} (omtryck){% endif %}</a></li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-
+    
     {% if doc.bilagor.all %}
         <h2>Bilagor</h2>
         <ul>
@@ -84,4 +69,12 @@
         </ul>
     {% endif %}
 
+    {% if doc.andringar.all %}
+    <h2>Författningsdokument som ändras</h2>
+    <ul class="andringar">
+        {% for changed_doc in doc.andringar.all %}
+        <li><a href="{{changed_doc.get_absolute_url}}">{{changed_doc}}{% if changed_doc.omtryck %} (omtryck){% endif %}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 {% endblock %}
