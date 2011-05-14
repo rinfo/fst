@@ -459,6 +459,20 @@ class Upphavningar_allmannarad(models.Model):
                              related_name='cancelled')
 
 
+class Konsolideringar_foreskrift(models.Model):
+    from_doc=models.ForeignKey('Myndighetsforeskrift',
+                               related_name= 'consolidating')
+    to_doc=models.ForeignKey('Myndighetsforeskrift',
+                             related_name='consolidated')
+
+
+class Konsolideringar_allmannarad(models.Model):
+    from_doc=models.ForeignKey('AllmannaRad',
+                               related_name='consolidating')
+    to_doc=models.ForeignKey('AllmannaRad',
+                             related_name='consolidated')
+
+
 class Bemyndigandereferens(models.Model):
 
     class Meta:
