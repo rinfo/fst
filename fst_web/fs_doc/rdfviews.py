@@ -47,15 +47,11 @@ class  FSDokumentDescription(Description):
         add(RPUBL.utkomFranTryck, Literal(obj.utkom_fran_tryck))
         add(DCT.publisher, URIRef(obj.get_publisher_uri()))
 
-        #if obj.andrar:
-            #add(RPUBL.andrar, URIRef(obj.andrar.get_rinfo_uri()))
-
         #if obj.omtryck:
-            #add(RPUBL.omtryckAv, URIRef(obj.andrar.get_rinfo_uri()))
+        #    add(RPUBL.omtryckAv, URIRef(obj.andrar.get_rinfo_uri()))
 
         for amnesord in obj.amnesord.all():
             add(DCES.subject, Literal(amnesord.titel, lang="sv"))
-
         return graph
 
 class AllmanaRadDescription(FSDokumentDescription):
@@ -63,6 +59,14 @@ class AllmanaRadDescription(FSDokumentDescription):
     def to_rdf(self):
         graph = super(AllmanaRadDescription, self).to_rdf()
         graph.add((self.ref, RDF.type, RPUBL.AllmannaRad))
+        obj = self.obj
+        add = lambda p, o: graph.add((self.ref, p, o))
+
+        add(RDF.type, RPUBL.AllmannaRad)
+        
+        for changed_doc in obj.andringar.all():
+            add(RPUBL.andrar, URIRef(changed_doc.get_rinfo_uri()))
+
         return graph
 
 
@@ -74,6 +78,7 @@ class MyndighetsforeskriftDescription(FSDokumentDescription):
         add = lambda p, o: graph.add((self.ref, p, o))
 
         add(RDF.type, RPUBL.Myndighetsforeskrift)
+
 
         if obj.celexreferenser.all():
             for referens in obj.celexreferenser.all():
@@ -102,6 +107,8 @@ class MyndighetsforeskriftDescription(FSDokumentDescription):
             dok_add(DCT.title, Literal(dok.titel, lang="sv"))
             dok_add(FOAF.primaryTopic, self.ref)
 
-        return graph
+        for changed_doc in obj.andringar.all():
+            add(RPUBL.andrar, URIRef(changed_doc.get_rinfo_uri()))
 
+        return graph
 
