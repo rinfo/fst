@@ -179,17 +179,20 @@ class AllmannaRad(FSDokument):
 
     andringar = models.ManyToManyField('self',
                                        blank=True,
+                                       symmetrical=False,
                                        related_name='andringar_allmannarad',
                                        verbose_name=u"Ändrar")
 
     upphavningar = models.ManyToManyField('self',
                                           blank=True,
+                                          symmetrical=False,
                                           related_name=
                                           'upphavningar_allmannarad',
                                           verbose_name=u"Upphäver")
 
     konsolideringar = models.ManyToManyField('self',
                                           blank=True,
+                                          symmetrical=False,
                                           related_name=
                                           'konsolideringar_allmannarad',
                                           verbose_name=u"Konsoliderar")
@@ -240,17 +243,20 @@ class Myndighetsforeskrift(FSDokument):
 
     andringar = models.ManyToManyField('self',
                                        blank=True,
+                                       symmetrical=False,
                                        related_name='andringar_foreskrift',
                                        verbose_name=u"Ändrar")
 
     upphavningar = models.ManyToManyField('self',
                                           blank=True,
+                                          symmetrical=False,
                                           related_name=\
                                           'upphavningar_foreskrift',
                                           verbose_name=u"Upphäver")
     
     konsolideringar = models.ManyToManyField('self',
                                           blank=True,
+                                          symmetrical=False,
                                           related_name=
                                           'konsolideringar_foreskrift',
                                           verbose_name=u"Konsoliderar")
