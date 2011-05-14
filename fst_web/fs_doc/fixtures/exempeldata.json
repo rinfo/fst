@@ -11,6 +11,9 @@
         "pk": 1, 
         "model": "fs_doc.allmannarad", 
         "fields": {
+            "andringar": [],
+            "konsolideringar": [],
+            "upphavningar": [],
             "omtryck": false,  
             "arsutgava": "2011", 
             "utgivare": 1, 
@@ -34,6 +37,9 @@
         "pk": 1, 
         "model": "fs_doc.myndighetsforeskrift", 
         "fields": {
+            "andringar": [],
+            "konsolideringar": [],
+            "upphavningar": [],
             "omtryck": false, 
             "arsutgava": "2009", 
             "bemyndiganden": [
@@ -64,6 +70,9 @@
         "pk": 2, 
         "model": "fs_doc.myndighetsforeskrift", 
         "fields": {
+            "andringar": [1],
+            "konsolideringar": [],
+            "upphavningar": [],
             "omtryck": true,  
             "arsutgava": "2009", 
             "bemyndiganden": [
@@ -95,6 +104,9 @@
         "pk": 3, 
         "model": "fs_doc.myndighetsforeskrift", 
         "fields": {
+            "andringar": [],
+            "konsolideringar": [],
+            "upphavningar": [],
             "omtryck": false, 
             "arsutgava": "2009", 
             "bemyndiganden": [

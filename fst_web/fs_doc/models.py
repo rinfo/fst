@@ -134,8 +134,8 @@ class FSDokument(models.Model):
         """
 
         label = u"Grundförfattning"
-        #if self.andrar:
-        #    label = u"Ändringsförfattning"
+        if (self.andringar.select_related().count()>0):
+            label = u"Ändringsförfattning"
         if self.omtryck:
             label += " (omtryck)"
         return label
