@@ -433,30 +433,30 @@ class Amnesord(models.Model):
 
 class Andringar_foreskrift(models.Model):
     from_doc=models.ForeignKey('Myndighetsforeskrift',
-                               related_name='original')
+                               related_name='changing')
     to_doc=models.ForeignKey('Myndighetsforeskrift',
                              related_name='changed')
 
 
 class Andringar_allmannarad(models.Model):
     from_doc=models.ForeignKey('AllmannaRad',
-                               related_name='original')
+                               related_name='changing')
     to_doc=models.ForeignKey('AllmannaRad',
                              related_name='changed')
 
 
 class Upphavningar_foreskrift(models.Model):
     from_doc=models.ForeignKey('Myndighetsforeskrift',
-                               related_name= 'original_f')
+                               related_name= 'cancelling')
     to_doc=models.ForeignKey('Myndighetsforeskrift',
-                             related_name='changed_a')
+                             related_name='cancelled')
 
 
 class Upphavningar_allmannarad(models.Model):
     from_doc=models.ForeignKey('AllmannaRad',
-                               related_name='original_f')
+                               related_name='cancelling')
     to_doc=models.ForeignKey('AllmannaRad',
-                             related_name='changed_a')
+                             related_name='cancelled')
 
 
 class Bemyndigandereferens(models.Model):
@@ -573,7 +573,9 @@ class AtomEntry(models.Model, GenericUniqueMixin):
 
             'doc': self.content_object,
             'rdf_post': self.rdf_post,
-            'rdf_url': None if self.deleted else self.content_object.get_absolute_url() + "rdf",
+            'rdf_url': \
+            None if self.deleted \
+            else self.content_object.get_absolute_url() + "rdf", \
             'fst_site_url': settings.FST_SITE_URL
         })
         return template.render(context)
@@ -624,5 +626,6 @@ def to_slug(tag):
     http://dev.lagrummet.se/dokumentation/system/uri-principer.pdf
     """
     tag = tag.lower().encode("utf-8")
-    slug = tag.replace('å', 'aa').replace('ä', 'ae').replace('ö', 'oe').replace(' ', '_')
+    slug = tag.replace('å', 'aa').replace('ä', 'ae').\
+         replace('ö', 'oe').replace(' ', '_')
     return slug
