@@ -796,7 +796,7 @@
             "content_type": 7
         }
     }, 
-    {
+        {
         "pk": 1, 
         "model": "auth.user", 
         "fields": {
@@ -806,12 +806,61 @@
             "is_active": true, 
             "is_superuser": true, 
             "is_staff": true, 
-            "last_login": "2011-05-06 20:57:22", 
+            "last_login": "2011-05-15 18:32:50", 
             "groups": [], 
             "user_permissions": [], 
             "password": "sha1$64965$7fe7bb4763a30640c553f54313748593b0b22d02", 
             "email": "fst@local.local", 
             "date_joined": "2011-04-08 15:26:15"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "admin", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": true, 
+            "is_staff": true, 
+            "last_login": "2011-05-15 18:33:31", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$a53ca$3160c538c455ee9825f63eff5e346b715b231b12", 
+            "email": "", 
+            "date_joined": "2011-05-15 18:33:31"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "editor", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": true, 
+            "last_login": "2011-05-15 18:36:15", 
+            "groups": [], 
+            "user_permissions": [
+                25, 
+                26, 
+                27, 
+                67, 
+                68, 
+                69, 
+                43, 
+                44, 
+                45, 
+                28, 
+                29, 
+                30
+            ], 
+            "password": "sha1$9e667$40ac59c9954dd148289ec21db61c47c21463d53f", 
+            "email": "", 
+            "date_joined": "2011-05-15 18:34:25"
         }
     }
 ]
