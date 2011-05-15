@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 import os
 
-# General Django settings for FST webservice
-#
-# Remember to extend these settings in local_settings.py before deploying!
-# (or use demo_settings.py for development and testing)
+"""General Django settings file for all websites using the FST webservice
 
+In production, every website has it's own file named 'local_settings.py'.
+Use the default values in 'demo_settings.py' as a starting point.
+"""
+
+ROOT = os.path.abspath(os.path.dirname(__file__))
+path = lambda *args: os.path.join(ROOT, *args)
 
 # Encoding of files read from disk (template and initial SQL files).
 FILE_CHARSET = 'utf-8'
@@ -73,7 +76,9 @@ STATICFILES_FINDERS = (
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
-SITE_ID = 1 # Default. More documentaton here: http://docs.djangoproject.com/en/dev/ref/contrib/sites/
+# Default. More documentaton here:
+# http://docs.djangoproject.com/en/dev/ref/contrib/sites/
+SITE_ID = 1
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -105,12 +110,8 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'fst_web.urls'
 
-# Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-# Always use forward slashes, even on Windows.
-# Don't forget to use absolute paths, not relative paths.
-TEMPLATE_DIRS = (
-    os.path.join(os.path.dirname(__file__), 'templates').replace('\\','/'),
-)
+# Specify one or more directories where templates can be found
+TEMPLATE_DIRS = (path('templates'), )
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -118,7 +119,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    #'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
