@@ -134,7 +134,7 @@ class FSDokument(models.Model):
         """
 
         label = u"Grundförfattning"
-        if (self.andringar.select_related().count()>0):
+        if (self.andringar.select_related().count() > 0):
             label = u"Ändringsförfattning"
         if self.omtryck:
             label += " (omtryck)"
@@ -253,14 +253,14 @@ class Myndighetsforeskrift(FSDokument):
                                           related_name=\
                                           'upphavningar_foreskrift',
                                           verbose_name=u"Upphäver")
-    
+
     konsolideringar = models.ManyToManyField('self',
                                           blank=True,
                                           symmetrical=False,
                                           related_name=
                                           'konsolideringar_foreskrift',
                                           verbose_name=u"Konsoliderar")
-    
+
     def to_rdfxml(self):
         """Return metadata as RDF/XML for this document."""
         return rdfviews.MyndighetsforeskriftDescription(self).to_rdfxml()

@@ -31,13 +31,17 @@ class WebTestCase(TestCase):
         # Move documents from fixtures to temporary test folder
         shutil.copy(os.path.join(base, "fixtures/foreskrift/EXFS-2009-1.pdf"),
                     testdocs)
-        shutil.copy(os.path.join(base, "fixtures/bilaga/EXFS-2009-1-bilaga.pdf"),
+        shutil.copy(os.path.join(base,
+                                 "fixtures/bilaga/EXFS-2009-1-bilaga.pdf"),
                     testdocs)
-        shutil.copy(os.path.join(base, "fixtures/foreskrift/EXFS-2009-2.pdf"),
+        shutil.copy(os.path.join(base,
+                                 "fixtures/foreskrift/EXFS-2009-2.pdf"),
                     testdocs)
-        shutil.copy(os.path.join(base, "fixtures/foreskrift/EXFS-2009-3.pdf"),
+        shutil.copy(os.path.join(base,
+                                 "fixtures/foreskrift/EXFS-2009-3.pdf"),
                     testdocs)
-        shutil.copy(os.path.join(base, "fixtures/allmanna_rad/EXFS-2011-1.pdf"),
+        shutil.copy(os.path.join(base,
+                                 "fixtures/allmanna_rad/EXFS-2011-1.pdf"),
                     testdocs)
 
     def tearDown(self):
@@ -48,19 +52,23 @@ class WebTestCase(TestCase):
         shutil.rmtree(testdocs)
 
     def test_startsida(self):
-        """Verify that start page loads and displays correct sample documents"""
+        """Verify start page loads and displays correct sample documents"""
 
         response = self.client.get('/')
         self.failUnlessEqual(response.status_code, 200)
         self.assertContains(response,
-                            "EXFS 2009:1 Föreskrift om administration hos statliga myndigheter")
+                            "EXFS 2009:1 Föreskrift om administration hos \
+                            statliga myndigheter")
         self.assertContains(response,
-                            "EXFS 2009:2 Föreskrift om ändring i föreskrift 2009:1 om "
+                            "EXFS 2009:2 Föreskrift om ändring i föreskrift \
+                            2009:1 om "
                             "administration hos statliga myndigheter")
         self.assertContains(response,
-                            "EXFS 2009:3 Föreskrift om budgetering hos statliga myndigheter")
+                            "EXFS 2009:3 Föreskrift om budgetering hos \
+                            statliga myndigheter")
         self.assertContains(response,
-                            "EXFS 2011:1 Exempelmyndighetens allmänna råd om adminstration")
+                            "EXFS 2011:1 Exempelmyndighetens allmänna råd om \
+                            adminstration")
 
     def test_foreskrift(self):
         """Verify that detail page for documents load
@@ -69,12 +77,14 @@ class WebTestCase(TestCase):
         response = self.client.get('/publ/exfs/2009:1/')
         self.failUnlessEqual(response.status_code, 200)
         self.assertContains(response,
-                            "<h1>EXFS 2009:1 Föreskrift om administration hos statliga myndigheter")
+                            "<h1>EXFS 2009:1 Föreskrift om administration \
+                            hos statliga myndigheter")
 
         response = self.client.get('/publ/exfs/2011:1/')
         self.failUnlessEqual(response.status_code, 200)
         self.assertContains(response,
-                            "<h1>EXFS 2011:1 Exempelmyndighetens allmänna råd om adminstration")
+                            "<h1>EXFS 2011:1 Exempelmyndighetens \
+                            allmänna råd om adminstration")
 
     def test_artal(self):
         """Verify that listing by year load
@@ -83,11 +93,11 @@ class WebTestCase(TestCase):
         response = self.client.get('/artal/')
         self.failUnlessEqual(response.status_code, 200)
         # Headers for years
-        self.assertContains(response,"<h2>2009</h2>")
-        self.assertContains(response,"<h2>2011</h2>")
+        self.assertContains(response, "<h2>2009</h2>")
+        self.assertContains(response, "<h2>2011</h2>")
         # Documents listed by year
-        self.assertContains(response,'<li><a href="/publ/exfs/2009:3/">')
-        self.assertContains(response,'<li><a href="/publ/exfs/2011:1/">')
+        self.assertContains(response, '<li><a href="/publ/exfs/2009:3/">')
+        self.assertContains(response, '<li><a href="/publ/exfs/2011:1/">')
 
     def test_amnesord(self):
         """Verify that listing by year load
@@ -96,11 +106,11 @@ class WebTestCase(TestCase):
         response = self.client.get('/amnesord/')
         self.failUnlessEqual(response.status_code, 200)
         # Headers for keywords
-        self.assertContains(response,"<h2>Administration</h2>")
-        self.assertContains(response,"<h2>Budgetering</h2>")
+        self.assertContains(response, "<h2>Administration</h2>")
+        self.assertContains(response, "<h2>Budgetering</h2>")
         # Documents listed by keywords
-        self.assertContains(response,'<li><a href="/publ/exfs/2009:3/">')
-        self.assertContains(response,'<li><a href="/publ/exfs/2011:1/">')
+        self.assertContains(response, '<li><a href="/publ/exfs/2009:3/">')
+        self.assertContains(response, '<li><a href="/publ/exfs/2011:1/">')
 
     def test_feed(self):
         """Verify that Atom feed is created and can be read """
@@ -163,7 +173,7 @@ class FeedTestCase(TestCase):
     def test_feed_is_complete(self):
         dom = self._get_parsed_feed('/feed/')
         self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM_FH,
-                                                         'complete')),1)
+                                                         'complete')), 1)
 
     def test_entry_link_md5(self):
         """Verify that checksum of document in Atom feed is correct"""
@@ -228,8 +238,8 @@ class RDFTestCase(TestCase):
 
         graph = self._get_foreskrift_graph("exfs", "2009", "1")
         ref = URIRef("/publ/exfs/2009:1", RINFO_BASE)
-        title = Literal(u"Föreskrift om administration hos statliga myndigheter",
-                        lang='sv')
+        title = Literal(u"Föreskrift om administration hos statliga \
+        myndigheter", lang='sv')
         keyword = Literal(u"Administration", lang='sv')
         self.assertIn((ref, RDF.type, RPUBL.Myndighetsforeskrift), graph)
         self.assertIn((ref, DCT.title, title), graph)
@@ -267,14 +277,14 @@ class RDFTestCase(TestCase):
         #self.assertIn((ref, RPUBL.omtryckAv, omtryck_ref), graph)
 
     def test_no_omtryck(self):
-        """No metadata should be genereated unless property 'omtryck' is true"""
+        """No metadata for property 'omtryck' unless true"""
 
         graph = self._get_foreskrift_graph("exfs", "2009", "3")
         ref = URIRef("/publ/exfs/2009:3", RINFO_BASE)
         self.assertFalse(list(graph.objects(ref, RPUBL.omtryckAv)))
 
     def _get_foreskrift_graph(self, fs_slug, arsutgava, lopnummer):
-        return self._get_graph_for_type(models.Myndighetsforeskrift,
+        return self._get_graph_for_type(models.Myndighetsforeskrift, \
                                         fs_slug, arsutgava, lopnummer)
 
     def _get_allmana_rad_graph(self, fs_slug, arsutgava, lopnummer):

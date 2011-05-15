@@ -7,11 +7,14 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import  loader, Context, RequestContext
 from django.utils.feedgenerator import rfc3339_date
-from fst_web.fs_doc.models import Forfattningssamling, Myndighetsforeskrift, AllmannaRad, Amnesord, AtomEntry, RDFPost
+from fst_web.fs_doc.models import Forfattningssamling, \
+     Myndighetsforeskrift, AllmannaRad, Amnesord, AtomEntry, RDFPost
 
 
 def _response(request, template, context):
-    return render_to_response(template, context, context_instance=RequestContext(request))
+    return render_to_response(template,
+                              context,
+                              context_instance=RequestContext(request))
 
 
 def index(request):
@@ -25,19 +28,20 @@ def index(request):
         "-beslutsdatum")[:10])
     a_list = list(AllmannaRad.objects.all().order_by(
         "-beslutsdatum")[:10])
-    latest_documents =  sorted(
-        chain(f_list,a_list),
+    latest_documents = sorted(
+        chain(f_list, a_list),
         key=attrgetter('beslutsdatum'),
         reverse=True)
 
     return _response(request, 'index.html', locals())
+
 
 def fs_dokument_rdf(request, fs_dokument_slug):
     """Display RDF representation of document"""
 
     rdf_post = get_object_or_404(RDFPost, slug=fs_dokument_slug)
     fs_dokument = rdf_post.content_object
-    return HttpResponse(rdf_post.data, 
+    return HttpResponse(rdf_post.data,
                         mimetype="application/rdf+xml;charset=utf-8")
 
 
@@ -53,6 +57,7 @@ def fs_dokument(request, fs_dokument_slug):
     else:
         pass
 
+
 def amnesord(request):
     """Display documents grouped by keywords """
 
@@ -65,17 +70,18 @@ def amnesord(request):
         allmannarad__isnull = False).
                    order_by("titel").
                    distinct())
-    amnesord = sorted(chain(fk_list,ak_list),key=attrgetter('titel'))
+    amnesord = sorted(chain(fk_list, ak_list), key=attrgetter('titel'))
 
-    # Create a dictionary on keywords for all types of documents   
+    # Create a dictionary on keywords for all types of documents
     docs_by_keywords = {}
     for kw in (amnesord):
         f_list = list(kw.myndighetsforeskrift_set.all().order_by("titel"))
         a_list = list(kw.allmannarad_set.all().order_by("titel"))
-        doc_list = sorted(chain(f_list,a_list),key=attrgetter('titel'))
+        doc_list = sorted(chain(f_list, a_list), key=attrgetter('titel'))
         docs_by_keywords[kw] = doc_list
 
     return _response(request, 'per_amnesord.html', locals())
+
 
 def artal(request):
     """Display documents grouped by year """
@@ -84,11 +90,12 @@ def artal(request):
                   order_by("-ikrafttradandedatum"))
     a_list = list(AllmannaRad.objects.all().
                   order_by("-ikrafttradandedatum"))
-    fs_documents =  sorted(
-        chain(f_list,a_list),
-        key=attrgetter('ikrafttradandedatum'),reverse=True)
+    fs_documents = sorted(
+        chain(f_list, a_list),
+        key=attrgetter('ikrafttradandedatum'), reverse=True)
 
     return _response(request, 'per_ar.html', locals())
+
 
 def atomfeed(request):
     """ Return Atom Feed representing activities in document collection """
@@ -105,4 +112,5 @@ def atomfeed(request):
     template = loader.get_template('atomfeed.xml')
     context = Context(locals())
 
-    return HttpResponse(template.render(context), mimetype="application/atom+xml; charset=utf-8")
+    return HttpResponse(template.render(context),
+                        mimetype="application/atom+xml; charset=utf-8")

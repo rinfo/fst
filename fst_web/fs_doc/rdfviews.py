@@ -13,6 +13,7 @@ RINFO_BASE = "http://rinfo.lagrummet.se"
 def eur_lex_ref(celexnum):
     return URIRef("%s/ext/eur-lex/%s" % (RINFO_BASE, celexnum))
 
+
 def sfs_ref(sfsnum):
     return URIRef("%s/publ/sfs/%s" % (RINFO_BASE, sfsnum))
 
@@ -54,6 +55,7 @@ class  FSDokumentDescription(Description):
             add(DCES.subject, Literal(amnesord.titel, lang="sv"))
         return graph
 
+
 class AllmanaRadDescription(FSDokumentDescription):
 
     def to_rdf(self):
@@ -63,7 +65,7 @@ class AllmanaRadDescription(FSDokumentDescription):
         add = lambda p, o: graph.add((self.ref, p, o))
 
         add(RDF.type, RPUBL.AllmannaRad)
-        
+
         for changed_doc in obj.andringar.all():
             add(RPUBL.andrar, URIRef(changed_doc.get_rinfo_uri()))
 
@@ -79,7 +81,6 @@ class MyndighetsforeskriftDescription(FSDokumentDescription):
 
         add(RDF.type, RPUBL.Myndighetsforeskrift)
 
-
         if obj.celexreferenser.all():
             for referens in obj.celexreferenser.all():
                 add(RPUBL.genomforDirektiv, eur_lex_ref(referens.celexnummer))
@@ -89,16 +90,21 @@ class MyndighetsforeskriftDescription(FSDokumentDescription):
             add(RPUBL.bemyndigande, bemyndigande_ref)
             bemyndigande_add = lambda p, o: graph.add((bemyndigande_ref, p, o))
             bemyndigande_add(RDF.type, RPUBL.Forfattningsreferens)
-            bemyndigande_add(RPUBL.angerGrundforfattning, sfs_ref(bemyndigande.sfsnummer))
+            bemyndigande_add(RPUBL.angerGrundforfattning,
+                             sfs_ref(bemyndigande.sfsnummer))
             if bemyndigande.kapitelnummer:
-                bemyndigande_add(RPUBL.angerKapitelnummer, Literal(bemyndigande.kapitelnummer))
-            bemyndigande_add(RPUBL.angerParagrafnummer, Literal(bemyndigande.paragrafnummer))
+                bemyndigande_add(RPUBL.angerKapitelnummer,
+                                 Literal(bemyndigande.kapitelnummer))
+            bemyndigande_add(RPUBL.angerParagrafnummer,
+                             Literal(bemyndigande.paragrafnummer))
 
         for i, bilaga in enumerate(obj.bilagor.all()):
             if bilaga.titel:
-                bilaga_ref = URIRef("%s#bilaga_%s" % (obj.get_rinfo_uri(), i+1))
+                bilaga_ref = URIRef("%s#bilaga_%s" %
+                                    (obj.get_rinfo_uri(), i+1))
                 add(RPUBL.bilaga, bilaga_ref)
-                graph.add((bilaga_ref, DCT.title, Literal(bilaga.titel))) # no lang?
+                graph.add((bilaga_ref, DCT.title,
+                           Literal(bilaga.titel)))  # no lang?
 
         for dok in obj.ovriga_dokument.all():
             dok_ref = URIRef("%s/%s" % (obj.get_rinfo_uri(), dok.file.url))
@@ -111,4 +117,3 @@ class MyndighetsforeskriftDescription(FSDokumentDescription):
             add(RPUBL.andrar, URIRef(changed_doc.get_rinfo_uri()))
 
         return graph
-
