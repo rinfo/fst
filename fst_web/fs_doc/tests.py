@@ -57,18 +57,13 @@ class WebTestCase(TestCase):
         response = self.client.get('/')
         self.failUnlessEqual(response.status_code, 200)
         self.assertContains(response,
-                            "EXFS 2009:1 Föreskrift om administration hos \
-                            statliga myndigheter")
+                            "EXFS 2009:1 Föreskrift om administration hos statliga myndigheter")
         self.assertContains(response,
-                            "EXFS 2009:2 Föreskrift om ändring i föreskrift \
-                            2009:1 om "
-                            "administration hos statliga myndigheter")
+                            "EXFS 2009:2 Föreskrift om ändring i föreskrift 2009:1 om administration hos statliga myndigheter")
         self.assertContains(response,
-                            "EXFS 2009:3 Föreskrift om budgetering hos \
-                            statliga myndigheter")
+                            "EXFS 2009:3 Föreskrift om budgetering hos statliga myndigheter")
         self.assertContains(response,
-                            "EXFS 2011:1 Exempelmyndighetens allmänna råd om \
-                            adminstration")
+                            "EXFS 2011:1 Exempelmyndighetens allmänna råd om adminstration")
 
     def test_foreskrift(self):
         """Verify that detail page for documents load
@@ -77,14 +72,12 @@ class WebTestCase(TestCase):
         response = self.client.get('/publ/exfs/2009:1/')
         self.failUnlessEqual(response.status_code, 200)
         self.assertContains(response,
-                            "<h1>EXFS 2009:1 Föreskrift om administration \
-                            hos statliga myndigheter")
+                            "<h1>EXFS 2009:1 Föreskrift om administration hos statliga myndigheter")
 
         response = self.client.get('/publ/exfs/2011:1/')
         self.failUnlessEqual(response.status_code, 200)
         self.assertContains(response,
-                            "<h1>EXFS 2011:1 Exempelmyndighetens \
-                            allmänna råd om adminstration")
+                            "<h1>EXFS 2011:1 Exempelmyndighetens allmänna råd om adminstration")
 
     def test_artal(self):
         """Verify that listing by year load
@@ -238,8 +231,8 @@ class RDFTestCase(TestCase):
 
         graph = self._get_foreskrift_graph("exfs", "2009", "1")
         ref = URIRef("/publ/exfs/2009:1", RINFO_BASE)
-        title = Literal(u"Föreskrift om administration hos statliga \
-        myndigheter", lang='sv')
+        title = Literal(
+            u"Föreskrift om administration hos statliga myndigheter", lang='sv')
         keyword = Literal(u"Administration", lang='sv')
         self.assertIn((ref, RDF.type, RPUBL.Myndighetsforeskrift), graph)
         self.assertIn((ref, DCT.title, title), graph)
