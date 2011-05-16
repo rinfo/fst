@@ -18,10 +18,9 @@
                         <ul id="menu">
                             <li><a href="{% url fst_web.fs_doc.views.index %}">Startsida</a></li>
                             <li>------------------------</li>
-                            <li><a href="/admin/fs_doc/myndighetsforeskrift/add/">Mata in författning</a></li>
-                            <li><a href="/admin/fs_doc/allmannarad/add/">Mata in allmänna råd</a></li>
-                            <li><a href="/admin/fs_doc/myndighetsforeskrift/">Redigera författningar</a></li>
-                            <li><a href="/admin/fs_doc/allmannarad/">Redigera  allmänna råd</a></li>
+                            <li><a href={% url admin:fs_doc_myndighetsforeskrift_add %}>Mata in författning</a></li>
+                            <li><a href={% url admin:fs_doc_allmannarad_add %}>Mata in allmänna råd</a></li>
+                            <li><a href={% url admin:index %}>Redigera författningsamlingen</a></li>
                             <li>------------------------</li>
                             <li><a href="{% url fst_web.fs_doc.views.amnesord %}">Lista per ämnesord</a></li>
                             <li><a href="{% url fst_web.fs_doc.views.artal %}">Lista per ikraftträdandeår</a></li>
