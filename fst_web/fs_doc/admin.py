@@ -146,20 +146,26 @@ class AllmannaRadAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                  ('content', 'omtryck'),
                  ('beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck'),
                  ),
-             'classes': ['wide', 'extrapretty']
-             }),
-        (u'Dokument som ändras, upphävs eller konsolideras av detta dokument',
-         {
-             'fields': ('andringar', 'upphavningar', 'konsolideringar'),
-             'description': u'Ange eventuella andra dokument påverkas',
-             'classes': ['collapse', 'wide', 'extrapretty']}
+             'classes': ['wide', 'extrapretty']}
          ),
-        (u'Ämnesord (myndighetens kategorisering)',
+        (u'Ämnesord - myndighetens kategorisering',
          {
              'fields': (
                  'amnesord',),
-             'classes': ['collapse', 'wide', 'extrapretty']
-         })
+             'classes': ['collapse', 'wide', 'extrapretty']}
+         ),
+        (u'Dokument som ändras eller upphävs av detta dokument',
+         {
+             'fields': ('andringar', 'upphavningar',),
+             'description': u'Ange dokument som ändras eller upphävs',
+             'classes': ['collapse', 'wide', 'extrapretty']}
+         ),
+        (u'Dokument som konsolideras av detta dokument',
+         {
+             'fields': ('konsolideringar',),
+             'description': u'Ange de dokument som konsolideras',
+             'classes': ['collapse', 'wide', 'extrapretty']}
+         )
     )
     filter_horizontal = ('amnesord',
                          'andringar',
@@ -200,23 +206,34 @@ class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                  ('titel', 'sammanfattning'),
                  ('content', 'omtryck'),
                  ('beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck'),
-                 'bemyndiganden',
-                 'celexreferenser'
+                 'bemyndiganden'
                  ),
              'classes': ['wide', 'extrapretty']
              }),
-        (u'Författningsdokument som ändras, upphävs eller konsolideras',
+        (u'EG-rättsreferenser - celex',
          {
-             'fields': ('andringar', 'upphavningar', 'konsolideringar'),
-             'description': u'Ange eventuella andra dokument påverkas',
+             'fields': (
+                 'celexreferenser',),
              'classes': ['collapse', 'wide', 'extrapretty']}
          ),
-        (u'Ämnesord (myndighetens kategorisering)',
+        (u'Ämnesord - myndighetens kategorisering',
          {
              'fields': (
                  'amnesord',),
-             'classes': ['collapse', 'wide', 'extrapretty']
-         })
+             'classes': ['collapse', 'wide', 'extrapretty']}
+         ),
+        (u'Dokument som ändras eller upphävs av detta dokument',
+         {
+             'fields': ('andringar', 'upphavningar',),
+             'description': u'Ange dokument som ändras eller upphävs',
+             'classes': ['collapse', 'wide', 'extrapretty']}
+         ),
+        (u'Dokument som konsolideras av detta dokument',
+         {
+             'fields': ('konsolideringar',),
+             'description': u'Ange de dokument som konsolideras',
+             'classes': ['collapse', 'wide', 'extrapretty']}
+         )
     )
     filter_horizontal = ('bemyndiganden',
                          'amnesord',
