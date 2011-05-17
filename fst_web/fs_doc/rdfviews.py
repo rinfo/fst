@@ -48,8 +48,9 @@ class  FSDokumentDescription(Description):
         add(RPUBL.utkomFranTryck, Literal(obj.utkom_fran_tryck))
         add(DCT.publisher, URIRef(obj.get_publisher_uri()))
 
-        #if obj.omtryck:
-        #    add(RPUBL.omtryckAv, URIRef(obj.andrar.get_rinfo_uri()))
+        if obj.omtryck:
+            for changed_doc in obj.andringar.all():
+                add(RPUBL.omtryckAv, URIRef(changed_doc.andrar.get_rinfo_uri()))
 
         for amnesord in obj.amnesord.all():
             add(DCES.subject, Literal(amnesord.titel, lang="sv"))

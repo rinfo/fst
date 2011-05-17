@@ -267,7 +267,7 @@ class RDFTestCase(TestCase):
         graph = self._get_foreskrift_graph("exfs", "2009", "2")
         ref = URIRef("/publ/exfs/2009:2", RINFO_BASE)
         omtryck_ref = URIRef("/publ/exfs/2009:1", RINFO_BASE)
-        #self.assertIn((ref, RPUBL.omtryckAv, omtryck_ref), graph)
+        self.assertIn((ref, RPUBL.omtryckAv, omtryck_ref), graph)
 
     def test_no_omtryck(self):
         """No metadata for property 'omtryck' unless true"""
