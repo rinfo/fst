@@ -275,6 +275,14 @@ class RDFTestCase(TestCase):
         graph = self._get_foreskrift_graph("exfs", "2009", "3")
         ref = URIRef("/publ/exfs/2009:3", RINFO_BASE)
         self.assertFalse(list(graph.objects(ref, RPUBL.omtryckAv)))
+        
+    def test_andrar(self):
+        """Verify that property 'andringar' has correct RDF metadata """
+
+        graph = self._get_foreskrift_graph("exfs", "2009", "2")
+        ref = URIRef("/publ/exfs/2009:2", RINFO_BASE)
+        self.assertTrue(list(graph.objects(ref, RPUBL.andrar)))
+
 
     def _get_foreskrift_graph(self, fs_slug, arsutgava, lopnummer):
         return self._get_graph_for_type(models.Myndighetsforeskrift, \
