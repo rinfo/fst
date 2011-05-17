@@ -76,8 +76,7 @@ class WebTestCase(TestCase):
 
         response = self.client.get('/publ/exfs/2011:1/')
         self.failUnlessEqual(response.status_code, 200)
-        self.assertContains(response,
-                            "<h1>EXFS 2011:1 Exempelmyndighetens allmänna råd om adminstration")
+        self.assertContains(response, "<h1>EXFS 2011:1 Exempelmyndighetens allmänna råd om adminstration")
 
     def test_artal(self):
         """Verify that listing by year load
@@ -186,9 +185,9 @@ class FeedTestCase(TestCase):
                 avlast_md5 = link.getAttributeNS(NS_ATOMLE, "md5")
                 # Compare checksum from feed with checksum of current document
                 response = self.client.get('/publ/exfs/2009:1')
-                md5=hashlib.md5()
+                md5 = hashlib.md5()
                 md5.update(response.content)
-                beraknad_rdfmd5=md5.hexdigest()
+                beraknad_rdfmd5 = md5.hexdigest()
                 self.assertEqual(beraknad_rdfmd5, avlast_md5)
 
     def test_delete_feedentry(self):
@@ -232,7 +231,8 @@ class RDFTestCase(TestCase):
         graph = self._get_foreskrift_graph("exfs", "2009", "1")
         ref = URIRef("/publ/exfs/2009:1", RINFO_BASE)
         title = Literal(
-            u"Föreskrifter om administration hos statliga myndigheter", lang='sv')
+            u"Föreskrifter om administration hos statliga myndigheter",
+            lang='sv')
         keyword = Literal(u"Administration", lang='sv')
         self.assertIn((ref, RDF.type, RPUBL.Myndighetsforeskrift), graph)
         self.assertIn((ref, DCT.title, title), graph)
@@ -275,14 +275,13 @@ class RDFTestCase(TestCase):
         graph = self._get_foreskrift_graph("exfs", "2009", "3")
         ref = URIRef("/publ/exfs/2009:3", RINFO_BASE)
         self.assertFalse(list(graph.objects(ref, RPUBL.omtryckAv)))
-        
+
     def test_andrar(self):
         """Verify that property 'andringar' has correct RDF metadata """
 
         graph = self._get_foreskrift_graph("exfs", "2009", "2")
         ref = URIRef("/publ/exfs/2009:2", RINFO_BASE)
         self.assertTrue(list(graph.objects(ref, RPUBL.andrar)))
-
 
     def _get_foreskrift_graph(self, fs_slug, arsutgava, lopnummer):
         return self._get_graph_for_type(models.Myndighetsforeskrift, \

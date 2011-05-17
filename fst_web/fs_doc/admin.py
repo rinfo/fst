@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+"""Definitions controlling layout and behavior of the Django admin app"""
+
 from os import path
 from datetime import datetime
 from django import forms
@@ -18,9 +20,9 @@ class ForfattningssamlingAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         obj.slug = to_slug(obj.kortnamn)
+        obj.save
         super(ForfattningssamlingAdmin, self).save_model(
             request, obj, form, change)
-        obj.save
 
 
 class CelexReferensAdmin(admin.ModelAdmin):
@@ -166,11 +168,11 @@ class AllmannaRadAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
              'description': u'Ange dokument som upphävs',
              'classes': ['collapse', 'wide', 'extrapretty']}
          ),        (u'Dokument som konsolideras av detta dokument',
-         {
-             'fields': ('konsolideringar',),
-             'description': u'Ange de dokument som konsolideras',
-             'classes': ['collapse', 'wide', 'extrapretty']}
-         )
+                    {
+                        'fields': ('konsolideringar',),
+                        'description': u'Ange de dokument som konsolideras',
+                        'classes': ['collapse', 'wide', 'extrapretty']}
+                    )
     )
     filter_horizontal = ('amnesord',
                          'andringar',
