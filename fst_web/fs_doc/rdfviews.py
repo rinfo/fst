@@ -50,7 +50,7 @@ class  FSDokumentDescription(Description):
 
         if obj.omtryck:
             for changed_doc in obj.andringar.all():
-                add(RPUBL.omtryckAv, URIRef(changed_doc.andrar.get_rinfo_uri()))
+                add(RPUBL.omtryckAv, URIRef(changed_doc.get_rinfo_uri()))
 
         for amnesord in obj.amnesord.all():
             add(DCES.subject, Literal(amnesord.titel, lang="sv"))
