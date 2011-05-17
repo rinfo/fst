@@ -67,6 +67,9 @@ class AllmanaRadDescription(FSDokumentDescription):
 
         add(RDF.type, RPUBL.AllmannaRad)
 
+        for changed_doc in obj.andringar.all():
+            add(RPUBL.andrar, URIRef(changed_doc.get_rinfo_uri()))
+
         return graph
 
 
@@ -110,5 +113,8 @@ class MyndighetsforeskriftDescription(FSDokumentDescription):
             dok_add(RDF.type, FOAF.Document)
             dok_add(DCT.title, Literal(dok.titel, lang="sv"))
             dok_add(FOAF.primaryTopic, self.ref)
+
+        for changed_doc in obj.andringar.all():
+            add(RPUBL.andrar, URIRef(changed_doc.get_rinfo_uri()))
 
         return graph
