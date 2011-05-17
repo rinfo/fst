@@ -154,13 +154,18 @@ class AllmannaRadAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                  'amnesord',),
              'classes': ['collapse', 'wide', 'extrapretty']}
          ),
-        (u'Dokument som ändras eller upphävs av detta dokument',
+        (u'Dokument som ändras av detta dokument',
          {
-             'fields': ('andringar', 'upphavningar',),
-             'description': u'Ange dokument som ändras eller upphävs',
+             'fields': ('andringar',),
+             'description': u'Ange dokument som ändras',
              'classes': ['collapse', 'wide', 'extrapretty']}
          ),
-        (u'Dokument som konsolideras av detta dokument',
+        (u'Dokument som upphävs av detta dokument',
+         {
+             'fields': ('upphavningar',),
+             'description': u'Ange dokument som upphävs',
+             'classes': ['collapse', 'wide', 'extrapretty']}
+         ),        (u'Dokument som konsolideras av detta dokument',
          {
              'fields': ('konsolideringar',),
              'description': u'Ange de dokument som konsolideras',
@@ -222,10 +227,16 @@ class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                  'amnesord',),
              'classes': ['collapse', 'wide', 'extrapretty']}
          ),
-        (u'Dokument som ändras eller upphävs av detta dokument',
+        (u'Dokument som ändras av detta dokument',
          {
-             'fields': ('andringar', 'upphavningar',),
-             'description': u'Ange dokument som ändras eller upphävs',
+             'fields': ('andringar',),
+             'description': u'Ange dokument som ändras',
+             'classes': ['collapse', 'wide', 'extrapretty']}
+         ),
+        (u'Dokument som upphävs av detta dokument',
+         {
+             'fields': ('upphavningar',),
+             'description': u'Ange dokument som upphävs',
              'classes': ['collapse', 'wide', 'extrapretty']}
          ),
         (u'Dokument som konsolideras av detta dokument',
