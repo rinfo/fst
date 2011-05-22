@@ -8,6 +8,7 @@ from django.test.client import Client
 from rdflib import Graph, Literal, URIRef, RDF
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.shortcuts import get_object_or_404
 from fst_web.fs_doc import models
 from fst_web.fs_doc.admin import generate_atom_entry_for, generate_rdf_post_for
 from fst_web.fs_doc.rdfviews import DCT, DCES, FOAF, RPUBL, RINFO_BASE
@@ -21,7 +22,7 @@ NS_AT = "http://purl.org/atompub/tombstones/1.0"
 
 class AdminSuperUserTestCase(TestCase):
     fixtures = ['exempeldata.json']
-    
+
     def setUp(self):
         self.username = 'admin'  # This user already exists in fixture
         self.pw = 'admin'        # and is a superuser
@@ -43,10 +44,12 @@ class AdminSuperUserTestCase(TestCase):
         self.assertContains(response, "auth")
         self.assertContains(response, "sites")
         self.assertContains(response, "fs_doc")
-        
+
+
 class AdminTestCase(TestCase):
-    fixtures = ['exempeldata.json']
     
+    fixtures = ['exempeldata.json']
+
     def setUp(self):
         self.username = 'editor'  # This user already exists in fixture
         self.pw = 'editor'        # and is a regular user
@@ -65,9 +68,24 @@ class AdminTestCase(TestCase):
             'question_set-INITIAL_FORMS': u'0',
         }
         response = self.client.post(reverse('admin:index'), post_data)
-        self.assertContains(response, "fs_doc")   # Permissions for this
-        self.assertNotContains(response, "auth")  # No access
-        self.assertNotContains(response, "sites") # No access
+        self.assertContains(response, "fs_doc")    # Permissions for this
+        self.assertNotContains(response, "auth")   # No access
+        self.assertNotContains(response, "sites")  # No access
+
+    def test_translation_allmannarad(self):
+        """Verify existence of translated labels with Swedish characters """
+
+        fs_dokument = models.AllmannaRad.objects.get(
+            forfattningssamling__slug="exfs", arsutgava="2011", lopnummer="1")
+        post_data = {
+            'question_set-TOTAL_FORMS': u'0',
+            'question_set-INITIAL_FORMS': u'0'
+        }
+        response = self.client.post(reverse(
+            'admin:fs_doc_allmannarad_add'), post_data)
+        # TODO: make this more specific and test for expected HTML elements
+        self.assertContains(response, "Årsutgåva")
+        self.assertContains(response, "Löpnummer")
 
 
 class WebTestCase(TestCase):
