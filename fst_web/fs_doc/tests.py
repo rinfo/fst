@@ -4,7 +4,10 @@ import os
 import shutil
 from xml.dom.minidom import parse, parseString
 from django.test import TestCase
+from django.test.client import Client
 from rdflib import Graph, Literal, URIRef, RDF
+from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from fst_web.fs_doc import models
 from fst_web.fs_doc.admin import generate_atom_entry_for, generate_rdf_post_for
 from fst_web.fs_doc.rdfviews import DCT, DCES, FOAF, RPUBL, RINFO_BASE
@@ -14,6 +17,57 @@ NS_ATOM = "http://www.w3.org/2005/Atom"
 NS_ATOM_FH = "http://purl.org/syndication/history/1.0"
 NS_ATOMLE = "http://purl.org/atompub/link-extensions/1.0"
 NS_AT = "http://purl.org/atompub/tombstones/1.0"
+
+
+class AdminSuperUserTestCase(TestCase):
+    fixtures = ['exempeldata.json']
+    
+    def setUp(self):
+        self.username = 'admin'  # This user already exists in fixture
+        self.pw = 'admin'        # and is a superuser
+        self.assertTrue(self.client.login(
+            username=self.username, password=self.pw),
+            "Logging in user %s, pw %s failed." % (self.username, self.pw))
+
+    def tearDown(self):
+        self.client.logout()
+
+    def test_superuser_access(self):
+        """Verify that superuser has access to system tables"""
+
+        post_data = {
+            'question_set-TOTAL_FORMS': u'0',
+            'question_set-INITIAL_FORMS': u'0',
+        }
+        response = self.client.post(reverse('admin:index'), post_data)
+        self.assertContains(response, "auth")
+        self.assertContains(response, "sites")
+        self.assertContains(response, "fs_doc")
+        
+class AdminTestCase(TestCase):
+    fixtures = ['exempeldata.json']
+    
+    def setUp(self):
+        self.username = 'editor'  # This user already exists in fixture
+        self.pw = 'editor'        # and is a regular user
+        self.assertTrue(self.client.login(
+            username=self.username, password=self.pw),
+            "Logging in user %s, pw %s failed." % (self.username, self.pw))
+
+    def tearDown(self):
+        self.client.logout()
+
+    def test_access(self):
+        """Verify that ordinary user has restricted access"""
+
+        post_data = {
+            'question_set-TOTAL_FORMS': u'0',
+            'question_set-INITIAL_FORMS': u'0',
+        }
+        response = self.client.post(reverse('admin:index'), post_data)
+        self.assertContains(response, "fs_doc")   # Permissions for this
+        self.assertNotContains(response, "auth")  # No access
+        self.assertNotContains(response, "sites") # No access
 
 
 class WebTestCase(TestCase):
@@ -56,14 +110,18 @@ class WebTestCase(TestCase):
 
         response = self.client.get('/')
         self.failUnlessEqual(response.status_code, 200)
-        self.assertContains(response,
-                            "EXFS 2009:1 Föreskrifter om administration hos statliga myndigheter")
-        self.assertContains(response,
-                            "EXFS 2009:2 Föreskrifter om ändring i föreskrifter 2009:1 om administration hos statliga myndigheter")
-        self.assertContains(response,
-                            "EXFS 2009:3 Föreskrifter om budgetering hos statliga myndigheter")
-        self.assertContains(response,
-                            "EXFS 2011:1 Exempelmyndighetens allmänna råd om adminstration")
+        self.assertContains(
+            response,
+            "EXFS 2009:1 Föreskrifter om administration hos statliga myndigheter")
+        self.assertContains(
+            response,
+            "EXFS 2009:2 Föreskrifter om ändring i föreskrifter 2009:1 om administration hos statliga myndigheter")
+        self.assertContains(
+            response,
+            "EXFS 2009:3 Föreskrifter om budgetering hos statliga myndigheter")
+        self.assertContains(
+            response,
+            "EXFS 2011:1 Exempelmyndighetens allmänna råd om adminstration")
 
     def test_foreskrift(self):
         """Verify that detail page for documents load
@@ -71,12 +129,15 @@ class WebTestCase(TestCase):
 
         response = self.client.get('/publ/exfs/2009:1/')
         self.failUnlessEqual(response.status_code, 200)
-        self.assertContains(response,
-                            "<h1>EXFS 2009:1 Föreskrifter om administration hos statliga myndigheter")
+        self.assertContains(
+            response,
+            "<h1>EXFS 2009:1 Föreskrifter om administration hos statliga myndigheter")
 
         response = self.client.get('/publ/exfs/2011:1/')
         self.failUnlessEqual(response.status_code, 200)
-        self.assertContains(response, "<h1>EXFS 2011:1 Exempelmyndighetens allmänna råd om adminstration")
+        self.assertContains(
+            response,
+            "<h1>EXFS 2011:1 Exempelmyndighetens allmänna råd om adminstration")
 
     def test_artal(self):
         """Verify that listing by year load
@@ -103,6 +164,22 @@ class WebTestCase(TestCase):
         # Documents listed by keywords
         self.assertContains(response, '<li><a href="/publ/exfs/2009:3/">')
         self.assertContains(response, '<li><a href="/publ/exfs/2011:1/">')
+
+    #def test_translation(self):
+        #"""Check that verbose field names are applied"""
+        ##Login
+        #c = Client()
+        #response = c.post('/admin/', {'username': 'editor', 'pwd': 'editor'})
+        #self.failUnlessEqual(response.status_code, 200)
+        ## Get document to check
+        #response = self.client.get('/admin/fs_doc/myndighetsforeskrift/1/')
+        #self.failUnlessEqual(response.status_code, 200)
+        #print response
+
+        ## Check that labels contain Swedish characters
+        #print response
+        #self.assertContains(response, '''<label for="id_arsutgava"''')
+        #self.assertContains(response, '''<label for="id_lopnummer"''')
 
     def test_feed(self):
         """Verify that Atom feed is created and can be read """
@@ -221,7 +298,6 @@ class FeedTestCase(TestCase):
 
 
 class RDFTestCase(TestCase):
-
     fixtures = ['exempeldata.json']
 
     def test_foreskrift(self):
