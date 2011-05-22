@@ -97,22 +97,23 @@ class FSDokumentAdminMixin(object):
         generate_rdf_post_for(obj)
         generate_atom_entry_for(obj, update_only=True)
 
-    def formfield_for_dbfield(self, db_field, **kwargs):
-        if isinstance(db_field, models.CharField):
-            if db_field.name == "titel":
-                return forms.CharField(
-                    widget=forms.Textarea(
-                        attrs={'cols': 100, 'rows': 2, 'class': 'docx'}))
-            if db_field.name == "arsutgava" or db_field.name == "lopnummer":
-                return forms.CharField(
-                    widget=forms.Textarea(attrs={'cols': 10, 'rows': 1}))
-        if isinstance(db_field, models.TextField):
-            if db_field.name == "sammanfattning":
-                return forms.CharField(
-                    widget=forms.Textarea(
-                        attrs={'cols': 100, 'rows': 5, 'class': 'docx'}))
-        return super(FSDokumentAdminMixin, self).formfield_for_dbfield(
-            db_field, **kwargs)
+    #def formfield_for_dbfield(self, db_field, **kwargs):
+        #if isinstance(db_field, models.CharField):
+            #if db_field.name == "titel":
+                #return forms.CharField(
+                    #widget=forms.Textarea(
+                        #attrs={'cols': 100, 'rows': 2, 'class': 'docx'}))
+            #if db_field.name == "arsutgava" or db_field.name == "lopnummer":
+                #return forms.CharField(
+                    #widget=forms.Textarea(
+                        #attrs={'cols': 10, 'rows': 1}))
+        #if isinstance(db_field, models.TextField):
+            #if db_field.name == "sammanfattning":
+                #return forms.CharField(
+                    #widget=forms.Textarea(
+                        #attrs={'cols': 100, 'rows': 5, 'class': 'docx'}))
+        #return super(FSDokumentAdminMixin, self).formfield_for_dbfield(
+            #db_field, **kwargs)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "forfattningssamling":
