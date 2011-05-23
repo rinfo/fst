@@ -2,16 +2,13 @@
 import hashlib
 import os
 import shutil
-from xml.dom.minidom import parse, parseString
+from xml.dom.minidom import parseString
 from django.test import TestCase
-from django.test.client import Client
 from rdflib import Graph, Literal, URIRef, RDF
-from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from django.shortcuts import get_object_or_404
 from fst_web.fs_doc import models
 from fst_web.fs_doc.admin import generate_atom_entry_for, generate_rdf_post_for
-from fst_web.fs_doc.rdfviews import DCT, DCES, FOAF, RPUBL, RINFO_BASE
+from fst_web.fs_doc.rdfviews import DCT, DCES, RPUBL, RINFO_BASE
 
 
 NS_ATOM = "http://www.w3.org/2005/Atom"
@@ -21,14 +18,18 @@ NS_AT = "http://purl.org/atompub/tombstones/1.0"
 
 
 class AdminSuperUserTestCase(TestCase):
+    """Test admin functionality for logged in superuser """
+
     fixtures = ['exempeldata.json']
 
     def setUp(self):
         self.username = 'admin'  # This user already exists in fixture
         self.pw = 'admin'        # and is a superuser
         self.assertTrue(self.client.login(
-            username=self.username, password=self.pw),
-            "Logging in user %s, pw %s failed." % (self.username, self.pw))
+            username=self.username,
+            password=self.pw),
+                        "Logging in user %s, pw %s failed." %
+                        (self.username, self.pw))
 
     def tearDown(self):
         self.client.logout()
@@ -36,10 +37,7 @@ class AdminSuperUserTestCase(TestCase):
     def test_superuser_access(self):
         """Verify that superuser has access to system tables"""
 
-        post_data = {
-            'question_set-TOTAL_FORMS': u'0',
-            'question_set-INITIAL_FORMS': u'0',
-        }
+        post_data = {}
         response = self.client.post(reverse('admin:index'), post_data)
         self.assertContains(response, "auth")
         self.assertContains(response, "sites")
@@ -47,15 +45,18 @@ class AdminSuperUserTestCase(TestCase):
 
 
 class AdminTestCase(TestCase):
-    
+    """Test admin functionality for logged in staff user """
+
     fixtures = ['exempeldata.json']
 
     def setUp(self):
         self.username = 'editor'  # This user already exists in fixture
-        self.pw = 'editor'        # and is a regular user
+        self.pw = 'editor'        # and is a regular staff user
         self.assertTrue(self.client.login(
-            username=self.username, password=self.pw),
-            "Logging in user %s, pw %s failed." % (self.username, self.pw))
+            username=self.username,
+            password=self.pw),
+                        "Logging in user %s, pw %s failed." %
+                        (self.username, self.pw))
 
     def tearDown(self):
         self.client.logout()
@@ -63,11 +64,9 @@ class AdminTestCase(TestCase):
     def test_access(self):
         """Verify that ordinary user has restricted access"""
 
-        post_data = {
-            'question_set-TOTAL_FORMS': u'0',
-            'question_set-INITIAL_FORMS': u'0',
-        }
-        response = self.client.post(reverse('admin:index'), post_data)
+        post_data = {}
+        response = self.client.post(
+            reverse('admin:index'), post_data)
         self.assertContains(response, "fs_doc")    # Permissions for this
         self.assertNotContains(response, "auth")   # No access
         self.assertNotContains(response, "sites")  # No access
@@ -75,21 +74,17 @@ class AdminTestCase(TestCase):
     def test_translation_allmannarad(self):
         """Verify existence of translated labels with Swedish characters """
 
-        fs_dokument = models.AllmannaRad.objects.get(
-            forfattningssamling__slug="exfs", arsutgava="2011", lopnummer="1")
-        post_data = {
-            'question_set-TOTAL_FORMS': u'0',
-            'question_set-INITIAL_FORMS': u'0'
-        }
+        post_data = {}
         response = self.client.post(reverse(
             'admin:fs_doc_allmannarad_add'), post_data)
-        # TODO: make this more specific and test for expected HTML elements
+        # The expected field labels show up somewhere
         self.assertContains(response, "Årsutgåva")
         self.assertContains(response, "Löpnummer")
 
 
 class WebTestCase(TestCase):
-    # Sample data loaded from ./fixtures/
+    """Simplistic functional test of public URL:s  """
+
     fixtures = ['exempeldata.json']
 
     def setUp(self):
@@ -230,7 +225,8 @@ class WebTestCase(TestCase):
 
 
 class FeedTestCase(TestCase):
-    # Sample data loaded from ./fixtures/
+    """Test functionality for creating valid ATOM feed """
+
     fixtures = ['exempeldata.json']
 
     def setUp(self):
@@ -238,13 +234,11 @@ class FeedTestCase(TestCase):
         foreskrift1 = models.Myndighetsforeskrift.objects.get(
             forfattningssamling__slug="exfs", arsutgava="2009", lopnummer="1")
         generate_rdf_post_for(foreskrift1)
-        #TODO - explicitly publish document
         generate_atom_entry_for(foreskrift1)
 
         foreskrift2 = models.Myndighetsforeskrift.objects.get(
             forfattningssamling__slug="exfs", arsutgava="2009", lopnummer="2")
         generate_rdf_post_for(foreskrift2)
-        #TODO - explicitly publish document
         generate_atom_entry_for(foreskrift2)
 
     def test_feed_has_entries(self):
@@ -316,6 +310,8 @@ class FeedTestCase(TestCase):
 
 
 class RDFTestCase(TestCase):
+    """Test basic RDF functionality  """
+
     fixtures = ['exempeldata.json']
 
     def test_foreskrift(self):

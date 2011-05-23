@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Definitions controlling layout and behavior of the Django admin app"""
+"""Layout and behavior of fs_doc admin app"""
 
 from os import path
 from datetime import datetime
@@ -97,24 +97,6 @@ class FSDokumentAdminMixin(object):
         generate_rdf_post_for(obj)
         generate_atom_entry_for(obj, update_only=True)
 
-    #def formfield_for_dbfield(self, db_field, **kwargs):
-        #if isinstance(db_field, models.CharField):
-            #if db_field.name == "titel":
-                #return forms.CharField(
-                    #widget=forms.Textarea(
-                        #attrs={'cols': 100, 'rows': 2, 'class': 'docx'}))
-            #if db_field.name == "arsutgava" or db_field.name == "lopnummer":
-                #return forms.CharField(
-                    #widget=forms.Textarea(
-                        #attrs={'cols': 10, 'rows': 1}))
-        #if isinstance(db_field, models.TextField):
-            #if db_field.name == "sammanfattning":
-                #return forms.CharField(
-                    #widget=forms.Textarea(
-                        #attrs={'cols': 100, 'rows': 5, 'class': 'docx'}))
-        #return super(FSDokumentAdminMixin, self).formfield_for_dbfield(
-            #db_field, **kwargs)
-
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "forfattningssamling":
             kwargs["initial"] = Forfattningssamling.objects.filter(id=1)
@@ -124,6 +106,7 @@ class FSDokumentAdminMixin(object):
 
     def make_published(self, request, queryset):
         """Puslish selected documents by creating Atom entries."""
+
         for i, obj in enumerate(queryset):
             generate_atom_entry_for(obj)
             obj.is_published = True
@@ -131,11 +114,28 @@ class FSDokumentAdminMixin(object):
             self.message_user(
                 request, "%s dokument har publicerats." % (i + 1))
 
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        """"Use different or modified widgets for some fields """
+
+        if isinstance(db_field, models.CharField):
+            if db_field.name == "titel":
+                kwargs['widget'] = forms.Textarea(
+                    attrs={'cols': 100, 'rows': 2, 'class': 'docx'})
+            if db_field.name == "arsutgava" or db_field.name == "lopnummer":
+                kwargs['widget'] = forms.Textarea(
+                    attrs={'cols': 10, 'rows': 1})
+        if isinstance(db_field, models.TextField):
+            if db_field.name == "sammanfattning":
+                kwargs['widget'] = forms.Textarea(
+                    attrs={'cols': 100, 'rows': 5, 'class': 'docx'})
+        return super(FSDokumentAdminMixin, self).formfield_for_dbfield(
+            db_field, **kwargs)
+
     make_published.short_description = u"Publicera markerade dokument via FST"
     actions = [make_published]
 
 
-class AllmannaRadAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
+class AllmannaRadAdmin(admin.ModelAdmin, FSDokumentAdminMixin):
     list_display = ('identifierare',
                     'arsutgava',
                     'lopnummer',
@@ -199,7 +199,7 @@ class AllmannaRadAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                          'konsolideringar')
 
 
-class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
+class MyndighetsforeskriftAdmin(admin.ModelAdmin, FSDokumentAdminMixin):
 
     form = HasContentFileForm
 
