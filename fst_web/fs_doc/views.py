@@ -48,11 +48,11 @@ def fs_dokument_rdf(request, fs_dokument_slug):
 def fs_dokument(request, fs_dokument_slug):
     """Display document subclassing 'FSDokument' """
 
-    rdf_post= get_object_or_404(RDFPost, slug=fs_dokument_slug)
+    rdf_post = get_object_or_404(RDFPost, slug=fs_dokument_slug)
     fs_dokument = rdf_post.content_object
-    if rdf_post.content_type.id == 9:
+    if isinstance(fs_dokument, AllmannaRad):
         return _response(request, 'allmanna_rad.html', dict(doc=fs_dokument))
-    elif rdf_post.content_type.id == 10:
+    elif isinstance(fs_dokument, Myndighetsforeskrift):
         return _response(request, 'foreskrift.html', dict(doc=fs_dokument))
     else:
         pass
