@@ -114,23 +114,6 @@ class FSDokumentAdminMixin(object):
             self.message_user(
                 request, "%s dokument har publicerats." % (i + 1))
 
-    def formfield_for_dbfield(self, db_field, **kwargs):
-        """"Use different or modified widgets for some fields """
-
-        if isinstance(db_field, models.CharField):
-            if db_field.name == "titel":
-                kwargs['widget'] = forms.Textarea(
-                    attrs={'cols': 100, 'rows': 2, 'class': 'docx'})
-            if db_field.name == "arsutgava" or db_field.name == "lopnummer":
-                kwargs['widget'] = forms.Textarea(
-                    attrs={'cols': 10, 'rows': 1})
-        if isinstance(db_field, models.TextField):
-            if db_field.name == "sammanfattning":
-                kwargs['widget'] = forms.Textarea(
-                    attrs={'cols': 100, 'rows': 5, 'class': 'docx'})
-        return super(FSDokumentAdminMixin, self).formfield_for_dbfield(
-            db_field, **kwargs)
-
     make_published.short_description = u"Publicera markerade dokument via FST"
     actions = [make_published]
 
@@ -197,6 +180,23 @@ class AllmannaRadAdmin(admin.ModelAdmin, FSDokumentAdminMixin):
                          'andringar',
                          'upphavningar',
                          'konsolideringar')
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        """"Use different or modified widgets for some fields """
+    
+        if isinstance(db_field, models.CharField):
+            if db_field.name == "titel":
+                kwargs['widget'] = forms.Textarea(
+                    attrs={'cols': 100, 'rows': 2, 'class': 'docx'})
+            if db_field.name == "arsutgava" or db_field.name == "lopnummer":
+                kwargs['widget'] = forms.Textarea(
+                    attrs={'cols': 10, 'rows': 1})
+        if isinstance(db_field, models.TextField):
+            if db_field.name == "sammanfattning":
+                kwargs['widget'] = forms.Textarea(
+                    attrs={'cols': 100, 'rows': 5, 'class': 'docx'})
+        return super(AllmannaRadAdmin, self).formfield_for_dbfield(
+            db_field, **kwargs)
 
 
 class MyndighetsforeskriftAdmin(admin.ModelAdmin, FSDokumentAdminMixin):
@@ -276,6 +276,23 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin, FSDokumentAdminMixin):
                          'celexreferenser')
 
 
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        """"Use different or modified widgets for some fields """
+    
+        if isinstance(db_field, models.CharField):
+            if db_field.name == "titel":
+                kwargs['widget'] = forms.Textarea(
+                    attrs={'cols': 100, 'rows': 2, 'class': 'docx'})
+            if db_field.name == "arsutgava" or db_field.name == "lopnummer":
+                kwargs['widget'] = forms.Textarea(
+                    attrs={'cols': 10, 'rows': 1})
+        if isinstance(db_field, models.TextField):
+            if db_field.name == "sammanfattning":
+                kwargs['widget'] = forms.Textarea(
+                    attrs={'cols': 100, 'rows': 5, 'class': 'docx'})
+        return super(MyndighetsforeskriftAdmin, self).formfield_for_dbfield(
+            db_field, **kwargs)
+    
 def generate_atom_entry_for(obj, update_only=False):
     updated = datetime.now()
 
