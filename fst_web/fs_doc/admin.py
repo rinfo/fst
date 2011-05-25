@@ -81,6 +81,14 @@ class HasContentFileForm(HasFileForm):
     FILE_FIELD_KEY = 'content'
 
 
+class KonsolideradForeskriftAdmin(admin.ModelAdmin):
+    
+    form = HasContentFileForm
+    
+    model = KonsolideradForeskrift
+    exclude = ('file_md5','content_md5',)
+    
+
 class FSDokumentAdminMixin(object):
 
     def save_model(self, request, obj, form, change):
@@ -119,6 +127,9 @@ class FSDokumentAdminMixin(object):
 
 
 class AllmannaRadAdmin(admin.ModelAdmin, FSDokumentAdminMixin):
+    
+    form = HasContentFileForm
+        
     list_display = ('identifierare',
                     'arsutgava',
                     'lopnummer',
@@ -336,5 +347,6 @@ admin.site.register(Amnesord, AmnesordAdmin)
 admin.site.register(Bemyndigandereferens, BemyndigandereferensAdmin)
 admin.site.register(CelexReferens, CelexReferensAdmin)
 admin.site.register(Forfattningssamling, ForfattningssamlingAdmin)
+admin.site.register(KonsolideradForeskrift, KonsolideradForeskriftAdmin)
 admin.site.register(AtomEntry)
 admin.site.register(Myndighet)
