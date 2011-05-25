@@ -429,14 +429,14 @@ class Amnesord(models.Model):
         return self.titel
 
 
-# NOTE: Classes below implement concrete relations to avoid known 
+# NOTE: Classes below implement concrete relations to avoid known
 # problems using self-referential M2M models with Django admin
 
 class Andringar_foreskrift(models.Model):
-    from_doc=models.ForeignKey('Myndighetsforeskrift',
-                               related_name='changing')
+    from_doc=models.ForeignKey('Myndighetsforeskrift', related_name='changing')
     to_doc=models.ForeignKey('Myndighetsforeskrift',
                              related_name='changed')
+
 
 class Andringar_allmannarad(models.Model):
     from_doc=models.ForeignKey('AllmannaRad',
@@ -458,6 +458,7 @@ class Upphavningar_allmannarad(models.Model):
     to_doc=models.ForeignKey('AllmannaRad',
                              related_name='cancelled')
 
+
 class Konsolideringar_foreskrift(models.Model):
     from_doc=models.ForeignKey('Myndighetsforeskrift',
                                related_name= 'consolidating')
@@ -478,34 +479,33 @@ class KonsolideradForeskrift(HasFile):
         unique=True,
         help_text="""T.ex. <em>Exempelmyndighetens föreskrifter och
             allmänna råd om arkiv hos statliga myndigheter;</em>""")
-    
+
     konsolideringsdatum = models.DateField("Konsolideringsdatum")
-    
+
     content = models.FileField(u"PDF-version",
                                upload_to="konsoliderar_foreskrift",
                                help_text=
                                """Se till att dokumentet är i PDF-format.""")
-    
+
      # Store checksum of uploaded file
     content_md5 = models.CharField(max_length=32,
                                    blank=True)
-    
+
     grundforfattning = models.ForeignKey('Myndighetsforeskrift',
                                  related_name='grundforfattning')
-    
+
     senaste_andringsforfattning = models.ForeignKey('Myndighetsforeskrift',
                                  related_name='senaste_andringsforfattning')
-
 
     class Meta:
         verbose_name = u"Konsoliderad föreskrift"
         verbose_name_plural = u"Konsoliderade föreskrifter"
-        
+
     @property
     def identifierare(self):
         # TODO: replace with correct identifer from related documents
-        return "%s %s" % (self.titel,self.konsolideringsdatum)
-    
+        return "%s %s" % (self.titel, self.konsolideringsdatum)
+
     def to_rdfxml(self):
         """Return metadata as RDF/XML for this document."""
         pass
@@ -548,7 +548,7 @@ class Bemyndigandereferens(models.Model):
                                          self.kapitelnummer, kap_text,
                                          self.paragrafnummer)
 
-    
+
 class GenericUniqueMixin(object):
 
     @classmethod
