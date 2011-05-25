@@ -13,7 +13,31 @@ from django.utils.feedgenerator import rfc3339_date
 from fst_web.fs_doc import rdfviews
 
 
-class FSDokument(models.Model):
+RINFO_PUBL_BASE = "http://rinfo.lagrummet.se/publ/"
+
+
+class Document(models.Model):
+
+    class Meta:
+        abstract = True
+
+    def get_rinfo_uri(self):
+        """Return canonical document URI"""
+
+        return RINFO_PUBL_BASE + self.get_fs_dokument_slug()
+
+    def get_publisher_uri(self):
+        """Return URI for publishing organization
+
+        NOTE: Subclasses that want to explicitly set 'utgivare' on \
+        documents should use 'to_slug(self.utgivare.namn)' instead.
+        """
+
+        return "http://rinfo.lagrummet.se/org/" + \
+               to_slug(settings.FST_ORG_NAME)
+
+
+class FSDokument(Document):
     """Superclass of 'Myndighetsforeskrift' and 'AllmannaRad'.
 
     Defined by the Django model for practical reasons.
@@ -85,6 +109,11 @@ class FSDokument(models.Model):
         """Display value for user interface."""
         return u'%s %s' % (self.identifierare, self.titel)
 
+    @property
+    def identifierare(self):
+        return "%s %s:%s" % (self.forfattningssamling.kortnamn,
+                             self.arsutgava, self.lopnummer)
+
     @models.permalink
     def get_absolute_url(self):
         """"Construct Django URL path from document attributes"""
@@ -96,27 +125,6 @@ class FSDokument(models.Model):
         return "%s/%s:%s" % (self.forfattningssamling.slug,
                              self.arsutgava,
                              self.lopnummer)
-
-    def get_rinfo_uri(self):
-        """Return canonical document URI"""
-
-        return "http://rinfo.lagrummet.se/publ/" + \
-               self.get_fs_dokument_slug()
-
-    def get_publisher_uri(self):
-        """Return URI for publishing organization
-
-        NOTE: Subclasses that want to explicitly set 'utgivare' on \
-        documents should use 'to_slug(self.utgivare.namn)' instead.
-        """
-
-        return "http://rinfo.lagrummet.se/org/" + \
-               to_slug(settings.FST_ORG_NAME)
-
-    @property
-    def identifierare(self):
-        return "%s %s:%s" % (self.forfattningssamling.kortnamn,
-                             self.arsutgava, self.lopnummer)
 
     def ikrafttradandear(self):
         """Support additional sorting: by year only"""
@@ -473,7 +481,8 @@ class Konsolideringar_allmannarad(models.Model):
                              related_name='consolidated')
 
 
-class KonsolideradForeskrift(HasFile):
+class KonsolideradForeskrift(Document):
+
     titel = models.CharField(
         max_length=512,
         unique=True,
@@ -503,12 +512,33 @@ class KonsolideradForeskrift(HasFile):
 
     @property
     def identifierare(self):
-        # TODO: replace with correct identifer from related documents
-        return "%s %s" % (self.titel, self.konsolideringsdatum)
+        return "%s i lydelse enligt %s" % (self.grundforfattning.identifierare, self.konsolideringsdatum)
+
+    @models.permalink
+    def get_absolute_url(self):
+        """"Construct Django URL path from document attributes"""
+
+        return ('fst_web.fs_doc.views.fs_dokument',
+                [self.get_fs_dokument_slug()])
+
+    def get_fs_dokument_slug(self):
+        return "%s/konsolidering/%s" % (self.grundforfattning.get_fs_dokument_slug(),
+                                        self.konsolideringsdatum)
+
+    def get_konsolideringsunderlag(self):
+        base = self.grundforfattning
+        latest = self.senaste_andringsforfattning
+        yield base
+        for doc in Myndighetsforeskrift.objects.filter(
+                forfattningssamling=base.forfattningssamling,
+                arsutgava__gte=base.arsutgava, lopnummer__gt=base.lopnummer,
+                arsutgava__lte=latest.arsutgava, lopnummer__lte=latest.lopnummer):
+            if False: # FIXME: if "base in doc.andrar"...
+                yield doc
 
     def to_rdfxml(self):
         """Return metadata as RDF/XML for this document."""
-        pass
+        return rdfviews.KonsolideradForeskriftDescription(self).to_rdfxml()
 
 
 class Bemyndigandereferens(models.Model):

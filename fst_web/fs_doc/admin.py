@@ -81,14 +81,6 @@ class HasContentFileForm(HasFileForm):
     FILE_FIELD_KEY = 'content'
 
 
-class KonsolideradForeskriftAdmin(admin.ModelAdmin):
-    
-    form = HasContentFileForm
-    
-    model = KonsolideradForeskrift
-    exclude = ('file_md5','content_md5',)
-    
-
 class FSDokumentAdminMixin(object):
 
     def save_model(self, request, obj, form, change):
@@ -126,10 +118,10 @@ class FSDokumentAdminMixin(object):
     actions = [make_published]
 
 
-class AllmannaRadAdmin(admin.ModelAdmin, FSDokumentAdminMixin):
-    
+class AllmannaRadAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
+
     form = HasContentFileForm
-        
+
     list_display = ('identifierare',
                     'arsutgava',
                     'lopnummer',
@@ -194,7 +186,7 @@ class AllmannaRadAdmin(admin.ModelAdmin, FSDokumentAdminMixin):
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         """"Use different or modified widgets for some fields """
-    
+
         if isinstance(db_field, models.CharField):
             if db_field.name == "titel":
                 kwargs['widget'] = forms.Textarea(
@@ -210,7 +202,7 @@ class AllmannaRadAdmin(admin.ModelAdmin, FSDokumentAdminMixin):
             db_field, **kwargs)
 
 
-class MyndighetsforeskriftAdmin(admin.ModelAdmin, FSDokumentAdminMixin):
+class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
 
     form = HasContentFileForm
 
@@ -289,7 +281,7 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin, FSDokumentAdminMixin):
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         """"Use different or modified widgets for some fields """
-    
+
         if isinstance(db_field, models.CharField):
             if db_field.name == "titel":
                 kwargs['widget'] = forms.Textarea(
@@ -303,7 +295,16 @@ class MyndighetsforeskriftAdmin(admin.ModelAdmin, FSDokumentAdminMixin):
                     attrs={'cols': 100, 'rows': 5, 'class': 'docx'})
         return super(MyndighetsforeskriftAdmin, self).formfield_for_dbfield(
             db_field, **kwargs)
-    
+
+
+class KonsolideradForeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
+
+    form = HasContentFileForm
+
+    model = KonsolideradForeskrift
+    exclude = ('content_md5',)
+
+
 def generate_atom_entry_for(obj, update_only=False):
     updated = datetime.now()
 
