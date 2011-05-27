@@ -240,6 +240,18 @@
     }, 
     {
         "pk": 1, 
+        "model": "fs_doc.konsolideradforeskrift", 
+        "fields": {
+            "senaste_andringsforfattning": 2, 
+            "titel": "2009:1 i lydelse enligt 2009:2", 
+            "grundforfattning": 1, 
+            "content": "konsoliderad_foreskrift/EXFS-2009-1_2009-2_1.pdf", 
+            "konsolideringsdatum": "2011-05-27", 
+            "content_md5": "76687aa72a292d289f6091e4b19597f7"
+        }
+    },
+    {
+        "pk": 1, 
         "model": "fs_doc.rdfpost", 
         "fields": {
             "md5": "e3e1462a17a19365ec33b29ed425f491", 
@@ -282,7 +294,17 @@
             "slug": "exfs/2011:1"
         }
     }, 
-
+ {
+        "pk": 5, 
+        "model": "fs_doc.rdfpost", 
+        "fields": {
+            "md5": "a76e40267f87229149cf9617b767e57a", 
+            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<rdf:RDF\n  xmlns=\"http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#\"\n  xmlns:dct=\"http://purl.org/dc/terms/\"\n  xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n>\n  <KonsolideradGrundforfattning rdf:about=\"http://rinfo.lagrummet.se/publ/exfs/2009:1/konsolidering/2011-05-27\">\n    <dct:issued rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2011-05-27</dct:issued>\n    <konsolideringsunderlag rdf:resource=\"http://rinfo.lagrummet.se/publ/exfs/2009:1\"/>\n    <dct:identifier>EXFS 2009:1 i lydelse enligt 2011-05-27</dct:identifier>\n    <konsoliderar rdf:resource=\"http://rinfo.lagrummet.se/publ/exfs/2009:1\"/>\n    <dct:title xml:lang=\"sv\">2009:1 i lydelse enligt 2009:2</dct:title>\n    <dct:publisher rdf:resource=\"http://rinfo.lagrummet.se/org/exempelmyndigheten\"/>\n  </KonsolideradGrundforfattning>\n</rdf:RDF>\n", 
+            "object_id": 1, 
+            "content_type": 23, 
+            "slug": "exfs/2009:1/konsolidering/2011-05-27"
+        }
+    },
     {
         "pk": 22, 
         "model": "auth.permission", 
