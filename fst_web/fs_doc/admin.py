@@ -172,12 +172,7 @@ class AllmannaRadAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
              'fields': ('upphavningar',),
              'description': u'Ange dokument som upphävs',
              'classes': ['collapse', 'wide', 'extrapretty']}
-         ),        (u'Dokument som konsolideras av detta dokument',
-                    {
-                        'fields': ('konsolideringar',),
-                        'description': u'Ange de dokument som konsolideras',
-                        'classes': ['collapse', 'wide', 'extrapretty']}
-                    )
+         ),
     )
     filter_horizontal = ('amnesord',
                          'andringar',
