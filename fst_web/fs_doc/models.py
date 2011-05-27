@@ -45,12 +45,10 @@ class FSDokument(Document):
     arsutgava = models.CharField("Årsutgåva",
                                  max_length=13,
                                  unique=False,
-                                 default=2011,
-                                 help_text="T.ex. <em>2010</em>")
+                                 default=2011)
     lopnummer = models.CharField("Löpnummer",
                                  max_length=3,
-                                 unique=False,
-                                 help_text="T.ex. <em>1</em>")
+                                 unique=False)
 
     is_published = models.BooleanField(u"Publicerad via FST",
                                        default=False,
@@ -61,17 +59,14 @@ class FSDokument(Document):
 
     titel = models.CharField(
         max_length=512,
-        unique=True,
-        help_text="""T.ex. <em>Exempelmyndighetens föreskrifter och
-            allmänna råd om arkiv hos statliga myndigheter;</em>""")
+        unique=True)
 
     sammanfattning = models.TextField(
         max_length=512,
         blank=True,
         unique=False,
         help_text=
-        """T.ex. <em>Denna föreskrift beskriver allmänna råd om arkiv hos
-        statliga myndigheter</em>""")
+        """<em>Valfri sammanfattning av dokuments syfte.</em>""")
 
     # NOTE: The FST webservice currently only supports document collections
     # of type 'forfattningssamling'.
@@ -87,10 +82,7 @@ class FSDokument(Document):
 
     omtryck = models.BooleanField(u"Är omtryck",
                                   default=False,
-                                  blank=True,
-                                  help_text =
-                                  """Anger om denna föreskrift \
-                                  är ett omtryck.""")
+                                  blank=True)
 
     amnesord = models.ManyToManyField('Amnesord',
                                       blank=True,
@@ -277,7 +269,7 @@ class Myndighet(models.Model):
     namn = models.CharField(
         max_length=255,
         unique=True,
-        help_text="""Namn på myndighet, t ex Exempelmyndigheten""")
+        help_text="""Myndighetens fullständiga namn""")
 
     class Meta:
         verbose_name = u"myndighet"
@@ -304,7 +296,7 @@ class Forfattningssamling(models.Model):
     titel = models.CharField(
         max_length=255,
         unique=True,
-        help_text="""Namn på författningssamling, t.ex.
+        help_text="""Fullständigt namn, t.ex.
             <em>Exempelmyndighetens författningssamling</em>""")
 
     kortnamn = models.CharField(
@@ -386,8 +378,7 @@ class OvrigtDokument(HasFile):
                              help_text="""T.ex. <em>Besluts-PM för ...</em>""")
 
     file = models.FileField(u"Fil",
-                            upload_to="ovrigt",
-                            help_text="""T.ex. en PDF-fil.""")
+                            upload_to="ovrigt")
 
     class Meta:
         verbose_name = u"övrigt dokument"
@@ -481,9 +472,7 @@ class KonsolideradForeskrift(Document):
 
     titel = models.CharField(
         max_length=512,
-        unique=True,
-        help_text="""T.ex. <em>Exempelmyndighetens föreskrifter och
-            allmänna råd om arkiv hos statliga myndigheter;</em>""")
+        unique=True)
 
     konsolideringsdatum = models.DateField("Konsolideringsdatum")
 
