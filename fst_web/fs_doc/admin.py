@@ -161,13 +161,13 @@ class AllmannaRadAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                  'amnesord',),
              'classes': ['collapse', 'wide', 'extrapretty']}
          ),
-        (u'Dokument som ändras av detta dokument',
+        (u'Dokument som detta dokument ändrar',
          {
              'fields': ('andringar',),
              'description': u'Ange dokument som ändras',
              'classes': ['collapse', 'wide', 'extrapretty']}
          ),
-        (u'Dokument som upphävs av detta dokument',
+        (u'Dokument som detta dokument upphäver',
          {
              'fields': ('upphavningar',),
              'description': u'Ange dokument som upphävs',
@@ -247,22 +247,16 @@ class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                  'amnesord',),
              'classes': ['collapse', 'wide', 'extrapretty']}
          ),
-        (u'Dokument som ändras av detta dokument',
+        (u'Dokument som detta dokument ändrar',
          {
              'fields': ('andringar',),
              'description': u'Ange dokument som ändras',
              'classes': ['collapse', 'wide', 'extrapretty']}
          ),
-        (u'Dokument som upphävs av detta dokument',
+        (u'Dokument som detta dokument upphäver',
          {
              'fields': ('upphavningar',),
              'description': u'Ange dokument som upphävs',
-             'classes': ['collapse', 'wide', 'extrapretty']}
-         ),
-        (u'Dokument som konsolideras av detta dokument',
-         {
-             'fields': ('konsolideringar',),
-             'description': u'Ange de dokument som konsolideras',
              'classes': ['collapse', 'wide', 'extrapretty']}
          )
     )
