@@ -20,4 +20,11 @@
             <td>{{doc.konsolideringsdatum}}</td>
         </tr>
     </table>
+    
+    <h2>Konsolideringsunderlag</h2>
+    <ul class="andringar">
+        {% for changed_doc in doc.get_konsolideringsunderlag %}
+        <li><a href="{{changed_doc.get_absolute_url}}">{{changed_doc}}</a></li>
+        {% endfor %}
+    </ul>
 {% endblock %}
