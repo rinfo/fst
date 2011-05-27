@@ -155,12 +155,6 @@ class AllmannaRadAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                  ),
              'classes': ['wide', 'extrapretty']}
          ),
-        (u'Ämnesord - myndighetens kategorisering',
-         {
-             'fields': (
-                 'amnesord',),
-             'classes': ['collapse', 'wide', 'extrapretty']}
-         ),
         (u'Dokument som detta dokument ändrar',
          {
              'fields': ('andringar',),
@@ -173,6 +167,12 @@ class AllmannaRadAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
              'description': u'Ange dokument som upphävs',
              'classes': ['collapse', 'wide', 'extrapretty']}
          ),
+        (u'Ämnesord - myndighetens kategorisering',
+         {
+             'fields': (
+                 'amnesord',),
+             'classes': ['collapse', 'wide', 'extrapretty']}
+         )
     )
     filter_horizontal = ('amnesord',
                          'andringar',
@@ -235,18 +235,6 @@ class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                  ),
              'classes': ['wide', 'extrapretty']
              }),
-        (u'EG-rättsreferenser - celex',
-         {
-             'fields': (
-                 'celexreferenser',),
-             'classes': ['collapse', 'wide', 'extrapretty']}
-         ),
-        (u'Ämnesord - myndighetens kategorisering',
-         {
-             'fields': (
-                 'amnesord',),
-             'classes': ['collapse', 'wide', 'extrapretty']}
-         ),
         (u'Dokument som detta dokument ändrar',
          {
              'fields': ('andringar',),
@@ -257,6 +245,18 @@ class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
          {
              'fields': ('upphavningar',),
              'description': u'Ange dokument som upphävs',
+             'classes': ['collapse', 'wide', 'extrapretty']}
+         ),
+        (u'EG-rättsreferenser - celex',
+         {
+             'fields': (
+                 'celexreferenser',),
+             'classes': ['collapse', 'wide', 'extrapretty']}
+         ),
+        (u'Ämnesord - myndighetens kategorisering',
+         {
+             'fields': (
+                 'amnesord',),
              'classes': ['collapse', 'wide', 'extrapretty']}
          )
     )
