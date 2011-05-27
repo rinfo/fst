@@ -533,11 +533,12 @@ class KonsolideradForeskrift(Document):
         yield base
         for doc in Myndighetsforeskrift.objects.filter(
                 forfattningssamling=base.forfattningssamling,
-                arsutgava__gte=base.arsutgava, lopnummer__gt=base.lopnummer,
+                id__in=base.andringar_foreskrift.all(),
+                arsutgava__gte=base.arsutgava,
+                lopnummer__gt=base.lopnummer,
                 arsutgava__lte=latest.arsutgava,
                 lopnummer__lte=latest.lopnummer):
-            if False:  # FIXME: if "base in doc.andrar"...
-                yield doc
+            yield doc
 
     def to_rdfxml(self):
         """Return metadata as RDF/XML for this document."""
