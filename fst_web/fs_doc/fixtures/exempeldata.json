@@ -522,6 +522,33 @@
         }
     }, 
     {
+        "pk": 49, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_bemyndigandereferens", 
+            "name": "Can add Bemyndigandereferens", 
+            "content_type": 17
+        }
+    }, 
+    {
+        "pk": 50, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_bemyndigandereferens", 
+            "name": "Can change Bemyndigandereferens", 
+            "content_type": 17
+        }
+    }, 
+    {
+        "pk": 51, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_bemyndigandereferens", 
+            "name": "Can delete Bemyndigandereferens", 
+            "content_type": 17
+        }
+    },
+    {
         "pk": 55, 
         "model": "auth.permission", 
         "fields": {
@@ -878,7 +905,10 @@
                 45, 
                 28, 
                 29, 
-                30
+                30,
+				49,
+				50,
+				51
             ], 
             "password": "sha1$9e667$40ac59c9954dd148289ec21db61c47c21463d53f", 
             "email": "", 
