@@ -7,7 +7,7 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import  loader, Context, RequestContext
 from django.utils.feedgenerator import rfc3339_date
-from fst_web.fs_doc.models import Forfattningssamling, \
+from fst_web.fs_doc.models import Forfattningssamling, KonsolideradForeskrift,\
      Myndighetsforeskrift, AllmannaRad, Amnesord, AtomEntry, RDFPost
 
 
@@ -52,8 +52,11 @@ def fs_dokument(request, fs_dokument_slug):
     fs_dokument = rdf_post.content_object
     if isinstance(fs_dokument, AllmannaRad):
         return _response(request, 'allmanna_rad.html', dict(doc=fs_dokument))
-    elif isinstance(fs_dokument, Myndighetsforeskrift):
-        return _response(request, 'foreskrift.html', dict(doc=fs_dokument))
+    elif isinstance(fs_dokument,Myndighetsforeskrift):
+        return _response(request,'foreskrift.html', dict(doc=fs_dokument))
+    elif isinstance(fs_dokument,KonsolideradForeskrift):
+        return _response(request,
+                         'konsoliderad_foreskrift.html', dict(doc=fs_dokument))
     else:
         pass
 
@@ -63,13 +66,9 @@ def amnesord(request):
 
     # Get all keywords used by at least one document
     fk_list= list(Amnesord.objects.filter(
-        myndighetsforeskrift__isnull = False).
-                  order_by("titel").
-                  distinct())
+        myndighetsforeskrift__isnull = False).order_by("titel").distinct())
     ak_list = list(Amnesord.objects.filter(
-        allmannarad__isnull = False).
-                   order_by("titel").
-                   distinct())
+        allmannarad__isnull = False).order_by("titel").distinct())
     amnesord = sorted(chain(fk_list, ak_list), key=attrgetter('titel'))
 
     # Create a dictionary on keywords for all types of documents

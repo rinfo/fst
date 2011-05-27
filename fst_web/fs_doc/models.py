@@ -12,7 +12,6 @@ from django.template import loader, Context
 from django.utils.feedgenerator import rfc3339_date
 from fst_web.fs_doc import rdfviews
 
-
 RINFO_PUBL_BASE = "http://rinfo.lagrummet.se/publ/"
 
 
@@ -55,8 +54,7 @@ class FSDokument(Document):
 
     is_published = models.BooleanField(u"Publicerad via FST",
                                        default=False,
-                                       help_text=\
-                                       """Grön bock = publicerad. \
+                                       help_text="""Grön bock = publicerad. \
                                        Rött streck = ej publicerad. \
                                        Glöm inte att publicera dina ändringar!
                                      """)
@@ -90,7 +88,7 @@ class FSDokument(Document):
     omtryck = models.BooleanField(u"Är omtryck",
                                   default=False,
                                   blank=True,
-                                  help_text=
+                                  help_text =
                                   """Anger om denna föreskrift \
                                   är ett omtryck.""")
 
@@ -209,13 +207,13 @@ class Myndighetsforeskrift(FSDokument):
                                """Se till att dokumentet är i PDF-format.""")
 
     bemyndiganden = models.ManyToManyField('Bemyndigandereferens',
-                                           verbose_name=
+                                           verbose_name =
                                            u"referenser till bemyndiganden")
 
     celexreferenser = models.ManyToManyField('CelexReferens',
-                                             blank=True,
-                                             related_name="foreskrifter",
-                                             verbose_name=
+                                             blank = True,
+                                             related_name = "foreskrifter",
+                                             verbose_name =
                                              u"Bidrar till att genomföra \
                                              EG-direktiv")
 
@@ -238,7 +236,7 @@ class Myndighetsforeskrift(FSDokument):
     upphavningar = models.ManyToManyField('self',
                                           blank=True,
                                           symmetrical=False,
-                                          related_name=\
+                                          related_name=
                                           'upphavningar_foreskrift',
                                           verbose_name=u"Upphäver")
 
@@ -363,15 +361,12 @@ class Bilaga(HasFile):
                                    related_name='bilagor')
 
     titel = models.CharField("Titel",
-                             max_length=512,
-                             blank=True,
-                             help_text="""T.ex. <em>Bilaga 1</em>""")
+                             max_length = 512,
+                             blank = True,
+                             help_text = """T.ex. <em>Bilaga 1</em>""")
 
-    file = models.FileField(u"Fil",
-                            upload_to="bilaga",
-                            blank=True,
-                            help_text=
-                            """Om ingen fil anges förutsätts bilagan \
+    file = models.FileField(u"Fil", upload_to="bilaga", blank=True, help_text=
+                             """Om ingen fil anges förutsätts bilagan \
                             vara en del av föreskriftsdokumentet.""")
 
     class Meta:
@@ -441,44 +436,45 @@ class Amnesord(models.Model):
 # problems using self-referential M2M models with Django admin
 
 class Andringar_foreskrift(models.Model):
-    from_doc=models.ForeignKey('Myndighetsforeskrift', related_name='changing')
-    to_doc=models.ForeignKey('Myndighetsforeskrift',
-                             related_name='changed')
+    from_doc = models.ForeignKey(
+        'Myndighetsforeskrift', related_name='changing')
+    to_doc = models.ForeignKey(
+        'Myndighetsforeskrift', related_name='changed')
 
 
 class Andringar_allmannarad(models.Model):
-    from_doc=models.ForeignKey('AllmannaRad',
+    from_doc = models.ForeignKey('AllmannaRad',
                                related_name='changing')
-    to_doc=models.ForeignKey('AllmannaRad',
+    to_doc = models.ForeignKey('AllmannaRad',
                              related_name='changed')
 
 
 class Upphavningar_foreskrift(models.Model):
-    from_doc=models.ForeignKey('Myndighetsforeskrift',
-                               related_name= 'cancelling')
-    to_doc=models.ForeignKey('Myndighetsforeskrift',
+    from_doc = models.ForeignKey('Myndighetsforeskrift',
+                               related_name='cancelling')
+    to_doc = models.ForeignKey('Myndighetsforeskrift',
                              related_name='cancelled')
 
 
 class Upphavningar_allmannarad(models.Model):
-    from_doc=models.ForeignKey('AllmannaRad',
+    from_doc = models.ForeignKey('AllmannaRad',
                                related_name='cancelling')
-    to_doc=models.ForeignKey('AllmannaRad',
+    to_doc = models.ForeignKey('AllmannaRad',
                              related_name='cancelled')
 
 
 class Konsolideringar_foreskrift(models.Model):
-    from_doc=models.ForeignKey('Myndighetsforeskrift',
-                               related_name= 'consolidating')
-    to_doc=models.ForeignKey('Myndighetsforeskrift',
-                             related_name='consolidated')
+    from_doc = models.ForeignKey('Myndighetsforeskrift',
+                               related_name = 'consolidating')
+    to_doc = models.ForeignKey('Myndighetsforeskrift',
+                             related_name ='consolidated')
 
 
 class Konsolideringar_allmannarad(models.Model):
-    from_doc=models.ForeignKey('AllmannaRad',
-                               related_name='consolidating')
-    to_doc=models.ForeignKey('AllmannaRad',
-                             related_name='consolidated')
+    from_doc = models.ForeignKey('AllmannaRad',
+                               related_name = 'consolidating')
+    to_doc = models.ForeignKey('AllmannaRad',
+                             related_name = 'consolidated')
 
 
 class KonsolideradForeskrift(Document):
@@ -492,7 +488,7 @@ class KonsolideradForeskrift(Document):
     konsolideringsdatum = models.DateField("Konsolideringsdatum")
 
     content = models.FileField(u"PDF-version",
-                               upload_to="konsoliderar_foreskrift",
+                               upload_to="konsoliderad_foreskrift",
                                help_text=
                                """Se till att dokumentet är i PDF-format.""")
 
@@ -512,7 +508,8 @@ class KonsolideradForeskrift(Document):
 
     @property
     def identifierare(self):
-        return "%s i lydelse enligt %s" % (self.grundforfattning.identifierare, self.konsolideringsdatum)
+        return "%s i lydelse enligt %s" % (
+            self.grundforfattning.identifierare, self.konsolideringsdatum)
 
     @models.permalink
     def get_absolute_url(self):
@@ -521,8 +518,13 @@ class KonsolideradForeskrift(Document):
         return ('fst_web.fs_doc.views.fs_dokument',
                 [self.get_fs_dokument_slug()])
 
+    def __unicode__(self):
+        """Display value for user interface."""
+        return u'%s %s' % (self.identifierare, self.titel)
+
     def get_fs_dokument_slug(self):
-        return "%s/konsolidering/%s" % (self.grundforfattning.get_fs_dokument_slug(),
+        return "%s/konsolidering/%s" % (
+            self.grundforfattning.get_fs_dokument_slug(),
                                         self.konsolideringsdatum)
 
     def get_konsolideringsunderlag(self):
@@ -532,8 +534,9 @@ class KonsolideradForeskrift(Document):
         for doc in Myndighetsforeskrift.objects.filter(
                 forfattningssamling=base.forfattningssamling,
                 arsutgava__gte=base.arsutgava, lopnummer__gt=base.lopnummer,
-                arsutgava__lte=latest.arsutgava, lopnummer__lte=latest.lopnummer):
-            if False: # FIXME: if "base in doc.andrar"...
+                arsutgava__lte=latest.arsutgava,
+                lopnummer__lte=latest.lopnummer):
+            if False:  # FIXME: if "base in doc.andrar"...
                 yield doc
 
     def to_rdfxml(self):
@@ -554,7 +557,7 @@ class Bemyndigandereferens(models.Model):
                                      help_text="T.ex. <em>12</em>")
 
     # Paragrafnummer, t.ex. "11"
-    paragrafnummer = models.CharField(max_length=10,
+    paragrafnummer = models.CharField(max_length =10,
                                       blank=True,
                                       help_text="T.ex. <em>12</em>")
 
@@ -566,8 +569,8 @@ class Bemyndigandereferens(models.Model):
                                  notariemeritering</em>""")
 
     class Meta:
-        verbose_name=u"Bemyndigandereferens"
-        verbose_name_plural=u"Bemyndigandereferenser"
+        verbose_name = u"Bemyndigandereferens"
+        verbose_name_plural = u"Bemyndigandereferenser"
 
     def __unicode__(self):
         if self.kapitelnummer:

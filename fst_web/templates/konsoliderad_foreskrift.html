@@ -1,0 +1,23 @@
+{% extends "site_base.html" %}
+
+{% block title %}{{doc.titel}}{% endblock %}
+
+
+{% block content %}
+
+    <h1>{{doc.identifierare}} {{doc.titel|safe}}</h1>
+    <p class="type">{{doc.role_label}}</p>
+
+    <p class="download"><a href="{{site.url}}/{{doc.content.url}}">Ladda ner ner {{doc.identifierare}} som PDF</a></p>
+
+    <table class="fsdata">
+        <tr>
+            <th scope="row">Identifierare</th>
+            <td>{{doc.identifierare}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Konsolideringsdatum</th>
+            <td>{{doc.konsolideringsdatum}}</td>
+        </tr>
+    </table>
+{% endblock %}

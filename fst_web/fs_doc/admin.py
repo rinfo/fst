@@ -278,7 +278,6 @@ class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                          'konsolideringar',
                          'celexreferenser')
 
-
     def formfield_for_dbfield(self, db_field, **kwargs):
         """"Use different or modified widgets for some fields """
 
@@ -302,6 +301,9 @@ class KonsolideradForeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
     form = HasContentFileForm
 
     model = KonsolideradForeskrift
+    list_display = ('identifierare',
+                    'titel',
+                    'konsolideringsdatum')
     exclude = ('content_md5',)
 
 
