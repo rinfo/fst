@@ -172,7 +172,7 @@ class AllmannaRad(FSDokument):
                                              verbose_name=u"Konsoliderar")
 
     class Meta(FSDokument.Meta):
-        verbose_name = u"Allmänna råd"
+        verbose_name = u"allmänna råd"
         verbose_name_plural = u"Allmänna råd"
 
     def role_label(self):
@@ -248,7 +248,7 @@ class Myndighetsforeskrift(FSDokument):
                                              verbose_name=u"Konsoliderar")
 
     class Meta(FSDokument.Meta):
-        verbose_name = u"Myndighetsföreskrift"
+        verbose_name = u"myndighetsföreskrift"
         verbose_name_plural = u"Myndighetsföreskrifter"
 
     def role_label(self):
@@ -280,7 +280,7 @@ class Myndighet(models.Model):
         help_text="""Namn på myndighet, t ex Exempelmyndigheten""")
 
     class Meta:
-        verbose_name = u"Myndighet"
+        verbose_name = u"myndighet"
         verbose_name_plural = u"Myndigheter"
 
     def __unicode__(self):
@@ -318,7 +318,7 @@ class Forfattningssamling(models.Model):
         help_text="""T.ex. <em>exfs</em>""")
 
     class Meta:
-        verbose_name = u"Författningssamling"
+        verbose_name = u"författningssamling"
         verbose_name_plural = u"Författningssamlingar"
 
     def __unicode__(self):
@@ -370,7 +370,7 @@ class Bilaga(HasFile):
                             vara en del av föreskriftsdokumentet.""")
 
     class Meta:
-        verbose_name = u"Bilaga"
+        verbose_name = u"bilaga"
         verbose_name_plural = u"Bilagor"
 
     def get_rinfo_uri(self):
@@ -390,7 +390,7 @@ class OvrigtDokument(HasFile):
                             help_text="""T.ex. en PDF-fil.""")
 
     class Meta:
-        verbose_name = u"Övrigt dokument"
+        verbose_name = u"övrigt dokument"
         verbose_name_plural = u"Övriga dokument"
 
     def __unicode__(self):
@@ -425,7 +425,7 @@ class Amnesord(models.Model):
     beskrivning = models.TextField(blank=True)
 
     class Meta:
-        verbose_name = u"Ämnesord"
+        verbose_name = u"ämnesord"
         verbose_name_plural = u"Ämnesord"
 
     def __unicode__(self):
@@ -503,7 +503,7 @@ class KonsolideradForeskrift(Document):
                                  related_name='senaste_andringsforfattning')
 
     class Meta:
-        verbose_name = u"Konsoliderad föreskrift"
+        verbose_name = u"konsoliderad föreskrift"
         verbose_name_plural = u"Konsoliderade föreskrifter"
 
     @property
@@ -569,7 +569,7 @@ class Bemyndigandereferens(models.Model):
                                  notariemeritering</em>""")
 
     class Meta:
-        verbose_name = u"Bemyndigandereferens"
+        verbose_name = u"bemyndigandereferens"
         verbose_name_plural = u"Bemyndigandereferenser"
 
     def __unicode__(self):
