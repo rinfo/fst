@@ -64,6 +64,9 @@ class FSDokumentDescription(DocumentDescription):
             for changed_doc in obj.andringar.all():
                 add(RPUBL.omtryckAv, URIRef(changed_doc.get_rinfo_uri()))
 
+        for changed_doc in obj.andringar.all():
+            add(RPUBL.andrar, URIRef(changed_doc.get_rinfo_uri()))
+
         for amnesord in obj.amnesord.all():
             add(DCES.subject, Literal(amnesord.titel, lang="sv"))
 
@@ -79,9 +82,6 @@ class AllmanaRadDescription(FSDokumentDescription):
         add = lambda p, o: graph.add((self.ref, p, o))
 
         add(RDF.type, RPUBL.AllmannaRad)
-
-        for changed_doc in obj.andringar.all():
-            add(RPUBL.andrar, URIRef(changed_doc.get_rinfo_uri()))
 
         return graph
 
@@ -126,9 +126,6 @@ class MyndighetsforeskriftDescription(FSDokumentDescription):
             dok_add(RDF.type, FOAF.Document)
             dok_add(DCT.title, Literal(dok.titel, lang="sv"))
             dok_add(FOAF.primaryTopic, self.ref)
-
-        for changed_doc in obj.andringar.all():
-            add(RPUBL.andrar, URIRef(changed_doc.get_rinfo_uri()))
 
         return graph
 
