@@ -305,6 +305,16 @@ class KonsolideradForeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                     'titel',
                     'konsolideringsdatum')
     exclude = ('content_md5',)
+    
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        """"Use different or modified widgets for some fields """
+
+        if isinstance(db_field, models.CharField):
+            if db_field.name == "titel":
+                kwargs['widget'] = forms.Textarea(
+                    attrs={'cols': 100, 'rows': 2, 'class': 'docx'})
+        return super(KonsolideradForeskriftAdmin, self).formfield_for_dbfield(
+            db_field, **kwargs)
 
 
 def generate_atom_entry_for(obj, update_only=False):
