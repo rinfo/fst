@@ -147,21 +147,21 @@ class AllmannaRad(FSDokument):
                                        blank=True,
                                        symmetrical=False,
                                        related_name='andringar_allmannarad',
-                                       verbose_name=u"Ändrar")
+                                       verbose_name=u"Dokument som ändras")
 
     upphavningar = models.ManyToManyField('self',
                                           blank=True,
                                           symmetrical=False,
                                           related_name=
                                           'upphavningar_allmannarad',
-                                          verbose_name=u"Upphäver")
+                                          verbose_name=u"Dokument som upphävs")
 
     konsolideringar = models.ManyToManyField('self',
                                              blank=True,
                                              symmetrical=False,
                                              related_name=
                                              'konsolideringar_allmannarad',
-                                             verbose_name=u"Konsoliderar")
+                                             verbose_name=u"Konsolideringsunderlag")
 
     class Meta(FSDokument.Meta):
         verbose_name = u"allmänna råd"
@@ -207,7 +207,7 @@ class Myndighetsforeskrift(FSDokument):
                                              related_name = "foreskrifter",
                                              verbose_name =
                                              u"Bidrar till att genomföra \
-                                             EG-direktiv")
+                                             dessa EG-direktiv")
 
     beslutad_av = models.ForeignKey('Myndighet',
                                     related_name='doc_beslutad_av',
@@ -223,21 +223,21 @@ class Myndighetsforeskrift(FSDokument):
                                        blank=True,
                                        symmetrical=False,
                                        related_name='andringar_foreskrift',
-                                       verbose_name=u"Ändrar")
+                                       verbose_name=u"Dokument som ändras")
 
     upphavningar = models.ManyToManyField('self',
                                           blank=True,
                                           symmetrical=False,
                                           related_name=
                                           'upphavningar_foreskrift',
-                                          verbose_name=u"Upphäver")
+                                          verbose_name=u"Dokument som upphävs")
 
     konsolideringar = models.ManyToManyField('self',
                                              blank=True,
                                              symmetrical=False,
                                              related_name=
                                              'konsolideringar_foreskrift',
-                                             verbose_name=u"Konsoliderar")
+                                             verbose_name=u"Konsolideringsunderlag")
 
     class Meta(FSDokument.Meta):
         verbose_name = u"myndighetsföreskrift"

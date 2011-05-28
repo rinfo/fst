@@ -5,6 +5,7 @@ from os import path
 from datetime import datetime
 from django import forms
 from django.contrib import admin
+from django.contrib.admin import widgets
 from django.core.files import File
 from django.conf import settings
 from fst_web.fs_doc.models import *
@@ -70,7 +71,6 @@ class BilagaInline(HasFileInline):
     model = Bilaga
     classes = ['collapse', 'collapsed']
 
-
 class OvrigtDokumentInline(HasFileInline):
     model = OvrigtDokument
     classes = ['collapse', 'collapsed']
@@ -116,6 +116,20 @@ class FSDokumentAdminMixin(object):
 
     make_published.short_description = u"Publicera markerade dokument via FST"
     actions = [make_published]
+    
+    def formfield_for_manytomany(self, db_field, request=None, **kwargs):
+        """Get a form Field for a ManyToManyField """
+        
+        if db_field.name in ["andringar", "upphavningar"]:
+            kwargs['widget'] = admin.widgets.FilteredSelectMultiple(
+                      "dokument",(db_field.name in self.filter_vertical))
+        elif db_field.name == "celexreferenser":
+            kwargs['widget'] = \
+            admin.widgets.FilteredSelectMultiple(
+                u"celex-referenser",(db_field.name in self.filter_vertical)) 
+        else:
+            kwargs['widget'] = admin.widgets.FilteredSelectMultiple(db_field.verbose_name, (db_field.name in self.filter_vertical)) 
+        return db_field.formfield(**kwargs) 
 
 
 class AllmannaRadAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
@@ -158,13 +172,11 @@ class AllmannaRadAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
         (u'Dokument som detta dokument ändrar',
          {
              'fields': ('andringar',),
-             'description': u'Ange dokument som ändras',
              'classes': ['collapse', 'wide', 'extrapretty']}
          ),
         (u'Dokument som detta dokument upphäver',
          {
              'fields': ('upphavningar',),
-             'description': u'Ange dokument som upphävs',
              'classes': ['collapse', 'wide', 'extrapretty']}
          ),
         (u'Ämnesord - myndighetens kategorisering',
@@ -238,13 +250,11 @@ class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
         (u'Dokument som detta dokument ändrar',
          {
              'fields': ('andringar',),
-             'description': u'Ange dokument som ändras',
              'classes': ['collapse', 'wide', 'extrapretty']}
          ),
         (u'Dokument som detta dokument upphäver',
          {
-             'fields': ('upphavningar',),
-             'description': u'Ange dokument som upphävs',
+             'fields': ('upphavningar',), 
              'classes': ['collapse', 'wide', 'extrapretty']}
          ),
         (u'EG-rättsreferenser - celex',
