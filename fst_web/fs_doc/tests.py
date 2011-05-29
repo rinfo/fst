@@ -144,13 +144,13 @@ class WebTestCase(TestCase):
         self.failUnlessEqual(response.status_code, 200)
         self.assertContains(
             response,
-            "<h1>EXFS 2009:1 Föreskrifter om administration hos statliga myndigheter")
+            "<h2>EXFS 2009:1 Föreskrifter om administration hos statliga myndigheter")
 
         response = self.client.get('/publ/exfs/2011:1/')
         self.failUnlessEqual(response.status_code, 200)
         self.assertContains(
             response,
-            "<h1>EXFS 2011:1 Exempelmyndighetens allmänna råd om adminstration")
+            "<h2>EXFS 2011:1 Exempelmyndighetens allmänna råd om adminstration")
 
     def test_artal(self):
         """Verify that listing by year load
