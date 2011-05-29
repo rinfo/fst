@@ -161,7 +161,8 @@ class AllmannaRad(FSDokument):
                                              symmetrical=False,
                                              related_name=
                                              'konsolideringar_allmannarad',
-                                             verbose_name=u"Konsolideringsunderlag")
+                                             verbose_name=\
+                                             u"Konsolideringsunderlag")
 
     class Meta(FSDokument.Meta):
         verbose_name = u"allmänna råd"
@@ -237,7 +238,8 @@ class Myndighetsforeskrift(FSDokument):
                                              symmetrical=False,
                                              related_name=
                                              'konsolideringar_foreskrift',
-                                             verbose_name=u"Konsolideringsunderlag")
+                                             verbose_name=\
+                                             u"Konsolideringsunderlag")
 
     class Meta(FSDokument.Meta):
         verbose_name = u"myndighetsföreskrift"
@@ -500,12 +502,12 @@ class KonsolideradForeskrift(Document):
         return "%s i lydelse enligt %s" % (
             self.grundforfattning.identifierare, self.konsolideringsdatum)
 
-    @models.permalink
-    def get_absolute_url(self):
-        """"Construct Django URL path from document attributes"""
+    #@models.permalink
+    #def get_absolute_url(self):
+        #""""Construct Django URL path from document attributes"""
 
-        return ('fst_web.fs_doc.views.fs_dokument',
-                [self.get_fs_dokument_slug()])
+        #return ('fst_web.fs_doc.views.fs_dokument',
+                #[self.get_fs_dokument_slug()])
 
     def __unicode__(self):
         """Display value for user interface."""
@@ -528,6 +530,14 @@ class KonsolideradForeskrift(Document):
                 arsutgava__lte=latest.arsutgava,
                 lopnummer__lte=latest.lopnummer):
             yield doc
+
+    def role_label(self):
+        """Display role of document in Django GUI
+
+        This is a usability enhancement and not defined by the RDF model.
+        """
+
+        label = u"Konsoliderad författning"
 
     def to_rdfxml(self):
         """Return metadata as RDF/XML for this document."""
