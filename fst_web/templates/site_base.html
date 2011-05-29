@@ -14,16 +14,16 @@
                         {% block content %}{% endblock %}
                     </div>
                     <div class="col2">
-                        <h2>Meny</h2>
+                        <h3>Redaktionella åtgärder</h3>
                         <ul id="menu">
-                            <li><a href="{% url fst_web.fs_doc.views.index %}">Startsida</a></li>
-                            <li>------------------------</li>
-                            <li><a href={% url admin:fs_doc_myndighetsforeskrift_add %}>Mata in föreskrift</a></li>
-                            <li><a href={% url admin:fs_doc_allmannarad_add %}>Mata in allmänna råd</a></li>
-                            <li><a href={% url admin:index %}>Redigera författningsamlingen</a></li>
-                            <li>------------------------</li>
-                            <li><a href="{% url fst_web.fs_doc.views.amnesord %}">Lista per ämnesord</a></li>
+                            <li><a href={% url admin:fs_doc_myndighetsforeskrift_add %}>Lägg till föreskrift</a></li>
+                            <li><a href={% url admin:fs_doc_allmannarad_add %}>Lägg till allmänna råd</a></li>
+                            <li><a href={% url admin:fs_doc_konsolideradforeskrift_add %}>Lägg till konsoliderad föreskrift</a></li>
+                            <li><a href={% url admin:index %}>Ändra befintliga uppgifter</a></li>
+                            <li>--------------</li>
+                            <li><a href="{% url fst_web.fs_doc.views.index %}">Lista per beslutsdatum</a></li>
                             <li><a href="{% url fst_web.fs_doc.views.artal %}">Lista per ikraftträdandeår</a></li>
+                            <li><a href="{% url fst_web.fs_doc.views.amnesord %}">Lista per ämnesord</a></li>       
                         </ul> 
                     </div>
                 </div>
