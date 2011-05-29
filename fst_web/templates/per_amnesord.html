@@ -3,7 +3,7 @@
 {% block title %}{{ organization.name_possessive }} föreskrifter per ämnesord{% endblock %}
 
 {% block content %}
-    <h1>Författningar och allmänna råd</h1>
+    <h2>Författningar och allmänna råd</h2>
     <p>Författningsdokument indelade efter ämnesord.</p>
     {% for key in docs_by_keywords.items %}
         <h2>{{key.0.titel}}</h2>
