@@ -322,7 +322,7 @@ class Forfattningssamling(models.Model):
         http://dev.lagrummet.se/dokumentation/system/uri-principer.pdf
         """
         slug = to_slug(self.kortnamn)
-        uri = "http://rinfo.lagrummet.se/serier/fs/" + slug
+        uri = "http://rinfo.lagrummet.se/serie/fs/" + slug
         return uri
 
     def identifierare(self):
