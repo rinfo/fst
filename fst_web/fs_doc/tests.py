@@ -152,31 +152,31 @@ class WebTestCase(TestCase):
             response,
             "<h2>EXFS 2011:1 Exempelmyndighetens allmänna råd om adminstration")
 
-    def test_artal(self):
-        """Verify that listing by year load
-        with correct sample data for all document types"""
+    #def test_artal(self):
+        #"""Verify that listing by year load
+        #with correct sample data for all document types"""
 
-        response = self.client.get('/admin/artal/')
-        self.failUnlessEqual(response.status_code, 200)
-        # Headers for years
-        self.assertContains(response, "<h2>2009</h2>")
-        self.assertContains(response, "<h2>2011</h2>")
-        # Documents listed by year
-        self.assertContains(response, '<li><a href="/publ/exfs/2009:3/">')
-        self.assertContains(response, '<li><a href="/publ/exfs/2011:1/">')
+        #response = self.client.get('/admin/artal/')
+        #self.failUnlessEqual(response.status_code, 200)
+        ## Headers for years
+        #self.assertContains(response, "<h2>2009</h2>")
+        #self.assertContains(response, "<h2>2011</h2>")
+        ## Documents listed by year
+        #self.assertContains(response, '<li><a href="/publ/exfs/2009:3/">')
+        #self.assertContains(response, '<li><a href="/publ/exfs/2011:1/">')
 
-    def test_amnesord(self):
-        """Verify that listing by year load
-        with correct sample data for all document types"""
+    #def test_amnesord(self):
+        #"""Verify that listing by year load
+        #with correct sample data for all document types"""
 
-        response = self.client.get('/admin/amnesord/')
-        self.failUnlessEqual(response.status_code, 200)
-        # Headers for keywords
-        self.assertContains(response, "<h2>Administration</h2>")
-        self.assertContains(response, "<h2>Budgetering</h2>")
-        # Documents listed by keywords
-        self.assertContains(response, '<li><a href="/publ/exfs/2009:3/">')
-        self.assertContains(response, '<li><a href="/publ/exfs/2011:1/">')
+        #response = self.client.get('/admin/amnesord/')
+        #self.failUnlessEqual(response.status_code, 200)
+        ## Headers for keywords
+        #self.assertContains(response, "<h2>Administration</h2>")
+        #self.assertContains(response, "<h2>Budgetering</h2>")
+        ## Documents listed by keywords
+        #self.assertContains(response, '<li><a href="/publ/exfs/2009:3/">')
+        #self.assertContains(response, '<li><a href="/publ/exfs/2011:1/">')
 
     def test_feed(self):
         """Verify that Atom feed is created and can be read """
