@@ -54,6 +54,8 @@ class FSDokumentDescription(DocumentDescription):
         obj = self.obj
         add = lambda p, o: graph.add((self.ref, p, o))
 
+        add(RPUBL.forfattningssamling,
+                URIRef(obj.forfattningssamling.get_rinfo_uri()))
         add(RPUBL.arsutgava, Literal(obj.arsutgava))
         add(RPUBL.lopnummer, Literal(obj.lopnummer))
         add(RPUBL.beslutsdatum, Literal(obj.beslutsdatum))
