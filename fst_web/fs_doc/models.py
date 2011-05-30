@@ -661,7 +661,7 @@ class AtomEntry(models.Model, GenericUniqueMixin):
 
 
 def create_delete_entry(sender, instance, **kwargs):
-    """Create a special entry when a 'Myndighetsforeskrift' is deleted.
+    """Create a special entry when a document is deleted.
 
     This entry will be picked up by Rättsinformationssystemet (and others),
     allowing for quick corrections of already collected information."""
@@ -685,10 +685,13 @@ def create_delete_entry(sender, instance, **kwargs):
 
 
 post_delete.connect(create_delete_entry, sender=Myndighetsforeskrift,
-                    dispatch_uid="fst_web.fs_doc.create_delete_signal")
+                    dispatch_uid="fs_doc.Myndighetsforeskrift.create_delete_signal")
 
 post_delete.connect(create_delete_entry, sender=AllmannaRad,
-                    dispatch_uid="fst_web.fs_doc.create_delete_signal")
+                    dispatch_uid="fs_doc.AllmannaRad.create_delete_signal")
+
+post_delete.connect(create_delete_entry, sender=KonsolideradForeskrift,
+                    dispatch_uid="fs_doc.KonsolideradForeskrift.create_delete_signal")
 
 
 def get_file_md5(opened_file):
