@@ -71,16 +71,6 @@ class AdminTestCase(TestCase):
         self.assertNotContains(response, "auth")   # No access
         self.assertNotContains(response, "sites")  # No access
 
-    def test_translation_allmannarad(self):
-        """Verify existence of translated labels with Swedish characters """
-
-        post_data = {}
-        response = self.client.post(reverse(
-            'admin:fs_doc_allmannarad_add'), post_data)
-        # The expected field labels show up somewhere
-        self.assertContains(response, "Årsutgåva")
-        self.assertContains(response, "Löpnummer")
-
 
 class WebTestCase(TestCase):
     """Simplistic functional test of public URL:s  """
@@ -178,21 +168,15 @@ class WebTestCase(TestCase):
         self.assertContains(response, '<li><a href="/publ/exfs/2009:3/">')
         self.assertContains(response, '<li><a href="/publ/exfs/2011:1/">')
 
-    #def test_translation(self):
-        #"""Check that verbose field names are applied"""
-        ##Login
-        #c = Client()
-        #response = c.post('/admin/', {'username': 'editor', 'pwd': 'editor'})
-        #self.failUnlessEqual(response.status_code, 200)
-        ## Get document to check
-        #response = self.client.get('/admin/fs_doc/myndighetsforeskrift/1/')
-        #self.failUnlessEqual(response.status_code, 200)
-        #print response
+        
+    def test_translation_allmannarad(self):
+        """Verify existence of translated labels with Swedish characters """
 
-        ## Check that labels contain Swedish characters
-        #print response
-        #self.assertContains(response, '''<label for="id_arsutgava"''')
-        #self.assertContains(response, '''<label for="id_lopnummer"''')
+        response = self.client.get('/admin/fs_doc/myndighetsforeskrift/add/')
+        # The expected field labels show up somewhere
+        self.assertContains(response, u"Årsutgåva")
+        self.assertContains(response, u"Löpnummer")
+
 
     def test_feed(self):
         """Verify that Atom feed is created and can be read """
