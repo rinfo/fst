@@ -7,8 +7,9 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import  loader, Context, RequestContext
 from django.utils.feedgenerator import rfc3339_date
-from fst_web.fs_doc.models import Forfattningssamling, KonsolideradForeskrift,\
-     FSDokument, Myndighetsforeskrift, AllmannaRad, Amnesord, AtomEntry, RDFPost
+from fst_web.fs_doc.models import Forfattningssamling,\
+KonsolideradForeskrift, FSDokument, Myndighetsforeskrift,\
+AllmannaRad, Amnesord, AtomEntry, RDFPost
 
 
 def _response(request, template, context):
@@ -52,38 +53,13 @@ def fs_dokument(request, fs_dokument_slug):
     fs_dokument = rdf_post.content_object
     if isinstance(fs_dokument, AllmannaRad):
         return _response(request, 'allmanna_rad.html', dict(doc=fs_dokument))
-    elif isinstance(fs_dokument,Myndighetsforeskrift):
-        return _response(request,'foreskrift.html', dict(doc=fs_dokument))
-    elif isinstance(fs_dokument,KonsolideradForeskrift):
+    elif isinstance(fs_dokument, Myndighetsforeskrift):
+        return _response(request, 'foreskrift.html', dict(doc=fs_dokument))
+    elif isinstance(fs_dokument, KonsolideradForeskrift):
         return _response(request,
                          'konsoliderad_foreskrift.html', dict(doc=fs_dokument))
     else:
         pass
-
-
-def amnesord(request):
-    """Display documents grouped by keywords """
-
-    # Get all keywords used by at least one document
-    amnesord= list(Amnesord.objects.filter(
-        fsdokument__isnull = False).order_by("titel").distinct())
-
-    # Create a dictionary on keywords for all types of documents
-    docs_by_keywords = {}
-    for kw in (amnesord):
-        doc_list = list(kw.fsdokument_set.all().order_by("titel"))
-        docs_by_keywords[kw] = doc_list
-
-    return _response(request, 'per_amnesord.html', locals())
-
-
-def artal(request):
-    """Display documents grouped by year """
-
-    fs_documents = list(FSDokument.objects.all().
-                  order_by("-ikrafttradandedatum"))
-
-    return _response(request, 'per_ar.html', locals())
 
 
 def atomfeed(request):

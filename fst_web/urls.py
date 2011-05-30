@@ -29,12 +29,6 @@ urlpatterns = patterns('',
                        # Display info about specific document
                        (r'^publ/(?P<fs_dokument_slug>.*)/$', 'fst_web.fs_doc.views.fs_dokument'),
 
-                       # Display documents sorted by keyword ("/amnesord/")
-                       (r'^amnesord/$', 'fst_web.fs_doc.views.amnesord'),
-
-                       # Display documents sorted by year ("/artal/")
-                       (r'^artal/$', 'fst_web.fs_doc.views.artal'),
-
                        # Display Atom feed with activity in document collection
                        (r'^feed/$', 'fst_web.fs_doc.views.atomfeed'),
 

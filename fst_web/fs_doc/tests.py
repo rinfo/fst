@@ -156,7 +156,7 @@ class WebTestCase(TestCase):
         """Verify that listing by year load
         with correct sample data for all document types"""
 
-        response = self.client.get('/artal/')
+        response = self.client.get('/admin/artal/')
         self.failUnlessEqual(response.status_code, 200)
         # Headers for years
         self.assertContains(response, "<h2>2009</h2>")
@@ -169,7 +169,7 @@ class WebTestCase(TestCase):
         """Verify that listing by year load
         with correct sample data for all document types"""
 
-        response = self.client.get('/amnesord/')
+        response = self.client.get('/admin/amnesord/')
         self.failUnlessEqual(response.status_code, 200)
         # Headers for keywords
         self.assertContains(response, "<h2>Administration</h2>")
