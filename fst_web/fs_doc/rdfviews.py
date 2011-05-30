@@ -69,6 +69,9 @@ class FSDokumentDescription(DocumentDescription):
         for changed_doc in obj.andringar.all():
             add(RPUBL.andrar, URIRef(changed_doc.get_rinfo_uri()))
 
+        for cancelled_doc in obj.upphavningar.all():
+            add(RPUBL.upphaver, URIRef(cancelled_doc.get_rinfo_uri()))
+
         for amnesord in obj.amnesord.all():
             add(DCES.subject, Literal(amnesord.titel, lang="sv"))
 
