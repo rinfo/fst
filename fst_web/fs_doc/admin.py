@@ -152,7 +152,7 @@ class AllmannaRadAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                    'omtryck')
     ordering = ('-beslutsdatum', 'titel')
     search_fields = ('titel',)
-    #inlines = [BilagaInline, OvrigtDokumentInline]
+    inlines = [BilagaInline, OvrigtDokumentInline]
     readonly_fields = ('is_published', 'identifierare',)
     save_on_top = True
     fieldsets = (
