@@ -126,7 +126,8 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     # Application specific here
-    'fst_web.fs_doc'
+    'fst_web.fs_doc',
+    'adminplus'
 )
 
 # A sample logging configuration. The only tangible logging

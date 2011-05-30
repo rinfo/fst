@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
+import os
 from django.conf import settings
 from django.conf.urls.defaults import *
 from django.contrib import admin
-import os
+from adminplus import AdminSitePlus
+
+# Add admin enhancements from AdminPlus
+admin.site = AdminSitePlus()
 
 # Enable Django admin autodiscovery
 admin.autodiscover()
