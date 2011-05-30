@@ -29,30 +29,52 @@ class Description(object):
         return graph.serialize(format='pretty-xml')
 
 
-class  FSDokumentDescription(Description):
+class DocumentDescription(Description):
 
     def __init__(self, obj):
         self.obj = obj
         self.ref = URIRef(obj.get_rinfo_uri())
 
-    def  to_rdf(self):
+    def to_rdf(self):
         graph = Graph()
         obj = self.obj
         add = lambda p, o: graph.add((self.ref, p, o))
 
         add(DCT.title, Literal(obj.titel, lang='sv'))
+        add(DCT.identifier, Literal(obj.identifierare))
+        add(DCT.publisher, URIRef(obj.get_publisher_uri()))
+
+        return graph
+
+
+class FSDokumentDescription(DocumentDescription):
+
+    def to_rdf(self):
+        graph = super(FSDokumentDescription, self).to_rdf()
+        obj = self.obj
+        add = lambda p, o: graph.add((self.ref, p, o))
+
+        add(RPUBL.forfattningssamling,
+                URIRef(obj.forfattningssamling.get_rinfo_uri()))
         add(RPUBL.arsutgava, Literal(obj.arsutgava))
         add(RPUBL.lopnummer, Literal(obj.lopnummer))
         add(RPUBL.beslutsdatum, Literal(obj.beslutsdatum))
         add(RPUBL.ikrafttradandedatum, Literal(obj.ikrafttradandedatum))
         add(RPUBL.utkomFranTryck, Literal(obj.utkom_fran_tryck))
-        add(DCT.publisher, URIRef(obj.get_publisher_uri()))
 
-        #if obj.omtryck:
-        #    add(RPUBL.omtryckAv, URIRef(obj.andrar.get_rinfo_uri()))
+        if obj.omtryck:
+            for changed_doc in obj.andringar.all():
+                add(RPUBL.omtryckAv, URIRef(changed_doc.get_rinfo_uri()))
+
+        for changed_doc in obj.andringar.all():
+            add(RPUBL.andrar, URIRef(changed_doc.get_rinfo_uri()))
+
+        for cancelled_doc in obj.upphavningar.all():
+            add(RPUBL.upphaver, URIRef(cancelled_doc.get_rinfo_uri()))
 
         for amnesord in obj.amnesord.all():
             add(DCES.subject, Literal(amnesord.titel, lang="sv"))
+
         return graph
 
 
@@ -65,9 +87,6 @@ class AllmanaRadDescription(FSDokumentDescription):
         add = lambda p, o: graph.add((self.ref, p, o))
 
         add(RDF.type, RPUBL.AllmannaRad)
-
-        for changed_doc in obj.andringar.all():
-            add(RPUBL.andrar, URIRef(changed_doc.get_rinfo_uri()))
 
         return graph
 
@@ -113,7 +132,23 @@ class MyndighetsforeskriftDescription(FSDokumentDescription):
             dok_add(DCT.title, Literal(dok.titel, lang="sv"))
             dok_add(FOAF.primaryTopic, self.ref)
 
-        for changed_doc in obj.andringar.all():
-            add(RPUBL.andrar, URIRef(changed_doc.get_rinfo_uri()))
+        return graph
+
+
+class KonsolideradForeskriftDescription(DocumentDescription):
+
+    def to_rdf(self):
+        graph = super(KonsolideradForeskriftDescription, self).to_rdf()
+        obj = self.obj
+        add = lambda p, o: graph.add((self.ref, p, o))
+
+        add(RDF.type, RPUBL.KonsolideradGrundforfattning)
+        add(DCT.issued, Literal(obj.konsolideringsdatum))
+
+        add(RPUBL.konsoliderar, URIRef(obj.grundforfattning.get_rinfo_uri()))
+
+        for dok in obj.get_konsolideringsunderlag():
+            add(RPUBL.konsolideringsunderlag, URIRef(dok.get_rinfo_uri()))
 
         return graph
+

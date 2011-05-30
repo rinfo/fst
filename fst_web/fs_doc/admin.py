@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
+"""Layout and behavior of fs_doc admin app"""
+
 from os import path
 from datetime import datetime
 from django import forms
 from django.contrib import admin
+from django.contrib.admin import widgets
 from django.core.files import File
 from django.conf import settings
 from fst_web.fs_doc.models import *
@@ -18,9 +21,9 @@ class ForfattningssamlingAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         obj.slug = to_slug(obj.kortnamn)
+        obj.save
         super(ForfattningssamlingAdmin, self).save_model(
             request, obj, form, change)
-        obj.save
 
 
 class CelexReferensAdmin(admin.ModelAdmin):
@@ -68,7 +71,6 @@ class BilagaInline(HasFileInline):
     model = Bilaga
     classes = ['collapse', 'collapsed']
 
-
 class OvrigtDokumentInline(HasFileInline):
     model = OvrigtDokument
     classes = ['collapse', 'collapsed']
@@ -104,6 +106,7 @@ class FSDokumentAdminMixin(object):
 
     def make_published(self, request, queryset):
         """Puslish selected documents by creating Atom entries."""
+
         for i, obj in enumerate(queryset):
             generate_atom_entry_for(obj)
             obj.is_published = True
@@ -113,9 +116,26 @@ class FSDokumentAdminMixin(object):
 
     make_published.short_description = u"Publicera markerade dokument via FST"
     actions = [make_published]
+    
+    def formfield_for_manytomany(self, db_field, request=None, **kwargs):
+        """Get a form Field for a ManyToManyField """
+        
+        if db_field.name in ["andringar", "upphavningar"]:
+            kwargs['widget'] = admin.widgets.FilteredSelectMultiple(
+                      "dokument",(db_field.name in self.filter_vertical))
+        elif db_field.name == "celexreferenser":
+            kwargs['widget'] = \
+            admin.widgets.FilteredSelectMultiple(
+                u"celex-referenser",(db_field.name in self.filter_vertical)) 
+        else:
+            kwargs['widget'] = admin.widgets.FilteredSelectMultiple(db_field.verbose_name, (db_field.name in self.filter_vertical)) 
+        return db_field.formfield(**kwargs) 
 
 
 class AllmannaRadAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
+
+    form = HasContentFileForm
+
     list_display = ('identifierare',
                     'arsutgava',
                     'lopnummer',
@@ -131,8 +151,8 @@ class AllmannaRadAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                    #'andrar',
                    'omtryck')
     ordering = ('-beslutsdatum', 'titel')
-    search_fields = ('titel', 'identifierare',)
-    #inlines = [BilagaInline, OvrigtDokumentInline]
+    search_fields = ('titel',)
+    inlines = [BilagaInline, OvrigtDokumentInline]
     readonly_fields = ('is_published', 'identifierare',)
     save_on_top = True
     fieldsets = (
@@ -141,30 +161,52 @@ class AllmannaRadAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
              'fields': (
                  'is_published',
                  'identifierare',
-                 ('forfattningssamling', 'arsutgava', 'lopnummer'),
+                 'forfattningssamling',
+                 ('arsutgava', 'lopnummer'),
                  ('titel', 'sammanfattning'),
-                 ('content', 'omtryck'),
                  ('beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck'),
+                 ('content', 'omtryck'),
                  ),
-             'classes': ['wide', 'extrapretty']
-             }),
-        (u'Dokument som ändras, upphävs eller konsolideras av detta dokument',
+             'classes': ['wide', 'extrapretty']}
+         ),
+        (u'Dokument som detta dokument ändrar',
          {
-             'fields': ('andringar', 'upphavningar', 'konsolideringar'),
-             'description': u'Ange eventuella andra dokument påverkas',
+             'fields': ('andringar',),
              'classes': ['collapse', 'wide', 'extrapretty']}
          ),
-        (u'Ämnesord (myndighetens kategorisering)',
+        (u'Dokument som detta dokument upphäver',
+         {
+             'fields': ('upphavningar',),
+             'classes': ['collapse', 'wide', 'extrapretty']}
+         ),
+        (u'Ämnesord - myndighetens kategorisering',
          {
              'fields': (
                  'amnesord',),
-             'classes': ['collapse', 'wide', 'extrapretty']
-         })
+             'classes': ['collapse', 'wide', 'extrapretty']}
+         )
     )
     filter_horizontal = ('amnesord',
                          'andringar',
                          'upphavningar',
                          'konsolideringar')
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        """"Use different or modified widgets for some fields """
+
+        if isinstance(db_field, models.CharField):
+            if db_field.name == "titel":
+                kwargs['widget'] = forms.Textarea(
+                    attrs={'cols': 100, 'rows': 2, 'class': 'docx'})
+            if db_field.name == "arsutgava" or db_field.name == "lopnummer":
+                kwargs['widget'] = forms.Textarea(
+                    attrs={'cols': 10, 'rows': 1})
+        if isinstance(db_field, models.TextField):
+            if db_field.name == "sammanfattning":
+                kwargs['widget'] = forms.Textarea(
+                    attrs={'cols': 100, 'rows': 5, 'class': 'docx'})
+        return super(AllmannaRadAdmin, self).formfield_for_dbfield(
+            db_field, **kwargs)
 
 
 class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
@@ -186,7 +228,7 @@ class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                    #'andrar',
                    'omtryck')
     ordering = ('-beslutsdatum', 'titel')
-    search_fields = ('titel', 'identifierare',)
+    search_fields = ('titel', )
     inlines = [BilagaInline, OvrigtDokumentInline]
     readonly_fields = ('is_published', 'identifierare',)
     save_on_top = True
@@ -196,27 +238,37 @@ class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
              'fields': (
                  'is_published',
                  'identifierare',
-                 ('forfattningssamling', 'arsutgava', 'lopnummer'),
+                 'forfattningssamling',
+                 ('arsutgava', 'lopnummer'),
                  ('titel', 'sammanfattning'),
-                 ('content', 'omtryck'),
                  ('beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck'),
-                 'bemyndiganden',
-                 'celexreferenser'
+                 ('content', 'omtryck'),
+                 'bemyndiganden'
                  ),
              'classes': ['wide', 'extrapretty']
              }),
-        (u'Författningsdokument som ändras, upphävs eller konsolideras',
+        (u'Dokument som detta dokument ändrar',
          {
-             'fields': ('andringar', 'upphavningar', 'konsolideringar'),
-             'description': u'Ange eventuella andra dokument påverkas',
+             'fields': ('andringar',),
              'classes': ['collapse', 'wide', 'extrapretty']}
          ),
-        (u'Ämnesord (myndighetens kategorisering)',
+        (u'Dokument som detta dokument upphäver',
+         {
+             'fields': ('upphavningar',), 
+             'classes': ['collapse', 'wide', 'extrapretty']}
+         ),
+        (u'EG-rättsreferenser - celex',
+         {
+             'fields': (
+                 'celexreferenser',),
+             'classes': ['collapse', 'wide', 'extrapretty']}
+         ),
+        (u'Ämnesord - myndighetens kategorisering',
          {
              'fields': (
                  'amnesord',),
-             'classes': ['collapse', 'wide', 'extrapretty']
-         })
+             'classes': ['collapse', 'wide', 'extrapretty']}
+         )
     )
     filter_horizontal = ('bemyndiganden',
                          'amnesord',
@@ -224,6 +276,44 @@ class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                          'upphavningar',
                          'konsolideringar',
                          'celexreferenser')
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        """"Use different or modified widgets for some fields """
+
+        if isinstance(db_field, models.CharField):
+            if db_field.name == "titel":
+                kwargs['widget'] = forms.Textarea(
+                    attrs={'cols': 100, 'rows': 2, 'class': 'docx'})
+            if db_field.name == "arsutgava" or db_field.name == "lopnummer":
+                kwargs['widget'] = forms.Textarea(
+                    attrs={'cols': 10, 'rows': 1})
+        if isinstance(db_field, models.TextField):
+            if db_field.name == "sammanfattning":
+                kwargs['widget'] = forms.Textarea(
+                    attrs={'cols': 100, 'rows': 5, 'class': 'docx'})
+        return super(MyndighetsforeskriftAdmin, self).formfield_for_dbfield(
+            db_field, **kwargs)
+
+
+class KonsolideradForeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
+
+    form = HasContentFileForm
+
+    model = KonsolideradForeskrift
+    list_display = ('identifierare',
+                    'titel',
+                    'konsolideringsdatum')
+    exclude = ('content_md5',)
+    
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        """"Use different or modified widgets for some fields """
+
+        if isinstance(db_field, models.CharField):
+            if db_field.name == "titel":
+                kwargs['widget'] = forms.Textarea(
+                    attrs={'cols': 100, 'rows': 2, 'class': 'docx'})
+        return super(KonsolideradForeskriftAdmin, self).formfield_for_dbfield(
+            db_field, **kwargs)
 
 
 def generate_atom_entry_for(obj, update_only=False):
@@ -269,5 +359,6 @@ admin.site.register(Amnesord, AmnesordAdmin)
 admin.site.register(Bemyndigandereferens, BemyndigandereferensAdmin)
 admin.site.register(CelexReferens, CelexReferensAdmin)
 admin.site.register(Forfattningssamling, ForfattningssamlingAdmin)
+admin.site.register(KonsolideradForeskrift, KonsolideradForeskriftAdmin)
 admin.site.register(AtomEntry)
 admin.site.register(Myndighet)

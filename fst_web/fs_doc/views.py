@@ -7,8 +7,8 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import  loader, Context, RequestContext
 from django.utils.feedgenerator import rfc3339_date
-from fst_web.fs_doc.models import Forfattningssamling, \
-     Myndighetsforeskrift, AllmannaRad, Amnesord, AtomEntry, RDFPost
+from fst_web.fs_doc.models import Forfattningssamling, KonsolideradForeskrift,\
+     FSDokument, Myndighetsforeskrift, AllmannaRad, Amnesord, AtomEntry, RDFPost
 
 
 def _response(request, template, context):
@@ -48,12 +48,15 @@ def fs_dokument_rdf(request, fs_dokument_slug):
 def fs_dokument(request, fs_dokument_slug):
     """Display document subclassing 'FSDokument' """
 
-    rdf_post= get_object_or_404(RDFPost, slug=fs_dokument_slug)
+    rdf_post = get_object_or_404(RDFPost, slug=fs_dokument_slug)
     fs_dokument = rdf_post.content_object
-    if rdf_post.content_type.id == 9:
+    if isinstance(fs_dokument, AllmannaRad):
         return _response(request, 'allmanna_rad.html', dict(doc=fs_dokument))
-    elif rdf_post.content_type.id == 10:
-        return _response(request, 'foreskrift.html', dict(doc=fs_dokument))
+    elif isinstance(fs_dokument,Myndighetsforeskrift):
+        return _response(request,'foreskrift.html', dict(doc=fs_dokument))
+    elif isinstance(fs_dokument,KonsolideradForeskrift):
+        return _response(request,
+                         'konsoliderad_foreskrift.html', dict(doc=fs_dokument))
     else:
         pass
 
@@ -62,22 +65,13 @@ def amnesord(request):
     """Display documents grouped by keywords """
 
     # Get all keywords used by at least one document
-    fk_list= list(Amnesord.objects.filter(
-        myndighetsforeskrift__isnull = False).
-                  order_by("titel").
-                  distinct())
-    ak_list = list(Amnesord.objects.filter(
-        allmannarad__isnull = False).
-                   order_by("titel").
-                   distinct())
-    amnesord = sorted(chain(fk_list, ak_list), key=attrgetter('titel'))
+    amnesord= list(Amnesord.objects.filter(
+        fsdokument__isnull = False).order_by("titel").distinct())
 
     # Create a dictionary on keywords for all types of documents
     docs_by_keywords = {}
     for kw in (amnesord):
-        f_list = list(kw.myndighetsforeskrift_set.all().order_by("titel"))
-        a_list = list(kw.allmannarad_set.all().order_by("titel"))
-        doc_list = sorted(chain(f_list, a_list), key=attrgetter('titel'))
+        doc_list = list(kw.fsdokument_set.all().order_by("titel"))
         docs_by_keywords[kw] = doc_list
 
     return _response(request, 'per_amnesord.html', locals())
@@ -86,13 +80,8 @@ def amnesord(request):
 def artal(request):
     """Display documents grouped by year """
 
-    f_list = list(Myndighetsforeskrift.objects.all().
+    fs_documents = list(FSDokument.objects.all().
                   order_by("-ikrafttradandedatum"))
-    a_list = list(AllmannaRad.objects.all().
-                  order_by("-ikrafttradandedatum"))
-    fs_documents = sorted(
-        chain(f_list, a_list),
-        key=attrgetter('ikrafttradandedatum'), reverse=True)
 
     return _response(request, 'per_ar.html', locals())
 

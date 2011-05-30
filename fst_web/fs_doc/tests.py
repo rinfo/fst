@@ -2,12 +2,13 @@
 import hashlib
 import os
 import shutil
-from xml.dom.minidom import parse, parseString
+from xml.dom.minidom import parseString
 from django.test import TestCase
 from rdflib import Graph, Literal, URIRef, RDF
+from django.core.urlresolvers import reverse
 from fst_web.fs_doc import models
 from fst_web.fs_doc.admin import generate_atom_entry_for, generate_rdf_post_for
-from fst_web.fs_doc.rdfviews import DCT, DCES, FOAF, RPUBL, RINFO_BASE
+from fst_web.fs_doc.rdfviews import DCT, DCES, RPUBL, RINFO_BASE
 
 
 NS_ATOM = "http://www.w3.org/2005/Atom"
@@ -16,8 +17,74 @@ NS_ATOMLE = "http://purl.org/atompub/link-extensions/1.0"
 NS_AT = "http://purl.org/atompub/tombstones/1.0"
 
 
+class AdminSuperUserTestCase(TestCase):
+    """Test admin functionality for logged in superuser """
+
+    fixtures = ['exempeldata.json']
+
+    def setUp(self):
+        self.username = 'admin'  # This user already exists in fixture
+        self.pw = 'admin'        # and is a superuser
+        self.assertTrue(self.client.login(
+            username=self.username,
+            password=self.pw),
+                        "Logging in user %s, pw %s failed." %
+                        (self.username, self.pw))
+
+    def tearDown(self):
+        self.client.logout()
+
+    def test_superuser_access(self):
+        """Verify that superuser has access to system tables"""
+
+        post_data = {}
+        response = self.client.post(reverse('admin:index'), post_data)
+        self.assertContains(response, "auth")
+        self.assertContains(response, "sites")
+        self.assertContains(response, "fs_doc")
+
+
+class AdminTestCase(TestCase):
+    """Test admin functionality for logged in staff user """
+
+    fixtures = ['exempeldata.json']
+
+    def setUp(self):
+        self.username = 'editor'  # This user already exists in fixture
+        self.pw = 'editor'        # and is a regular staff user
+        self.assertTrue(self.client.login(
+            username=self.username,
+            password=self.pw),
+                        "Logging in user %s, pw %s failed." %
+                        (self.username, self.pw))
+
+    def tearDown(self):
+        self.client.logout()
+
+    def test_access(self):
+        """Verify that ordinary user has restricted access"""
+
+        post_data = {}
+        response = self.client.post(
+            reverse('admin:index'), post_data)
+        self.assertContains(response, "fs_doc")    # Permissions for this
+        self.assertNotContains(response, "auth")   # No access
+        self.assertNotContains(response, "sites")  # No access
+
+    #def test_translation_allmannarad(self):
+        #"""Verify existence of translated labels with Swedish characters """
+
+        #post_data = {}
+        #response = self.client.post(reverse(
+            #'admin:fs_doc_allmannarad_add'), post_data)
+        ## The expected field labels show up somewhere
+        #self.assertContains(response, "Årsutgåva")
+        #self.assertContains(response, "Löpnummer")
+
+
 class WebTestCase(TestCase):
-    # Sample data loaded from ./fixtures/
+    """Simplistic functional test of public URL:s  """
+
     fixtures = ['exempeldata.json']
 
     def setUp(self):
@@ -56,14 +123,18 @@ class WebTestCase(TestCase):
 
         response = self.client.get('/')
         self.failUnlessEqual(response.status_code, 200)
-        self.assertContains(response,
-                            "EXFS 2009:1 Föreskrift om administration hos statliga myndigheter")
-        self.assertContains(response,
-                            "EXFS 2009:2 Föreskrift om ändring i föreskrift 2009:1 om administration hos statliga myndigheter")
-        self.assertContains(response,
-                            "EXFS 2009:3 Föreskrift om budgetering hos statliga myndigheter")
-        self.assertContains(response,
-                            "EXFS 2011:1 Exempelmyndighetens allmänna råd om adminstration")
+        self.assertContains(
+            response,
+            "EXFS 2009:1 Föreskrifter om administration hos statliga myndigheter")
+        self.assertContains(
+            response,
+            "EXFS 2009:2 Föreskrifter om ändring i föreskrifter 2009:1 om administration hos statliga myndigheter")
+        self.assertContains(
+            response,
+            "EXFS 2009:3 Föreskrifter om budgetering hos statliga myndigheter")
+        self.assertContains(
+            response,
+            "EXFS 2011:1 Exempelmyndighetens allmänna råd om adminstration")
 
     def test_foreskrift(self):
         """Verify that detail page for documents load
@@ -71,13 +142,15 @@ class WebTestCase(TestCase):
 
         response = self.client.get('/publ/exfs/2009:1/')
         self.failUnlessEqual(response.status_code, 200)
-        self.assertContains(response,
-                            "<h1>EXFS 2009:1 Föreskrift om administration hos statliga myndigheter")
+        self.assertContains(
+            response,
+            "<h2>EXFS 2009:1 Föreskrifter om administration hos statliga myndigheter")
 
         response = self.client.get('/publ/exfs/2011:1/')
         self.failUnlessEqual(response.status_code, 200)
-        self.assertContains(response,
-                            "<h1>EXFS 2011:1 Exempelmyndighetens allmänna råd om adminstration")
+        self.assertContains(
+            response,
+            "<h2>EXFS 2011:1 Exempelmyndighetens allmänna råd om adminstration")
 
     def test_artal(self):
         """Verify that listing by year load
@@ -136,7 +209,8 @@ class WebTestCase(TestCase):
 
 
 class FeedTestCase(TestCase):
-    # Sample data loaded from ./fixtures/
+    """Test functionality for creating valid ATOM feed """
+
     fixtures = ['exempeldata.json']
 
     def setUp(self):
@@ -144,13 +218,11 @@ class FeedTestCase(TestCase):
         foreskrift1 = models.Myndighetsforeskrift.objects.get(
             forfattningssamling__slug="exfs", arsutgava="2009", lopnummer="1")
         generate_rdf_post_for(foreskrift1)
-        #TODO - explicitly publish document
         generate_atom_entry_for(foreskrift1)
 
         foreskrift2 = models.Myndighetsforeskrift.objects.get(
             forfattningssamling__slug="exfs", arsutgava="2009", lopnummer="2")
         generate_rdf_post_for(foreskrift2)
-        #TODO - explicitly publish document
         generate_atom_entry_for(foreskrift2)
 
     def test_feed_has_entries(self):
@@ -186,9 +258,9 @@ class FeedTestCase(TestCase):
                 avlast_md5 = link.getAttributeNS(NS_ATOMLE, "md5")
                 # Compare checksum from feed with checksum of current document
                 response = self.client.get('/publ/exfs/2009:1')
-                md5=hashlib.md5()
+                md5 = hashlib.md5()
                 md5.update(response.content)
-                beraknad_rdfmd5=md5.hexdigest()
+                beraknad_rdfmd5 = md5.hexdigest()
                 self.assertEqual(beraknad_rdfmd5, avlast_md5)
 
     def test_delete_feedentry(self):
@@ -222,6 +294,7 @@ class FeedTestCase(TestCase):
 
 
 class RDFTestCase(TestCase):
+    """Test basic RDF functionality  """
 
     fixtures = ['exempeldata.json']
 
@@ -232,7 +305,8 @@ class RDFTestCase(TestCase):
         graph = self._get_foreskrift_graph("exfs", "2009", "1")
         ref = URIRef("/publ/exfs/2009:1", RINFO_BASE)
         title = Literal(
-            u"Föreskrift om administration hos statliga myndigheter", lang='sv')
+            u"Föreskrifter om administration hos statliga myndigheter",
+            lang='sv')
         keyword = Literal(u"Administration", lang='sv')
         self.assertIn((ref, RDF.type, RPUBL.Myndighetsforeskrift), graph)
         self.assertIn((ref, DCT.title, title), graph)
@@ -267,7 +341,7 @@ class RDFTestCase(TestCase):
         graph = self._get_foreskrift_graph("exfs", "2009", "2")
         ref = URIRef("/publ/exfs/2009:2", RINFO_BASE)
         omtryck_ref = URIRef("/publ/exfs/2009:1", RINFO_BASE)
-        #self.assertIn((ref, RPUBL.omtryckAv, omtryck_ref), graph)
+        self.assertIn((ref, RPUBL.omtryckAv, omtryck_ref), graph)
 
     def test_no_omtryck(self):
         """No metadata for property 'omtryck' unless true"""
@@ -275,6 +349,13 @@ class RDFTestCase(TestCase):
         graph = self._get_foreskrift_graph("exfs", "2009", "3")
         ref = URIRef("/publ/exfs/2009:3", RINFO_BASE)
         self.assertFalse(list(graph.objects(ref, RPUBL.omtryckAv)))
+
+    def test_andrar(self):
+        """Verify that property 'andringar' has correct RDF metadata """
+
+        graph = self._get_foreskrift_graph("exfs", "2009", "2")
+        ref = URIRef("/publ/exfs/2009:2", RINFO_BASE)
+        self.assertTrue(list(graph.objects(ref, RPUBL.andrar)))
 
     def _get_foreskrift_graph(self, fs_slug, arsutgava, lopnummer):
         return self._get_graph_for_type(models.Myndighetsforeskrift, \
