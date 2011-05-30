@@ -109,7 +109,7 @@ Egna experiment
 
 Om du senare vill spara din aktuella databas till en fil använder du detta kommando:
 
-    $ python manage.py dumpdata --indent 4 --exclude admin --exclude sessions.session --exclude contenttypes.contenttype  --exclude fs_doc.atomentry --exclude fs_doc.rdfpost > fs_doc/fixtures/egna_data.json
+    $ python manage.py dumpdata --indent 4 --exclude admin --exclude sessions.session --exclude contenttypes.contenttype  --exclude fs_doc.atomentry > fs_doc/fixtures/egna_data.json
 
 Applikationens delar
 --------------------

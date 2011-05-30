@@ -23,10 +23,12 @@ def move_sampledocs_to_fixture():
     local("cp fs_doc/fixtures/konsoliderad_foreskrift/*.pdf "
           "uploads/konsoliderad_foreskrift/")
 
-def reset_db():
-    local("rm -rf database/fst_demo.db && "
-          "python manage.py syncdb --noinput && "
-          "python manage.py loaddata fs_doc/fixtures/exempeldata.json")
+def clear_db(flags=""):
+    local("rm -f database/fst_demo.db && python manage.py syncdb %s" % flags)
+
+def reset_db(fixture_name="exempeldata"):
+    clear_db("--noinput")
+    local("python manage.py loaddata fs_doc/fixtures/%s.json" % fixture_name)
 
 def reset_test():
     reset()
@@ -34,4 +36,10 @@ def reset_test():
 
 def test():
     local("python manage.py test")
+
+def make_fixture(name):
+    local("python manage.py dumpdata --indent 4 "
+          " --exclude admin --exclude sessions.session "
+          " --exclude contenttypes.contenttype --exclude fs_doc.atomentry "
+          " > fs_doc/fixtures/%s.json" % name)
 
