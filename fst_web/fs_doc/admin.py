@@ -370,25 +370,6 @@ def _response(request, template, context):
                               context_instance=RequestContext(request))
 
 
-def list_docs_beslutsdatum(request):
-    """Display start page
-
-    List the latest documents in current document collection.
-    Get both 'Myndighetsforeskrift' and 'AllmannaRad'.
-    """
-
-    f_list = list(Myndighetsforeskrift.objects.all().order_by(
-        "-beslutsdatum")[:10])
-    a_list = list(AllmannaRad.objects.all().order_by(
-        "-beslutsdatum")[:10])
-    latest_documents = sorted(
-        chain(f_list, a_list),
-        key=attrgetter('beslutsdatum'),
-        reverse=True)
-
-    return _response(request, 'index.html', locals())
-
-
 def amnesord(request):
     """Display documents grouped by keywords """
 
@@ -402,7 +383,6 @@ def amnesord(request):
     for kw in (amnesord):
         doc_list = list(kw.fsdokument_set.all().order_by("titel"))
         docs_by_keywords[kw] = doc_list
-
     return _response(request, 'per_amnesord.html', locals())
 
 
@@ -411,7 +391,6 @@ def artal(request):
 
     fs_documents = list(FSDokument.objects.all().
                   order_by("-ikrafttradandedatum"))
-
     return _response(request, 'per_ar.html', locals())
 
 
@@ -430,7 +409,6 @@ def beslutsdatum(request):
         chain(f_list, a_list),
         key=attrgetter('beslutsdatum'),
         reverse=True)
-
     return _response(request, 'index.html', locals())
 
 
