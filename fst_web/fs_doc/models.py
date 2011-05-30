@@ -59,7 +59,7 @@ class FSDokument(Document):
 
     titel = models.CharField(
         max_length=512,
-        unique=True)
+        unique=False)
 
     sammanfattning = models.TextField(
         max_length=512,
@@ -91,9 +91,6 @@ class FSDokument(Document):
     # Store checksum of uploaded file
     content_md5 = models.CharField(max_length=32,
                                    blank=True)
-
-    class Meta:
-        abstract = True
 
     def __unicode__(self):
         """Display value for user interface."""
@@ -351,7 +348,7 @@ class HasFile(models.Model):
 
 
 class Bilaga(HasFile):
-    foreskrift = models.ForeignKey('Myndighetsforeskrift',
+    foreskrift = models.ForeignKey('FSDokument',
                                    related_name='bilagor')
 
     titel = models.CharField("Titel",
@@ -373,7 +370,7 @@ class Bilaga(HasFile):
 
 
 class OvrigtDokument(HasFile):
-    foreskrift = models.ForeignKey('Myndighetsforeskrift',
+    foreskrift = models.ForeignKey('FSDokument',
                                    related_name='ovriga_dokument')
 
     titel = models.CharField("Titel", max_length=512,
@@ -428,46 +425,23 @@ class Amnesord(models.Model):
 # NOTE: Classes below implement concrete relations to avoid known
 # problems using self-referential M2M models with Django admin
 
-class Andringar_foreskrift(models.Model):
-    from_doc = models.ForeignKey(
-        'Myndighetsforeskrift', related_name='changing')
-    to_doc = models.ForeignKey(
-        'Myndighetsforeskrift', related_name='changed')
+class Andringar_fsdokument(models.Model):
+    from_doc = models.ForeignKey('FSDokument', related_name='changing')
+    to_doc = models.ForeignKey('FSDokument', related_name='changed')
 
 
-class Andringar_allmannarad(models.Model):
-    from_doc = models.ForeignKey('AllmannaRad',
-                               related_name='changing')
-    to_doc = models.ForeignKey('AllmannaRad',
-                             related_name='changed')
-
-
-class Upphavningar_foreskrift(models.Model):
-    from_doc = models.ForeignKey('Myndighetsforeskrift',
-                               related_name='cancelling')
-    to_doc = models.ForeignKey('Myndighetsforeskrift',
-                             related_name='cancelled')
-
-
-class Upphavningar_allmannarad(models.Model):
-    from_doc = models.ForeignKey('AllmannaRad',
-                               related_name='cancelling')
-    to_doc = models.ForeignKey('AllmannaRad',
-                             related_name='cancelled')
+class Upphavningar_fsdokument(models.Model):
+    from_doc = models.ForeignKey('FSDokument', related_name='cancelling')
+    to_doc = models.ForeignKey('FSDokument', related_name='cancelled')
 
 
 class Konsolideringar_foreskrift(models.Model):
+    # NOTE: if AllmannaRad can be "konsoliderade", generalize this to
+    # FSDokument instead of Myndighetsforeskrift
     from_doc = models.ForeignKey('Myndighetsforeskrift',
                                related_name = 'consolidating')
     to_doc = models.ForeignKey('Myndighetsforeskrift',
                              related_name ='consolidated')
-
-
-class Konsolideringar_allmannarad(models.Model):
-    from_doc = models.ForeignKey('AllmannaRad',
-                               related_name = 'consolidating')
-    to_doc = models.ForeignKey('AllmannaRad',
-                             related_name = 'consolidated')
 
 
 class KonsolideradForeskrift(Document):
