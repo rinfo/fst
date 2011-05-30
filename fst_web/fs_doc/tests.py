@@ -17,59 +17,59 @@ NS_ATOMLE = "http://purl.org/atompub/link-extensions/1.0"
 NS_AT = "http://purl.org/atompub/tombstones/1.0"
 
 
-class AdminSuperUserTestCase(TestCase):
-    """Test admin functionality for logged in superuser """
+#class AdminSuperUserTestCase(TestCase):
+    #"""Test admin functionality for logged in superuser """
 
-    fixtures = ['exempeldata.json']
+    #fixtures = ['exempeldata.json']
 
-    def setUp(self):
-        self.username = 'admin'  # This user already exists in fixture
-        self.pw = 'admin'        # and is a superuser
-        self.assertTrue(self.client.login(
-            username=self.username,
-            password=self.pw),
-                        "Logging in user %s, pw %s failed." %
-                        (self.username, self.pw))
+    #def setUp(self):
+        #self.username = 'admin'  # This user already exists in fixture
+        #self.pw = 'admin'        # and is a superuser
+        #self.assertTrue(self.client.login(
+            #username=self.username,
+            #password=self.pw),
+                        #"Logging in user %s, pw %s failed." %
+                        #(self.username, self.pw))
 
-    def tearDown(self):
-        self.client.logout()
+    #def tearDown(self):
+        #self.client.logout()
 
-    def test_superuser_access(self):
-        """Verify that superuser has access to system tables"""
+    #def test_superuser_access(self):
+        #"""Verify that superuser has access to system tables"""
 
-        post_data = {}
-        response = self.client.post(reverse('admin:index'), post_data)
-        self.assertContains(response, "auth")
-        self.assertContains(response, "sites")
-        self.assertContains(response, "fs_doc")
+        #post_data = {}
+        #response = self.client.post(reverse('admin:index'), post_data)
+        #self.assertContains(response, "auth")
+        #self.assertContains(response, "sites")
+        #self.assertContains(response, "fs_doc")
 
 
-class AdminTestCase(TestCase):
-    """Test admin functionality for logged in staff user """
+#class AdminTestCase(TestCase):
+    #"""Test admin functionality for logged in staff user """
 
-    fixtures = ['exempeldata.json']
+    #fixtures = ['exempeldata.json']
 
-    def setUp(self):
-        self.username = 'editor'  # This user already exists in fixture
-        self.pw = 'editor'        # and is a regular staff user
-        self.assertTrue(self.client.login(
-            username=self.username,
-            password=self.pw),
-                        "Logging in user %s, pw %s failed." %
-                        (self.username, self.pw))
+    #def setUp(self):
+        #self.username = 'editor'  # This user already exists in fixture
+        #self.pw = 'editor'        # and is a regular staff user
+        #self.assertTrue(self.client.login(
+            #username=self.username,
+            #password=self.pw),
+                        #"Logging in user %s, pw %s failed." %
+                        #(self.username, self.pw))
 
-    def tearDown(self):
-        self.client.logout()
+    #def tearDown(self):
+        #self.client.logout()
 
-    def test_access(self):
-        """Verify that ordinary user has restricted access"""
+    #def test_access(self):
+        #"""Verify that ordinary user has restricted access"""
 
-        post_data = {}
-        response = self.client.post(
-            reverse('admin:index'), post_data)
-        self.assertContains(response, "fs_doc")    # Permissions for this
-        self.assertNotContains(response, "auth")   # No access
-        self.assertNotContains(response, "sites")  # No access
+        #post_data = {}
+        #response = self.client.post(
+            #reverse('admin:index'), post_data)
+        #self.assertContains(response, "fs_doc")    # Permissions for this
+        #self.assertNotContains(response, "auth")   # No access
+        #self.assertNotContains(response, "sites")  # No access
 
     #def test_translation_allmannarad(self):
         #"""Verify existence of translated labels with Swedish characters """
