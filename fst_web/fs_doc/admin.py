@@ -175,8 +175,8 @@ class AllmannaRadAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                  'forfattningssamling',
                  ('arsutgava', 'lopnummer'),
                  ('titel', 'sammanfattning'),
-                 ('beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck'),
                  ('content', 'omtryck'),
+                 ('beslutsdatum', 'utkom_fran_tryck', 'ikrafttradandedatum'),
                  ),
              'classes': ['wide', 'extrapretty']}
          ),
@@ -252,8 +252,8 @@ class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                  'forfattningssamling',
                  ('arsutgava', 'lopnummer'),
                  ('titel', 'sammanfattning'),
-                 ('beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck'),
                  ('content', 'omtryck'),
+                 ('beslutsdatum', 'utkom_fran_tryck', 'ikrafttradandedatum'),
                  'bemyndiganden'
                  ),
              'classes': ['wide', 'extrapretty']
@@ -375,8 +375,8 @@ def amnesord(request):
 
     # Get all keywords used by at least one document
     amnesord = list(
-        Amnesord.objects.filter(fsdokument__isnull = False).order_by(
-            "titel").distinct())
+        Amnesord.objects.filter(fsdokument__isnull = False).
+        order_by("titel").distinct())
 
     # Create a dictionary on keywords for all types of documents
     docs_by_keywords = {}
