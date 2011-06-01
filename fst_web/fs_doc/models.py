@@ -588,7 +588,8 @@ class RDFPost(models.Model, GenericUniqueMixin):
 
     @property
     def length(self):
-        return len(self.data)
+        """Returns length in octets (not characters)"""
+        return len(self.data.encode('utf-8'))
 
 
 class AtomEntry(models.Model, GenericUniqueMixin):
