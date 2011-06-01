@@ -3,7 +3,8 @@ import datetime
 from itertools import chain
 from operator import attrgetter
 from django.conf import settings
-from django.http import HttpResponse, Http404
+from django.core.urlresolvers import reverse
+from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import  loader, Context, RequestContext
 from django.utils.feedgenerator import rfc3339_date
@@ -19,22 +20,9 @@ def _response(request, template, context):
 
 
 def index(request):
-    """Display start page
+    """Display start page"""
 
-    List the latest documents in current document collection.
-    Get both 'Myndighetsforeskrift' and 'AllmannaRad'.
-    """
-
-    f_list = list(Myndighetsforeskrift.objects.all().order_by(
-        "-beslutsdatum")[:10])
-    a_list = list(AllmannaRad.objects.all().order_by(
-        "-beslutsdatum")[:10])
-    latest_documents = sorted(
-        chain(f_list, a_list),
-        key=attrgetter('beslutsdatum'),
-        reverse=True)
-
-    return _response(request, 'index.html', locals())
+    return HttpResponseRedirect(reverse('admin:index'))
 
 
 def fs_dokument_rdf(request, fs_dokument_slug):

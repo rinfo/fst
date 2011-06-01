@@ -119,23 +119,12 @@ class WebTestCase(TestCase):
         shutil.rmtree(testdocs)
 
     def test_startsida(self):
-        """Verify start page loads and displays correct sample documents"""
+        """Verify redirect (since we don't have a public start page """
 
         response = self.client.get('/')
-        self.failUnlessEqual(response.status_code, 200)
-        self.assertContains(
-            response,
-            "EXFS 2009:1 Föreskrifter om administration hos statliga myndigheter")
-        self.assertContains(
-            response,
-            "EXFS 2009:2 Föreskrifter om ändring i föreskrifter 2009:1 om administration hos statliga myndigheter")
-        self.assertContains(
-            response,
-            "EXFS 2009:3 Föreskrifter om budgetering hos statliga myndigheter")
-        self.assertContains(
-            response,
-            "EXFS 2011:1 Exempelmyndighetens allmänna råd om adminstration")
+        self.failUnlessEqual(response.status_code, 302)
 
+        
     def test_foreskrift(self):
         """Verify that detail page for documents load
         with correct sample data for all document types"""

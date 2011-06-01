@@ -413,7 +413,7 @@ def beslutsdatum(request):
 
 
 admin.site.register_view(
-    'index', beslutsdatum,
+    'beslutsdatum', beslutsdatum,
     u'Lista föreskrifter och allmänna råd (per beslutsdatum)')
 admin.site.register_view(
     'artal', artal,
