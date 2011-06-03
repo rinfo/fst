@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
+import os
 from django.conf import settings
 from django.conf.urls.defaults import *
 from django.contrib import admin
-import os
+from adminplus import AdminSitePlus
+
+# Add admin enhancements from AdminPlus
+admin.site = AdminSitePlus()
 
 # Enable Django admin autodiscovery
 admin.autodiscover()
@@ -24,12 +28,6 @@ urlpatterns = patterns('',
 
                        # Display info about specific document
                        (r'^publ/(?P<fs_dokument_slug>.*)/$', 'fst_web.fs_doc.views.fs_dokument'),
-
-                       # Display documents sorted by keyword ("/amnesord/")
-                       (r'^amnesord/$', 'fst_web.fs_doc.views.amnesord'),
-
-                       # Display documents sorted by year ("/artal/")
-                       (r'^artal/$', 'fst_web.fs_doc.views.artal'),
 
                        # Display Atom feed with activity in document collection
                        (r'^feed/$', 'fst_web.fs_doc.views.atomfeed'),

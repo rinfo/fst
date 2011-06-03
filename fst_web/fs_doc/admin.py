@@ -3,12 +3,21 @@
 
 from os import path
 from datetime import datetime
+from itertools import chain
+from operator import attrgetter
 from django import forms
 from django.contrib import admin
 from django.contrib.admin import widgets
 from django.core.files import File
 from django.conf import settings
+from django.shortcuts import render_to_response, get_object_or_404
+from django.template import  loader, Context, RequestContext
+from django.contrib import admin
+from adminplus import AdminSitePlus
 from fst_web.fs_doc.models import *
+
+# Add admin enhancements from AdminPlus
+admin.site = AdminSitePlus()
 
 
 class ForfattningssamlingAdmin(admin.ModelAdmin):
@@ -71,6 +80,7 @@ class BilagaInline(HasFileInline):
     model = Bilaga
     classes = ['collapse', 'collapsed']
 
+
 class OvrigtDokumentInline(HasFileInline):
     model = OvrigtDokument
     classes = ['collapse', 'collapsed']
@@ -116,20 +126,21 @@ class FSDokumentAdminMixin(object):
 
     make_published.short_description = u"Publicera markerade dokument via FST"
     actions = [make_published]
-    
+
     def formfield_for_manytomany(self, db_field, request=None, **kwargs):
         """Get a form Field for a ManyToManyField """
-        
+
         if db_field.name in ["andringar", "upphavningar"]:
             kwargs['widget'] = admin.widgets.FilteredSelectMultiple(
-                      "dokument",(db_field.name in self.filter_vertical))
+                      "dokument", (db_field.name in self.filter_vertical))
         elif db_field.name == "celexreferenser":
             kwargs['widget'] = \
             admin.widgets.FilteredSelectMultiple(
-                u"celex-referenser",(db_field.name in self.filter_vertical)) 
+                u"celex-referenser", (db_field.name in self.filter_vertical))
         else:
-            kwargs['widget'] = admin.widgets.FilteredSelectMultiple(db_field.verbose_name, (db_field.name in self.filter_vertical)) 
-        return db_field.formfield(**kwargs) 
+            kwargs['widget'] = admin.widgets.FilteredSelectMultiple(
+                db_field.verbose_name, (db_field.name in self.filter_vertical))
+        return db_field.formfield(**kwargs)
 
 
 class AllmannaRadAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
@@ -164,8 +175,8 @@ class AllmannaRadAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                  'forfattningssamling',
                  ('arsutgava', 'lopnummer'),
                  ('titel', 'sammanfattning'),
-                 ('beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck'),
                  ('content', 'omtryck'),
+                 ('beslutsdatum', 'utkom_fran_tryck', 'ikrafttradandedatum'),
                  ),
              'classes': ['wide', 'extrapretty']}
          ),
@@ -241,8 +252,8 @@ class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                  'forfattningssamling',
                  ('arsutgava', 'lopnummer'),
                  ('titel', 'sammanfattning'),
-                 ('beslutsdatum', 'ikrafttradandedatum', 'utkom_fran_tryck'),
                  ('content', 'omtryck'),
+                 ('beslutsdatum', 'utkom_fran_tryck', 'ikrafttradandedatum'),
                  'bemyndiganden'
                  ),
              'classes': ['wide', 'extrapretty']
@@ -254,7 +265,7 @@ class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
          ),
         (u'Dokument som detta dokument upphäver',
          {
-             'fields': ('upphavningar',), 
+             'fields': ('upphavningar',),
              'classes': ['collapse', 'wide', 'extrapretty']}
          ),
         (u'EG-rättsreferenser - celex',
@@ -304,7 +315,7 @@ class KonsolideradForeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                     'titel',
                     'konsolideringsdatum')
     exclude = ('content_md5',)
-    
+
     def formfield_for_dbfield(self, db_field, **kwargs):
         """"Use different or modified widgets for some fields """
 
@@ -352,6 +363,64 @@ def generate_rdf_post_for(obj):
     rdf_post.save()
     return rdf_post
 
+
+def _response(request, template, context):
+    return render_to_response(template,
+                              context,
+                              context_instance=RequestContext(request))
+
+
+def amnesord(request):
+    """Display documents grouped by keywords """
+
+    # Get all keywords used by at least one document
+    amnesord = list(
+        Amnesord.objects.filter(fsdokument__isnull = False).
+        order_by("titel").distinct())
+
+    # Create a dictionary on keywords for all types of documents
+    docs_by_keywords = {}
+    for kw in (amnesord):
+        doc_list = list(kw.fsdokument_set.all().order_by("titel"))
+        docs_by_keywords[kw] = doc_list
+    return _response(request, 'per_amnesord.html', locals())
+
+
+def artal(request):
+    """Display documents grouped by year """
+
+    fs_documents = list(FSDokument.objects.all().
+                  order_by("-ikrafttradandedatum"))
+    return _response(request, 'per_ar.html', locals())
+
+
+def beslutsdatum(request):
+    """Display start page
+
+    List the latest documents in current document collection.
+    Get both 'Myndighetsforeskrift' and 'AllmannaRad'.
+    """
+
+    f_list = list(Myndighetsforeskrift.objects.all().order_by(
+        "-beslutsdatum")[:10])
+    a_list = list(AllmannaRad.objects.all().order_by(
+        "-beslutsdatum")[:10])
+    latest_documents = sorted(
+        chain(f_list, a_list),
+        key=attrgetter('beslutsdatum'),
+        reverse=True)
+    return _response(request, 'beslutsdatum.html', locals())
+
+
+admin.site.register_view(
+    'beslutsdatum', beslutsdatum,
+    u'Lista föreskrifter och allmänna råd (per beslutsdatum)')
+admin.site.register_view(
+    'artal', artal,
+    u'Lista föreskrifter och allmänna råd (per årtal)')
+admin.site.register_view(
+    'amnesord', amnesord,
+    u'Lista föreskrifter och allmänna råd (per ämnesord)')
 
 admin.site.register(AllmannaRad, AllmannaRadAdmin)
 admin.site.register(Myndighetsforeskrift, MyndighetsforeskriftAdmin)

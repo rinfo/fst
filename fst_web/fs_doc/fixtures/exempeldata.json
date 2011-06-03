@@ -99,7 +99,7 @@
                 3
             ], 
             "upphavningar": [], 
-            "content": "allmanna_rad/EXFS-2011-1_1.pdf", 
+            "content": "allmanna_rad/EXFS-2011-1.pdf", 
             "konsolideringar": [], 
             "beslutad_av": null
         }
@@ -121,7 +121,7 @@
             "celexreferenser": [
                 3
             ], 
-            "content": "foreskrift/EXFS-2009-1_1.pdf", 
+            "content": "foreskrift/EXFS-2009-1.pdf", 
             "konsolideringar": [], 
             "beslutad_av": null
         }
@@ -146,7 +146,7 @@
                 2, 
                 3
             ], 
-            "content": "foreskrift/EXFS-2009-2_1.pdf", 
+            "content": "foreskrift/EXFS-2009-2.pdf", 
             "konsolideringar": [], 
             "beslutad_av": null
         }
@@ -166,7 +166,7 @@
             ], 
             "upphavningar": [], 
             "celexreferenser": [], 
-            "content": "foreskrift/EXFS-2009-3_1.pdf", 
+            "content": "foreskrift/EXFS-2009-3.pdf", 
             "konsolideringar": [], 
             "beslutad_av": null
         }
@@ -252,7 +252,7 @@
             "senaste_andringsforfattning": 2, 
             "titel": "F\u00f6reskrifter om budgetering hos statliga myndigheter", 
             "grundforfattning": 1, 
-            "content": "konsoliderad_foreskrift/EXFS-2009-1_2009-2_1.pdf", 
+            "content": "konsoliderad_foreskrift/EXFS-2009-1_2009-2.pdf", 
             "konsolideringsdatum": "2011-05-30", 
             "content_md5": "76687aa72a292d289f6091e4b19597f7"
         }
