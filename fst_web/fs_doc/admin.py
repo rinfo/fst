@@ -409,7 +409,7 @@ def beslutsdatum(request):
         chain(f_list, a_list),
         key=attrgetter('beslutsdatum'),
         reverse=True)
-    return _response(request, 'index.html', locals())
+    return _response(request, 'beslutsdatum.html', locals())
 
 
 admin.site.register_view(
