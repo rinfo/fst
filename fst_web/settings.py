@@ -127,7 +127,7 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     # Application specific here
     'fst_web.fs_doc',
-    'adminplus'
+    'fst_web.adminplus'
 )
 
 # A sample logging configuration. The only tangible logging
