@@ -1,11 +1,11 @@
 {% extends "admin/base.html" %}
 
 {% block title %}
-    {{ title }} | {{ organization.name_possessive }} lagrum 
+    {{ title }} | FST - {{ organization.name_possessive }} lagrum
 {% endblock %}
 
 {% block branding %}
-    <h1 id="site-name">{{ organization.name_possessive }} lagrum</h1>
+    <h1 id="site-name"> FST - {{ organization.name_possessive }} lagrum</h1>
 {% endblock %}
 
 {% block nav-global %}{% endblock %}
@@ -13,7 +13,7 @@
 {% block footer %} 
 </div>
 <div class="footer">
-<p>Denna tjänst drivs och utvecklas av <a href="http://dev.lagrummet.se/">rättsinformationsprojektet</a>. Källkoden bakom tjänsten finns på <a href="https://github.com/rinfo/fst">GitHub</a>.</p>
+<p>FST drivs och utvecklas av <a href="http://dev.lagrummet.se/">rättsinformationsprojektet</a>. Källkoden bakom tjänsten finns på <a href="https://github.com/rinfo/fst">GitHub</a>.</p>
 </div>
 </div>
 {% endblock %}
