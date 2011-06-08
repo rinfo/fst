@@ -11,8 +11,8 @@
     {% for ikrafttradandear in foreskrifter_per_ar %}
         <h2>{{ikrafttradandear.grouper}}</h2>
         <ul class="foreskrifter">
-            {% for foreskrift in ikrafttradandear.list %}
-            <li><a href="{{foreskrift.get_absolute_url}}">{{foreskrift.tst}} {{foreskrift.fsnummer}} {{foreskrift.titel}}</a></li>
+            {% for doc in ikrafttradandear.list %}
+            <li><a href="{{doc.get_absolute_url}}">{{doc.identifierare}} {{doc.titel}}</a></li>
             {% endfor %}
         </ul>
     {% endfor %}
