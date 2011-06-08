@@ -548,12 +548,14 @@ class Bemyndigandereferens(models.Model):
 
     def __unicode__(self):
         if self.kapitelnummer:
-            kap_text = " kap. "
+            kap_text = " kap."
         else:
-            kap_text = " "
-        return u"%s (%s) %s %s %s §" % (self.titel, self.sfsnummer,
-                                         self.kapitelnummer, kap_text,
-                                         self.paragrafnummer)
+            kap_text = ""
+        return u"%s %s %s § %s %s " % (self.kapitelnummer, 
+                                         kap_text,
+                                         self.paragrafnummer,
+                                         self.sfsnummer,
+                                         self.titel)
 
 
 class GenericUniqueMixin(object):
