@@ -6,6 +6,7 @@ import hashlib
 from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_delete
+from django.core import urlresolvers
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.template import loader, Context
@@ -107,6 +108,16 @@ class FSDokument(Document):
 
         return ('fst_web.fs_doc.views.fs_dokument',
                 [self.get_fs_dokument_slug()])
+    
+    def get_admin_url(self):
+        """Return URL for editing this document in Django admin."""
+
+        content_type = ContentType.objects.get_for_model(self)
+        edit_url = urlresolvers.reverse(
+            "admin:fs_doc_" + content_type.model + "_change",
+            args=(self.id,))
+        return edit_url
+
 
     def get_fs_dokument_slug(self):
         return "%s/%s:%s" % (self.forfattningssamling.slug,

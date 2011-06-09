@@ -373,6 +373,9 @@ def _response(request, template, context):
 def amnesord(request):
     """Display documents grouped by keywords """
 
+    def get_identifierare(obj):
+        return obj.identifierare
+
     # Get all keywords used by at least one document
     amnesord = list(
         Amnesord.objects.filter(fsdokument__isnull = False).
@@ -381,16 +384,22 @@ def amnesord(request):
     # Create a dictionary on keywords for all types of documents
     docs_by_keywords = {}
     for kw in (amnesord):
-        doc_list = list(kw.fsdokument_set.all().order_by("titel"))
+        doc_list = list(kw.fsdokument_set.all())
+        doc_list.sort(key=get_identifierare)
         docs_by_keywords[kw] = doc_list
     return _response(request, 'per_amnesord.html', locals())
 
 
 def artal(request):
     """Display documents grouped by year """
-
-    fs_documents = list(FSDokument.objects.all().
-                  order_by("-ikrafttradandedatum"))
+        
+    def get_identifierare(obj):
+        return obj.identifierare
+    
+    f_list = list(Myndighetsforeskrift.objects.all())
+    a_list = list(AllmannaRad.objects.all())
+    fs_documents = list(chain(f_list, a_list))
+    fs_documents.sort(key=get_identifierare)
     return _response(request, 'per_ar.html', locals())
 
 

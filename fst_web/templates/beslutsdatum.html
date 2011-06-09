@@ -13,7 +13,7 @@
         {% for doc in latest_documents %}
         <tr>
             <td>{{doc.beslutsdatum}}</td>
-            <td><a href="{{doc.get_absolute_url}}">{{doc.identifierare}} {{doc.titel}}</a></td>
+            <td><a href="{{doc.get_admin_url}}">{{doc.identifierare}} {{doc.titel}}</a></td>
             <td>{{doc.role_label}}</td>
         </tr>
         {% endfor %}
