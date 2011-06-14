@@ -253,7 +253,7 @@ class FeedTestCase(TestCase):
                 self.assertEqual(beraknad_rdfmd5, avlast_md5)
 
     def test_delete_feedentry(self):
-        """Verify that entries can be deleted and replaced by special entry"""
+        """Verify that entries can be deleted and NOT replaced by special entry"""
 
         dom = self._get_parsed_feed('/feed/')
 
@@ -270,8 +270,8 @@ class FeedTestCase(TestCase):
         # Only one document entry exists
         self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'entry')), 1)
 
-        # Special entry signaling deletion exists
-        self.assertTrue(dom.getElementsByTagNameNS(NS_AT, 'deleted-entry'))
+        # Special entry signaling deletion should NOT exist since this is a fh:complete feed
+        self.assertFalse(dom.getElementsByTagNameNS(NS_AT, 'deleted-entry'))
 
     def _get_parsed_feed(self, path):
         # Get Atom feed
