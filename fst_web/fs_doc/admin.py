@@ -328,7 +328,7 @@ class KonsolideradForeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
 
 
 def generate_atom_entry_for(obj, update_only=False):
-    updated = datetime.now()
+    updated = datetime.utcnow()
 
     # Check if we already published this document
     obj_type = ContentType.objects.get_for_model(obj)

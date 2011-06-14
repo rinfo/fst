@@ -633,7 +633,7 @@ class AtomEntry(models.Model, GenericUniqueMixin):
         if not self.content_object:
             # Can happen with old databases that may have stale
             # AtomEntry-objects with the delete property set.
-            return
+            return ""
         template = loader.get_template('foreskrift_entry.xml')
         context = Context({
             'entry_id': self.entry_id,

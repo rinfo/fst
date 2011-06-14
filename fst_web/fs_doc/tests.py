@@ -3,6 +3,7 @@ import hashlib
 import os
 import shutil
 from xml.dom.minidom import parseString
+from datetime import datetime
 from django.test import TestCase
 from rdflib import Graph, Literal, URIRef, RDF
 from django.core.urlresolvers import reverse
@@ -208,7 +209,8 @@ class FeedTestCase(TestCase):
             forfattningssamling__slug="exfs", arsutgava="2009", lopnummer="1")
         generate_rdf_post_for(foreskrift1)
         generate_atom_entry_for(foreskrift1)
-
+        self.first_atom_entry_created = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
+        
         foreskrift2 = models.Myndighetsforeskrift.objects.get(
             forfattningssamling__slug="exfs", arsutgava="2009", lopnummer="2")
         generate_rdf_post_for(foreskrift2)
@@ -224,6 +226,12 @@ class FeedTestCase(TestCase):
         # Feed has two published entries
         self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'entry')), 2)
 
+    def test_entry_timezone_utc(self):
+        dom = self._get_parsed_feed('/feed/')
+        entry  = dom.getElementsByTagNameNS(NS_ATOM, 'entry')[0]
+        published = entry.getElementsByTagNameNS(NS_ATOM, 'published')[0].childNodes[0].data
+        self.assertEquals(published,self.first_atom_entry_created)
+        
     def test_feed_is_complete(self):
         dom = self._get_parsed_feed('/feed/')
         self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM_FH,
