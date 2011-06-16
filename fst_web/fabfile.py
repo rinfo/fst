@@ -14,6 +14,10 @@ def move_sampledocs_to_fixture():
     local("rm -f uploads/bilaga/*.pdf")
     local("cp fs_doc/fixtures/bilaga/*.pdf uploads/bilaga/")
 
+    local("mkdir -p uploads/ovrigt")
+    local("rm -f uploads/ovrigt/*.pdf")
+    local("cp fs_doc/fixtures/ovrigt/*.pdf uploads/ovrigt/")
+
     local("mkdir -p uploads/allmanna_rad")
     local("rm -f uploads/allmanna_rad/*.pdf")
     local("cp fs_doc/fixtures/allmanna_rad/*.pdf uploads/allmanna_rad/")
