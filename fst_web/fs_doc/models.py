@@ -63,7 +63,7 @@ class FSDokument(Document):
         unique=False)
 
     sammanfattning = models.TextField(
-        max_length=512,
+        max_length= 8192,
         blank=True,
         unique=False,
         help_text=
