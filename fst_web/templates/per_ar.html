@@ -1,19 +1,18 @@
-{% extends "site_base.html" %}
+{% extends 'adminplus/base.html' %}
 
-{% block title %}{{ organization.name_possessive }} föreskrifter per ikraftträdandeår{% endblock %}
 
 {% block content %}
-    <h2>Författningar och allmänna råd</h2>
+    <h2>Föreskrifter och allmänna råd</h2>
     
-    <p>Författningsdokument indelade efter ikraftträdandeår.</p>
+    <p>Författningsdokument grupperade efter år för ikraftträdande.</p>
 
     {% regroup fs_documents by ikrafttradandear as foreskrifter_per_ar %}
 
     {% for ikrafttradandear in foreskrifter_per_ar %}
         <h2>{{ikrafttradandear.grouper}}</h2>
         <ul class="foreskrifter">
-            {% for foreskrift in ikrafttradandear.list %}
-            <li><a href="{{foreskrift.get_absolute_url}}">{{foreskrift.tst}} {{foreskrift.fsnummer}} {{foreskrift.titel}}</a></li>
+            {% for doc in ikrafttradandear.list %}
+            <li><a href="{{doc.get_admin_url}}">{{doc.identifierare}} {{doc.titel}}</a></li>
             {% endfor %}
         </ul>
     {% endfor %}

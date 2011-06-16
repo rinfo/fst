@@ -6,6 +6,7 @@ import hashlib
 from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_delete
+from django.core import urlresolvers
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.template import loader, Context
@@ -107,6 +108,16 @@ class FSDokument(Document):
 
         return ('fst_web.fs_doc.views.fs_dokument',
                 [self.get_fs_dokument_slug()])
+    
+    def get_admin_url(self):
+        """Return URL for editing this document in Django admin."""
+
+        content_type = ContentType.objects.get_for_model(self)
+        edit_url = urlresolvers.reverse(
+            "admin:fs_doc_" + content_type.model + "_change",
+            args=(self.id,))
+        return edit_url
+
 
     def get_fs_dokument_slug(self):
         return "%s/%s:%s" % (self.forfattningssamling.slug,
@@ -548,12 +559,14 @@ class Bemyndigandereferens(models.Model):
 
     def __unicode__(self):
         if self.kapitelnummer:
-            kap_text = " kap. "
+            kap_text = " kap."
         else:
-            kap_text = " "
-        return u"%s (%s) %s %s %s §" % (self.titel, self.sfsnummer,
-                                         self.kapitelnummer, kap_text,
-                                         self.paragrafnummer)
+            kap_text = ""
+        return u"%s %s %s § %s %s " % (self.kapitelnummer, 
+                                         kap_text,
+                                         self.paragrafnummer,
+                                         self.sfsnummer,
+                                         self.titel)
 
 
 class GenericUniqueMixin(object):
@@ -588,7 +601,8 @@ class RDFPost(models.Model, GenericUniqueMixin):
 
     @property
     def length(self):
-        return len(self.data)
+        """Returns length in octets (not characters)"""
+        return len(self.data.encode('utf-8'))
 
 
 class AtomEntry(models.Model, GenericUniqueMixin):
@@ -616,7 +630,10 @@ class AtomEntry(models.Model, GenericUniqueMixin):
 
         Uses template in templates/foreskrift_entry.xml
         """
-
+        if not self.content_object:
+            # Can happen with old databases that may have stale
+            # AtomEntry-objects with the delete property set.
+            return ""
         template = loader.get_template('foreskrift_entry.xml')
         context = Context({
             'entry_id': self.entry_id,
@@ -634,38 +651,35 @@ class AtomEntry(models.Model, GenericUniqueMixin):
         return template.render(context)
 
 
-def create_delete_entry(sender, instance, **kwargs):
-    """Create a special entry when a document is deleted.
+ 
 
-    This entry will be picked up by Rättsinformationssystemet (and others),
-    allowing for quick corrections of already collected information."""
-
+def delete_entry(sender, instance, **kwargs):
+    """Delete associated Atom entry when a document is deleted."""
     existing_entry = AtomEntry.get_for(instance)
     if existing_entry:
         existing_entry.rdf_post.delete()
         existing_entry.delete()
+#     deleted_entry = AtomEntry(
+#         content_object=instance,
+#         updated=datetime.now(),
+#         published=datetime.now(),
+#         deleted=datetime.now(),
+#         entry_id=instance.get_rinfo_uri())
+# 
+#     deleted_entry.save()
+# 
+#     class Meta:
+#         unique_together = ('content_type', 'object_id')
 
-    deleted_entry = AtomEntry(
-        content_object=instance,
-        updated=datetime.now(),
-        published=datetime.now(),
-        deleted=datetime.now(),
-        entry_id=instance.get_rinfo_uri())
 
-    deleted_entry.save()
-
-    class Meta:
-        unique_together = ('content_type', 'object_id')
-
-
-post_delete.connect(create_delete_entry, sender=Myndighetsforeskrift,
-                    dispatch_uid="fs_doc.Myndighetsforeskrift.create_delete_signal")
-
-post_delete.connect(create_delete_entry, sender=AllmannaRad,
-                    dispatch_uid="fs_doc.AllmannaRad.create_delete_signal")
-
-post_delete.connect(create_delete_entry, sender=KonsolideradForeskrift,
-                    dispatch_uid="fs_doc.KonsolideradForeskrift.create_delete_signal")
+#post_delete.connect(delete_entry, sender=Myndighetsforeskrift,
+#                    dispatch_uid="fs_doc.Myndighetsforeskrift.create_delete_signal")
+# 
+#post_delete.connect(delete_entry, sender=AllmannaRad,
+#                    dispatch_uid="fs_doc.AllmannaRad.create_delete_signal")
+# 
+#post_delete.connect(delete_entry, sender=KonsolideradForeskrift,
+#                    dispatch_uid="fs_doc.KonsolideradForeskrift.create_delete_signal")
 
 
 def get_file_md5(opened_file):

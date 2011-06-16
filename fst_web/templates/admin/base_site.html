@@ -1,9 +1,27 @@
 {% extends "admin/base.html" %}
 
-{% block title %}{{ title }} | {{ organization.name_possessive }} lagrum{% endblock %}
+{% block extrastyle %}
+<style>
+#header{ background-color: #417690; border-bottom: solid 3px #999; }
+ 
+#branding h1{ color: #ffc; }                    
+.module h2, .module caption, .inline-group h2 { background:#ccc; color: #333940; }
+a.section:link, a.section:visited { color: #666666; }
+</style>
+{% endblock %}
+
+{% block title %}
+    {{ title }} | FST - {{ organization.name_possessive }} lagrum
+{% endblock %}
 
 {% block branding %}
-<h1 id="site-name">{{ organization.name_possessive }} lagrum</h1>
+    <h1 id="site-name"> FST - {{ organization.name_possessive }} lagrum</h1>
 {% endblock %}
 
 {% block nav-global %}{% endblock %}
+
+{% block footer %} 
+<div id="footer">
+<p>FST drivs och utvecklas av <a href="http://dev.lagrummet.se/">rättsinformationsprojektet</a>. Källkoden bakom tjänsten finns på <a href="https://github.com/rinfo/fst">GitHub</a>.</p>
+</div>
+{% endblock %}
