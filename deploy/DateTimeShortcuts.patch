@@ -1,0 +1,16 @@
+--- /usr/local/lib/python2.6/dist-packages/django/contrib/admin/media/js/admin/DateTimeShortcuts.js	2011-05-16 00:03:34.000000000 +0200
++++ /opt/rinfo/fst/lib/python2.6/site-packages/django/contrib/admin/media/js/admin/DateTimeShortcuts.js	2011-06-16 14:30:29.000000000 +0200
+@@ -227,11 +227,11 @@
+         cal_box.style.top = Math.max(0, findPosY(cal_link) - 75) + 'px';
+ 
+         cal_box.style.display = 'block';
+-        addEvent(window.document, 'click', function() { DateTimeShortcuts.dismissCalendar(num); return true; });
+     },
++
++
+     dismissCalendar: function(num) {
+         document.getElementById(DateTimeShortcuts.calendarDivName1+num).style.display = 'none';
+-        window.document.onclick = null;
+     },
+     drawPrev: function(num) {
+         DateTimeShortcuts.calendars[num].drawPreviousMonth();
