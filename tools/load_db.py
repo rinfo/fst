@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """ Load custom Python data structure based on dictionaries into Sqlite
 
-    Currently contains hardcoded sample data.
+    Use '/tools/import.py' to get data. 
+    Currently contains hardcoded sample data for testing.
 """
 
 import sys
@@ -26,10 +27,12 @@ def get_insert_string(row):
     return fields + values
 
 def fill_table(table_name, data, db_connection):
+    """Insert records in SQlite using a list of dictionaries """ 
     for row in data[table_name]:
         fill_record(table_name, row, db_connection)
 
 def fill_record(table_name, row, db_connection):
+    """Insert record in SQlite using a Python dictionary """ 
     cursor = db_connection.cursor()
     insert_statement = "INSERT INTO %s "  % table_name
     insert_data = get_insert_string(row)
@@ -37,12 +40,12 @@ def fill_record(table_name, row, db_connection):
     print sql
     cursor.execute(sql)
     db_connection.commit()
-
+    
 def main():
     """Run sample data on empty DB. 
     
-    The updated DB should display inserted records when used with FST and Django admin.
-    Note 
+    The updated DB should display inserted records when used with FST and 
+    Django admin. We should 
     """
     
     db_path = "fst_no_docs.db"
