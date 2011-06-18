@@ -304,7 +304,7 @@ class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                     attrs={'cols': 100, 'rows': 5, 'class': 'docx'})
         return super(MyndighetsforeskriftAdmin, self).formfield_for_dbfield(
             db_field, **kwargs)
-
+    
 
 class KonsolideradForeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
 
@@ -440,3 +440,14 @@ admin.site.register(Forfattningssamling, ForfattningssamlingAdmin)
 admin.site.register(KonsolideradForeskrift, KonsolideradForeskriftAdmin)
 admin.site.register(AtomEntry)
 admin.site.register(Myndighet)
+
+# Adminplus fails to add these, so we must do it ourselves
+from django.contrib.auth.admin import User, Group
+from django.contrib.sites.admin import Site
+
+admin.site.register(User)
+admin.site.register(Group)
+admin.site.register(Site)
+
+
+
