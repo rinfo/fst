@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Django definitions of documents and related classes used by FST"""
 
-import errno   
+import errno
 import hashlib
 import os
 import tempfile
@@ -23,14 +23,13 @@ from fst_web.fs_doc import rdfviews
 RINFO_PUBL_BASE = "http://rinfo.lagrummet.se/publ/"
 
 
-
 class OverwritingStorage(FileSystemStorage):
     """ File storage that allows overwriting of stored files.
-    
+
     See: http://haineault.com/blog/147/ (describes problem)
          http://djangosnippets.org/snippets/2173/ (implements fix)
          http://djangosnippets.org/comments/cr/15/976/#c1670 (installation)
-    """ 
+    """
 
     def get_available_name(self, name):
         return name
@@ -38,11 +37,11 @@ class OverwritingStorage(FileSystemStorage):
     def _save(self, name, content):
         """
         Lifted partially from django/core/files/storage.py
-        """ 
+        """
         full_path = self.path(name)
 
         directory = os.path.dirname(full_path)
-        if not os.path.exists(directory):        
+        if not os.path.exists(directory):
             os.makedirs(directory)
         elif not os.path.isdir(directory):
             raise IOError("%s exists and is not a directory." % directory)
@@ -50,10 +49,10 @@ class OverwritingStorage(FileSystemStorage):
         # This file has a file path that we can move.
         if hasattr(content, 'temporary_file_path'):
             temp_data_location = content.temporary_file_path()
-        else:   
-            tmp_prefix = "tmp_%s" %(get_valid_filename(name), )
-            temp_data_location = tempfile.mktemp(prefix=tmp_prefix,
-                                                 dir=self.location)
+        else:
+            tmp_prefix = "tmp_%s" % (get_valid_filename(name), )
+            temp_data_location = tempfile.mktemp(
+                prefix = tmp_prefix, dir = self.location)
             try:
                 # This is a normal uploadedfile that we can stream.
                 # This fun binary flag incantation makes os.open throw an
@@ -127,7 +126,7 @@ class FSDokument(Document):
         unique=False)
 
     sammanfattning = models.TextField(
-        max_length= 8192,
+        max_length = 8192,
         blank=True,
         unique=False,
         help_text=
@@ -136,8 +135,7 @@ class FSDokument(Document):
     # NOTE: The FST webservice currently only supports document collections
     # of type 'forfattningssamling'.
     forfattningssamling = models.ForeignKey('Forfattningssamling',
-                                            verbose_name=
-                                            u"författningssamling")
+        verbose_name=u"författningssamling")
 
     beslutsdatum = models.DateField("Beslutsdatum")
 
@@ -181,7 +179,6 @@ class FSDokument(Document):
             "admin:fs_doc_" + content_type.model + "_change",
             args=(self.id,))
         return edit_url
-
 
     def get_fs_dokument_slug(self):
         return "%s/%s:%s" % (self.forfattningssamling.slug,
@@ -543,11 +540,13 @@ class KonsolideradForeskrift(Document):
     content_md5 = models.CharField(max_length=32,
                                    blank=True)
 
-    grundforfattning = models.ForeignKey('Myndighetsforeskrift',
-                                         related_name='grundforfattning')
+    grundforfattning = models.ForeignKey(
+        'Myndighetsforeskrift',
+        related_name='grundforfattning')
 
-    senaste_andringsforfattning = models.ForeignKey('Myndighetsforeskrift',
-                                                    related_name='senaste_andringsforfattning')
+    senaste_andringsforfattning = models.ForeignKey(
+        'Myndighetsforeskrift',
+        related_name='senaste_andringsforfattning')
 
     class Meta:
         verbose_name = u"konsoliderad föreskrift"
@@ -633,7 +632,7 @@ class Bemyndigandereferens(models.Model):
             kap_text = " kap."
         else:
             kap_text = ""
-        return u"%s %s %s § %s %s " % (self.kapitelnummer, 
+        return u"%s %s %s § %s %s " % (self.kapitelnummer,
                                         kap_text,
                                         self.paragrafnummer,
                                         self.sfsnummer,
@@ -734,19 +733,19 @@ def delete_entry(sender, instance, **kwargs):
 #         published=datetime.now(),
 #         deleted=datetime.now(),
 #         entry_id=instance.get_rinfo_uri())
-# 
+#
 #     deleted_entry.save()
-# 
+#
 #     class Meta:
 #         unique_together = ('content_type', 'object_id')
 
 
 #post_delete.connect(delete_entry, sender=Myndighetsforeskrift,
 #                    dispatch_uid="fs_doc.Myndighetsforeskrift.create_delete_signal")
-# 
+#
 #post_delete.connect(delete_entry, sender=AllmannaRad,
 #                    dispatch_uid="fs_doc.AllmannaRad.create_delete_signal")
-# 
+#
 #post_delete.connect(delete_entry, sender=KonsolideradForeskrift,
 #                    dispatch_uid="fs_doc.KonsolideradForeskrift.create_delete_signal")
 
