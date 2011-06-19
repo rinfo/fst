@@ -771,3 +771,41 @@ def to_slug(tag):
     slug = tag.replace('å', 'aa').replace('ä', 'ae').\
          replace('ö', 'oe').replace(' ', '_')
     return slug
+
+
+def generate_atom_entry_for(obj, update_only=False):
+    updated = datetime.utcnow()
+
+    # Check if we already published this document
+    obj_type = ContentType.objects.get_for_model(obj)
+    entries = AtomEntry.objects.filter(content_type__pk=obj_type.id,
+                                       object_id=obj.id)
+    # Find entry for object
+    for entry in entries.order_by("published"):
+        entry_published = entry.published
+        break
+    else:
+        if update_only:
+            return
+        # For new documents
+        entry_published = updated
+
+    # Get RDF representation of object
+    rdf_post = RDFPost.get_for(obj)
+
+    entry = AtomEntry.get_or_create(obj)
+    entry.entry_id = obj.get_rinfo_uri()
+    entry.updated = updated
+    entry.published = entry_published
+    entry.rdf_post = rdf_post
+    entry.save()
+
+
+def generate_rdf_post_for(obj):
+    # Create RDF metadata
+    rdf_post = RDFPost.get_or_create(obj)
+    rdf_post.slug = obj.get_fs_dokument_slug()
+    rdf_post.data = obj.to_rdfxml()
+    rdf_post.save()
+    return rdf_post
+

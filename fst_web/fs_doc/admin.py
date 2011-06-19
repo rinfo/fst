@@ -327,43 +327,6 @@ class KonsolideradForeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
             db_field, **kwargs)
 
 
-def generate_atom_entry_for(obj, update_only=False):
-    updated = datetime.utcnow()
-
-    # Check if we already published this document
-    obj_type = ContentType.objects.get_for_model(obj)
-    entries = AtomEntry.objects.filter(content_type__pk=obj_type.id,
-                                       object_id=obj.id)
-    # Find entry for object
-    for entry in entries.order_by("published"):
-        entry_published = entry.published
-        break
-    else:
-        if update_only:
-            return
-        # For new documents
-        entry_published = updated
-
-    # Get RDF representation of object
-    rdf_post = RDFPost.get_for(obj)
-
-    entry = AtomEntry.get_or_create(obj)
-    entry.entry_id = obj.get_rinfo_uri()
-    entry.updated = updated
-    entry.published = entry_published
-    entry.rdf_post = rdf_post
-    entry.save()
-
-
-def generate_rdf_post_for(obj):
-    # Create RDF metadata
-    rdf_post = RDFPost.get_or_create(obj)
-    rdf_post.slug = obj.get_fs_dokument_slug()
-    rdf_post.data = obj.to_rdfxml()
-    rdf_post.save()
-    return rdf_post
-
-
 def _response(request, template, context):
     return render_to_response(template,
                               context,
@@ -444,10 +407,6 @@ admin.site.register(Myndighet)
 # Adminplus fails to add these, so we must do it ourselves
 from django.contrib.auth.admin import User, Group
 from django.contrib.sites.admin import Site
-
 admin.site.register(User)
 admin.site.register(Group)
 admin.site.register(Site)
-
-
-
