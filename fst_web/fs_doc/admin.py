@@ -314,6 +314,7 @@ class KonsolideradForeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
     list_display = ('identifierare',
                     'titel',
                     'konsolideringsdatum')
+    save_on_top = True
     exclude = ('content_md5',)
 
     def formfield_for_dbfield(self, db_field, **kwargs):

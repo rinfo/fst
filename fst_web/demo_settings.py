@@ -29,7 +29,7 @@ MANAGERS = ADMINS
 SECRET_KEY = '2i!!@xy4goq72irz5ldb%gmogc4w&#bgx64j6q9%l)r9^4i-v-'
 
 # Site and port for your website (do not add ending '/').
-FST_SITE_URL = "http://127.0.0.1:8000"
+FST_SITE_URL = "http://127.0.0.1:8000/exfs"
 
 # Organization authorized to publish these documents.
 FST_ORG_NAME = u"Exempelmyndigheten"
