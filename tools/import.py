@@ -128,8 +128,8 @@ def upphaver_or_andrar(resource,key):
     fsdokument_id = get_or_create_fsdokument(fs_id,arsutgava,lopnummer)
     conn_id = len(data[key])+1
     data[key].append({'id':str(conn_id),
-                      'from_doc_id':str(from_doc_id),
-                      'to_doc_id':str(fsdokument_id)})
+                      'from_myndighetsforeskrift_id':str(from_doc_id),
+                      'to_myndighetsforeskrift_id':str(fsdokument_id)})
 
 # Assignment functions: Each of these functions get dynamically called
 # when a corresponding predicate is found in the RDF data. They do the
@@ -214,10 +214,11 @@ def rpubl_bemyndigande(obj, doctype):
     # old to new, not the other way round.
 
 def rpubl_upphaver(obj,doctype):
-    upphaver_or_andrar(obj,'fs_doc_upphavningar_fsdokument')
+    # FIXME: Sometimes this should be fs_doc_allmannarad_upphavningar
+    upphaver_or_andrar(obj,'fs_doc_myndighetsforeskrift_upphavningar')
 
 def rpubl_andrar(obj,doctype):
-    upphaver_or_andrar(obj,'fs_doc_andringar_fsdokument')
+    upphaver_or_andrar(obj,'fs_doc_myndighetsforeskrift_andringar')
 
 
 def loaddata(directory):
@@ -229,8 +230,8 @@ def loaddata(directory):
     data['fs_doc_forfattningssamling'] = []
     data['fs_doc_bemyndigandereferens'] = []
     data['fs_doc_myndighetsforeskrift_bemyndiganden'] = []
-    data['fs_doc_upphavningar_fsdokument'] = []
-    data['fs_doc_andringar_fsdokument'] = []
+    data['fs_doc_myndighetsforeskrift_upphavningar'] = []
+    data['fs_doc_myndighetsforeskrift_andringar'] = []
     
            
     years = [x for x in os.listdir(directory+"/distilled") if x.isdigit()]
