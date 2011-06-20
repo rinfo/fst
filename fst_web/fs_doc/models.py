@@ -716,7 +716,7 @@ class AtomEntry(models.Model, GenericUniqueMixin):
             'rdf_url': \
             None if self.deleted \
             else self.content_object.get_absolute_url() + "rdf", \
-            'fst_site_url': settings.FST_SITE_URL
+            'fst_instance_url': settings.FST_INSTANCE_URL
         })
         return template.render(context)
 

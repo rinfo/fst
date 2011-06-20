@@ -52,7 +52,7 @@
                 <li>
                     {% if bilaga.file %}
                         <p class="download">
-                          <a href="{{site.url}}/{{bilaga.file.url}}">Ladda ner {{ bilaga.titel }} som PDF</a>
+                          <a href="{{site.url}}{{bilaga.file.url}}">Ladda ner {{ bilaga.titel }} som PDF</a>
                         </p>
                     {% else %}
                         <p>{{ bilaga.titel}}</p>
@@ -69,7 +69,7 @@
                 <li>
                     {% if dok.file %}
                         <p class="download">
-                            <a href="{{site.url}}/{{dok.file.url}}">Ladda ner {{ dok.titel }} som PDF</a>
+                            <a href="{{site.url}}{{dok.file.url}}">Ladda ner {{ dok.titel }} som PDF</a>
                         </p>
                     {% else %}
                         <p>{{ dok.titel }}</p>
