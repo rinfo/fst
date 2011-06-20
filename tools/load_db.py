@@ -28,7 +28,9 @@ def get_insert_string(row):
 
 def fill_table(table_name, data, db_connection):
     """Insert records in SQlite using a list of dictionaries """
+    print "Filling table %s" % table_name
     for row in data[table_name]:
+        print "   record"
         fill_record(table_name, row, db_connection)
 
 
