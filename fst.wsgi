@@ -11,6 +11,10 @@ path = os.path.dirname(__file__)
 if path not in sys.path:
     sys.path.append(path)
 
+subpath = path + os.sep + "fst_web"
+if subpath not in sys.path:
+    sys.path.append(subpath)
+
 os.environ['DJANGO_SETTINGS_MODULE'] = 'fst_web.settings'
 
 import django.core.handlers.wsgi
