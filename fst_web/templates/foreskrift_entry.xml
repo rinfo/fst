@@ -4,7 +4,7 @@
         <published>{{published}}</published>
         <title xml:lang="sv">{{doc.titel}}</title>
         <summary xml:lang="sv">{{doc.sammanfattning|default_if_none:""}}</summary>
-        <content src="{{fst_instance_url}}{{doc.content.url|safe}}"
+        <content src="{{doc.content.url|safe}}"
             type="application/pdf"
             hash="md5:{{doc.content_md5}}"/>
         {% if rdf_post %}
