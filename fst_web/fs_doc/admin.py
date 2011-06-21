@@ -16,9 +16,11 @@ from django.contrib import admin
 from adminplus import AdminSitePlus
 from fst_web.fs_doc.models import *
 
+
 # Add admin enhancements from AdminPlus
 admin.site = AdminSitePlus()
 
+LIST_PER_PAGE_COUNT = 25 # Number of documents before automatic pagination
 
 class ForfattningssamlingAdmin(admin.ModelAdmin):
     list_display = ('titel', 'kortnamn', 'identifierare')
@@ -166,6 +168,7 @@ class AllmannaRadAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
     inlines = [BilagaInline, OvrigtDokumentInline]
     readonly_fields = ('is_published', 'identifierare',)
     save_on_top = True
+    list_per_page = LIST_PER_PAGE_COUNT
     fieldsets = (
         (None,
          {
@@ -243,6 +246,7 @@ class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
     inlines = [BilagaInline, OvrigtDokumentInline]
     readonly_fields = ('is_published', 'identifierare',)
     save_on_top = True
+    list_per_page = LIST_PER_PAGE_COUNT
     fieldsets = (
         (None,
          {
@@ -315,6 +319,7 @@ class KonsolideradForeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                     'titel',
                     'konsolideringsdatum')
     save_on_top = True
+    list_per_page = LIST_PER_PAGE_COUNT
     exclude = ('content_md5',)
 
     def formfield_for_dbfield(self, db_field, **kwargs):
