@@ -18,7 +18,7 @@ urlpatterns = patterns('',
                        (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': os.path.join(os.path.dirname(__file__), 'static').replace('\\','/')}),
 
                        # Get files from server
-                       (r'^/dokument/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT.replace('\\','/')}),
+                       (r'^[|\w|-]+/dokument/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT.replace('\\','/')}),
 
                        # Display start page ("/")
                        (r'^$', 'fst_web.fs_doc.views.index'),
