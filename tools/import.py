@@ -289,9 +289,9 @@ def loaddata(directory):
             fs = data['fs_doc_forfattningssamling'][int(d['forfattningssamling_id'])-1]
             basefile = "%s-%s-%s" % (fs['kortnamn'],d['arsutgava'], d['lopnummer'])
             
-            if not os.path.exists("uploads/foreskrift"):
-                os.makedirs("uploads/foreskrift")
-            outfile = "uploads/foreskrift/%s.pdf" % basefile
+            if not os.path.exists("foreskrift"):
+                os.makedirs("foreskrift")
+            outfile = "foreskrift/%s.pdf" % basefile
             shutil.copy2(pdffile,outfile)
             sub_d['content'] = outfile
 
