@@ -380,22 +380,24 @@ def beslutsdatum(request):
     """
 
     f_list = list(Myndighetsforeskrift.objects.all().order_by(
-        "-beslutsdatum")[:15])
+        "-beslutsdatum"))
     a_list = list(AllmannaRad.objects.all().order_by(
-        "-beslutsdatum")[:15])
-    latest_documents = sorted(
+        "-beslutsdatum"))
+    all_docs = sorted(
         chain(f_list, a_list),
         key=attrgetter('beslutsdatum'),
         reverse=True)
+    latest_documents = all_docs[:LIST_PER_PAGE_COUNT]
     return _response(request, 'beslutsdatum.html', locals())
 
 
 admin.site.register_view(
-    'beslutsdatum', beslutsdatum,
-    u'Lista de 30 senaste beslutade dokumenten')
-admin.site.register_view(
     'artal', artal,
     u'Lista samtliga föreskrifter och allmänna råd (per årtal)')
+admin.site.register_view(
+    'beslutsdatum', beslutsdatum,
+    u'Lista de ' + str(LIST_PER_PAGE_COUNT) + ' senast beslutade dokumenten')
+
 
 # TODO - Fix this view so get_admin_url doesn't get called with FSDokument
 # instead of Myndighetsforeskrift or AllmannaRad
