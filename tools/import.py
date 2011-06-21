@@ -93,7 +93,7 @@ def get_or_create_fsdokument(fs_id,arsutgava,lopnummer):
                                   'arsutgava':arsutgava,
                                   'lopnummer':lopnummer,
                                   'titel':'%s:%s' % (arsutgava,lopnummer),
-                                  'content_md5': 'd41d8cd98f00b204e9800998ecf8427e',
+                                  'content_md5': 'd41d8cd98f00b204e9800998ecf8427e', # empty string
                                   'beslutsdatum':'%s-01-01' % arsutgava,
                                   'ikrafttradandedatum':'%s-01-01' % arsutgava,
                                   'utkom_fran_tryck':'%s-01-01' % arsutgava,
@@ -107,7 +107,7 @@ def get_or_create_fsdokument(fs_id,arsutgava,lopnummer):
         placeholder_myndighetsforeskrift = {'beslutad_av_id': '1', #FIXME!
                                             'utgivare_id': '1',     #FIXME!
                                             'fsdokument_ptr_id':str(fsdokument_id),
-                                            'content':''
+                                            'content':'does-not-exist.pdf'
                                             }
         data['fs_doc_myndighetsforeskrift'].append(placeholder_myndighetsforeskrift)
 
