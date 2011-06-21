@@ -16,9 +16,11 @@ from django.contrib import admin
 from adminplus import AdminSitePlus
 from fst_web.fs_doc.models import *
 
+
 # Add admin enhancements from AdminPlus
 admin.site = AdminSitePlus()
 
+LIST_PER_PAGE_COUNT = 25 # Number of documents before automatic pagination
 
 class ForfattningssamlingAdmin(admin.ModelAdmin):
     list_display = ('titel', 'kortnamn', 'identifierare')
@@ -166,6 +168,7 @@ class AllmannaRadAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
     inlines = [BilagaInline, OvrigtDokumentInline]
     readonly_fields = ('is_published', 'identifierare',)
     save_on_top = True
+    list_per_page = LIST_PER_PAGE_COUNT
     fieldsets = (
         (None,
          {
@@ -243,6 +246,7 @@ class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
     inlines = [BilagaInline, OvrigtDokumentInline]
     readonly_fields = ('is_published', 'identifierare',)
     save_on_top = True
+    list_per_page = LIST_PER_PAGE_COUNT
     fieldsets = (
         (None,
          {
@@ -315,6 +319,7 @@ class KonsolideradForeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                     'titel',
                     'konsolideringsdatum')
     save_on_top = True
+    list_per_page = LIST_PER_PAGE_COUNT
     exclude = ('content_md5',)
 
     def formfield_for_dbfield(self, db_field, **kwargs):
@@ -375,9 +380,9 @@ def beslutsdatum(request):
     """
 
     f_list = list(Myndighetsforeskrift.objects.all().order_by(
-        "-beslutsdatum")[:10])
+        "-beslutsdatum")[:15])
     a_list = list(AllmannaRad.objects.all().order_by(
-        "-beslutsdatum")[:10])
+        "-beslutsdatum")[:15])
     latest_documents = sorted(
         chain(f_list, a_list),
         key=attrgetter('beslutsdatum'),
@@ -387,13 +392,16 @@ def beslutsdatum(request):
 
 admin.site.register_view(
     'beslutsdatum', beslutsdatum,
-    u'Lista föreskrifter och allmänna råd (per beslutsdatum)')
+    u'Lista de 30 senaste beslutade dokumenten')
 admin.site.register_view(
     'artal', artal,
-    u'Lista föreskrifter och allmänna råd (per årtal)')
-admin.site.register_view(
-    'amnesord', amnesord,
-    u'Lista föreskrifter och allmänna råd (per ämnesord)')
+    u'Lista samtliga föreskrifter och allmänna råd (per årtal)')
+
+# TODO - Fix this view so get_admin_url doesn't get called with FSDokument
+# instead of Myndighetsforeskrift or AllmannaRad
+#admin.site.register_view(
+#    'amnesord', amnesord,
+#    u'Lista föreskrifter och allmänna råd (per ämnesord)')
 
 admin.site.register(AllmannaRad, AllmannaRadAdmin)
 admin.site.register(Myndighetsforeskrift, MyndighetsforeskriftAdmin)
