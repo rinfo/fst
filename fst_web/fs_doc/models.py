@@ -12,6 +12,7 @@ from django.core.files import locks
 from django.core.files.move import file_move_safe
 from django.utils.text import get_valid_filename
 from django.core.files.storage import FileSystemStorage, Storage
+from django.core.validators import RegexValidator
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
@@ -109,10 +110,18 @@ class FSDokument(Document):
     arsutgava = models.CharField("Årsutgåva",
                                  max_length=13,
                                  unique=False,
-                                 default=2011)
-    lopnummer = models.CharField("Löpnummer",
-                                 max_length=3,
-                                 unique=False)
+                                 default=2011,
+                                 validators=[RegexValidator(
+                                     regex="^(19|20)\d\d",
+                                     message=u"Ange år som 19YY eller 20YY")])
+
+    lopnummer = models.CharField(
+        "Löpnummer",
+        max_length=3,
+        unique=False,
+        validators=[RegexValidator(
+            regex="^\d\d*$",
+            message=u"Löpnummer får bara innehålla siffror")])
 
     is_published = models.BooleanField(u"Publicerad via FST",
                                        default=False,
