@@ -8,7 +8,7 @@
 
     {% regroup fs_documents by ikrafttradandear as foreskrifter_per_ar %}
 
-    {% for ikrafttradandear in foreskrifter_per_ar %}
+    {% for ikrafttradandear in foreskrifter_per_ar reversed %}
         <h2>{{ikrafttradandear.grouper}}</h2>
         <ul class="foreskrifter">
             {% for doc in ikrafttradandear.list %}
