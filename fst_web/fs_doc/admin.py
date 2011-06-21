@@ -177,8 +177,8 @@ class AllmannaRadAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                  'identifierare',
                  'forfattningssamling',
                  ('arsutgava', 'lopnummer'),
-                 ('titel', 'sammanfattning'),
                  ('content', 'omtryck'),
+                 ('titel', 'sammanfattning'),
                  ('beslutsdatum', 'utkom_fran_tryck', 'ikrafttradandedatum'),
                  ),
              'classes': ['wide', 'extrapretty']}
@@ -255,8 +255,8 @@ class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                  'identifierare',
                  'forfattningssamling',
                  ('arsutgava', 'lopnummer'),
-                 ('titel', 'sammanfattning'),
                  ('content', 'omtryck'),
+                 ('titel', 'sammanfattning'),
                  ('beslutsdatum', 'utkom_fran_tryck', 'ikrafttradandedatum'),
                  'bemyndiganden'
                  ),
