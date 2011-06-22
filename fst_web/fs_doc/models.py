@@ -17,7 +17,6 @@ from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models.signals import post_delete
-from django.db.models import Max
 from django.template import loader, Context
 from django.utils.feedgenerator import rfc3339_date
 from fst_web.fs_doc import rdfviews
@@ -135,7 +134,7 @@ class FSDokument(Document):
         unique=False,
         default= next_lopnummer,
         validators=[RegexValidator(
-            regex="^\d\d*$",
+            regex="^\d+$",
             message=u"Löpnummer får bara innehålla siffror")])
 
     is_published = models.BooleanField(u"Publicerad via FST",
