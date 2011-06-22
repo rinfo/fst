@@ -17,6 +17,7 @@ from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models.signals import post_delete
+from django.db.models import Max
 from django.template import loader, Context
 from django.utils.feedgenerator import rfc3339_date
 from fst_web.fs_doc import rdfviews
@@ -101,6 +102,19 @@ class Document(models.Model):
                to_slug(settings.FST_ORG_NAME)
 
 
+def current_year():
+    return datetime.now().year
+
+
+def next_lopnummer():
+    docs = FSDokument.objects.filter(arsutgava = current_year())
+    numbers = []
+    for doc in docs:
+        numbers.append(int(doc.lopnummer))
+    next_nr = max(numbers) + 1
+    return next_nr
+
+
 class FSDokument(Document):
     """Superclass of 'Myndighetsforeskrift' and 'AllmannaRad'.
 
@@ -110,7 +124,7 @@ class FSDokument(Document):
     arsutgava = models.CharField("Årsutgåva",
                                  max_length=13,
                                  unique=False,
-                                 default=2011,
+                                 default= current_year(),
                                  validators=[RegexValidator(
                                      regex="^(19|20)\d\d",
                                      message=u"Ange år som 19YY eller 20YY")])
@@ -119,6 +133,7 @@ class FSDokument(Document):
         "Löpnummer",
         max_length=3,
         unique=False,
+        default= next_lopnummer,
         validators=[RegexValidator(
             regex="^\d\d*$",
             message=u"Löpnummer får bara innehålla siffror")])
@@ -736,27 +751,33 @@ def delete_entry(sender, instance, **kwargs):
     if existing_entry:
         existing_entry.rdf_post.delete()
         existing_entry.delete()
-#     deleted_entry = AtomEntry(
-#         content_object=instance,
-#         updated=datetime.now(),
-#         published=datetime.now(),
-#         deleted=datetime.now(),
-#         entry_id=instance.get_rinfo_uri())
-#
-#     deleted_entry.save()
-#
-#     class Meta:
-#         unique_together = ('content_type', 'object_id')
+     #deleted_entry = AtomEntry(
+         #content_object=instance,
+         #updated=datetime.now(),
+         #published=datetime.now(),
+         #deleted=datetime.now(),
+         #entry_id=instance.get_rinfo_uri())
+
+     #deleted_entry.save()
+
+     #class Meta:
+         #unique_together = ('content_type', 'object_id')
 
 
-#post_delete.connect(delete_entry, sender=Myndighetsforeskrift,
-#                    dispatch_uid="fs_doc.Myndighetsforeskrift.create_delete_signal")
-#
-#post_delete.connect(delete_entry, sender=AllmannaRad,
-#                    dispatch_uid="fs_doc.AllmannaRad.create_delete_signal")
-#
-#post_delete.connect(delete_entry, sender=KonsolideradForeskrift,
-#                    dispatch_uid="fs_doc.KonsolideradForeskrift.create_delete_signal")
+#post_delete.connect(
+    #delete_entry,
+    #sender=Myndighetsforeskrift,
+    #dispatch_uid="fs_doc.Myndighetsforeskrift.create_delete_signal")
+
+#post_delete.connect(
+    #delete_entry,
+    #sender=AllmannaRad,
+    #dispatch_uid="fs_doc.AllmannaRad.create_delete_signal")
+
+#post_delete.connect(
+    #delete_entry,
+    #sender=KonsolideradForeskrift,
+    #dispatch_uid="fs_doc.KonsolideradForeskrift.create_delete_signal")
 
 
 def get_file_md5(opened_file):
@@ -817,4 +838,3 @@ def generate_rdf_post_for(obj):
     rdf_post.data = obj.to_rdfxml()
     rdf_post.save()
     return rdf_post
-
