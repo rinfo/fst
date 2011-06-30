@@ -362,13 +362,13 @@ def amnesord(request):
 def artal(request):
     """Display documents grouped by year """
         
-    def get_identifierare(obj):
-        return obj.identifierare
+    def get_ikrafttradandedatum(obj):
+        return obj.ikrafttradandedatum
     
     f_list = list(Myndighetsforeskrift.objects.all())
     a_list = list(AllmannaRad.objects.all())
     fs_documents = list(chain(f_list, a_list))
-    fs_documents.sort(key=get_identifierare)
+    fs_documents.sort(key=get_ikrafttradandedatum,reverse = True)
     return _response(request, 'per_ar.html', locals())
 
 
@@ -393,7 +393,7 @@ def beslutsdatum(request):
 
 admin.site.register_view(
     'artal', artal,
-    u'Lista samtliga föreskrifter och allmänna råd (per årtal)')
+    u'Lista föreskrifter och allmänna råd (per år för ikraftträdande)')
 admin.site.register_view(
     'beslutsdatum', beslutsdatum,
     u'Lista de ' + str(LIST_PER_PAGE_COUNT) + ' senast beslutade dokumenten')
