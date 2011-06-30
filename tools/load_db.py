@@ -20,6 +20,8 @@ def get_insert_string(row):
     values = " VALUES("
     for key, val in row.items():
         fields = fields + key + ", "
+        if type(val) == int:
+            val = str(val)
         values = values + "'" + val + "'" + ", "
     fields = fields[:-2] + ")"
     values = values[:-2] + ")"

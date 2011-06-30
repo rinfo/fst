@@ -250,12 +250,15 @@ def loaddata(directory):
                     if o == RPUBL['MyndighetsForeskrift']:
                         doctype = 'fs_doc_myndighetsforeskrift'
                         table =  'fs_doc_fsdokument'
+                        targetdir = 'foreskrift'
                     elif o == RPUBL['AllmannaRad']:
                         doctype = 'fs_doc_allmannarad'
                         table =  'fs_doc_fsdokument'
+                        targetdir = 'allmanna_rad'
                     elif o == RPUBL['KonsolideradGrundforfattning']:
                         doctype = 'fs_doc_konsolideradforeskrift'
                         table =  'fs_doc_konsolideradforeskrift'
+                        targetdir = 'konsoliderad_foreskrift'
                     else:
                         sys.stderr.write("Can't handle type %s\n" % o)
 
@@ -289,9 +292,9 @@ def loaddata(directory):
             fs = data['fs_doc_forfattningssamling'][int(d['forfattningssamling_id'])-1]
             basefile = "%s-%s-%s" % (fs['kortnamn'],d['arsutgava'], d['lopnummer'])
             
-            if not os.path.exists("foreskrift"):
-                os.makedirs("foreskrift")
-            outfile = "foreskrift/%s.pdf" % basefile
+            if not os.path.exists(targetdir):
+                os.makedirs(targetdir)
+            outfile = "%s/%s.pdf" % (targetdir,basefile)
             shutil.copy2(pdffile,outfile)
             sub_d['content'] = outfile
 
