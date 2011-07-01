@@ -110,7 +110,10 @@ def next_lopnummer():
     numbers = []
     for doc in docs:
         numbers.append(int(doc.lopnummer))
-    next_nr = max(numbers) + 1
+    if numbers:
+        next_nr = max(numbers) + 1
+    else:
+        next_nr = 1
     return next_nr
 
 
