@@ -57,11 +57,11 @@ class Command(BaseCommand):
 
     def importfeed(self,url):
         stream = urlopen(url)
-        ET.parse(stream)
+        tree = ET.parse(stream)
         ns = 'http://www.w3.org/2005/Atom'
-        for entry in ET.findall('.//{%s}entry'%ns):
-            rdf_url = entry.find("{%s}link[@type]='application/rdf+xml'")["href"]
-            pdf_url = entry.find("{%s}content[@type]='application/pdf'")["src"]
+        for entry in tree.findall('.//{%s}entry'%ns):
+            rdf_url = entry.find("{%s}link[@type='application/rdf+xml']"%ns).get("href")
+            pdf_url = entry.find("{%s}content[@type='application/pdf']"%ns).get("src")
             print "RDF: %s\nPDF: %s" % (rdf_url,pdf_url)
 
     def add_entry(rdf_url,pdf_url):
