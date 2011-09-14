@@ -35,6 +35,7 @@ class Command(BaseCommand):
             'fs_doc_myndighet':[],
             'fs_doc_forfattningssamling':[],
             'fs_doc_bemyndigandereferens':[],
+            'fs_doc_celexreferens':[],
             'fs_doc_myndighetsforeskrift_bemyndiganden':[],
             'fs_doc_myndighetsforeskrift_upphavningar':[],
             'fs_doc_myndighetsforeskrift_andringar':[],
@@ -43,8 +44,9 @@ class Command(BaseCommand):
     # key: bemyndigande (hashable)dict, value: id (seems backwards but
     # is practical)
     bemyndiganden = {}
-    
+    celex = {}
     titlar = {}
+    titlegraph = None
     
     current_document = {}
     current_subdocument = {}
@@ -54,26 +56,31 @@ class Command(BaseCommand):
         for url in args:
             self.stdout.write('Loading data from %s\n' % url)
             self.importfeed(url)
+            db_path = "database/fst.db" # FIXME: find!
+            self.load_db(db_path)
+            self.generate_rdf_posts()
 
     def importfeed(self,url):
         stream = urlopen(url)
         tree = ET.parse(stream)
         ns = 'http://www.w3.org/2005/Atom'
-        for entry in tree.findall('.//{%s}entry'%ns):
+        for entry in list(reversed(tree.findall('.//{%s}entry'%ns))):
             rdf_url = entry.find("{%s}link[@type='application/rdf+xml']"%ns).get("href")
             pdf_url = entry.find("{%s}content[@type='application/pdf']"%ns).get("src")
             print "RDF: %s\nPDF: %s" % (rdf_url,pdf_url)
+            self.add_entry(rdf_url,pdf_url)
+        #pprint(self.data)
 
-    def add_entry(rdf_url,pdf_url):
+    def add_entry(self,rdf_url,pdf_url):
         g = Graph()
         g.bind('dct','http://purl.org/dc/terms/')
         g.bind('rpubl','http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#')
-        g.parse(urloupen(rdfurl))
+        g.parse(urlopen(rdf_url))
 
         # first get type
         for (s,p,o) in g:
             if p == RDF.type:
-                if o == RPUBL['MyndighetsForeskrift']:
+                if o == RPUBL['Myndighetsforeskrift']:
                     doctype = 'fs_doc_myndighetsforeskrift'
                     table =  'fs_doc_fsdokument'
                     targetdir = 'foreskrift'
@@ -89,25 +96,28 @@ class Command(BaseCommand):
                     sys.stderr.write("Can't handle type %s\n" % o)
 
                 docid = len(self.data[table]) + 1
-                current_document['id'] = str(docid)
-                current_document['is_published'] = '0'
+                self.current_document['id'] = str(docid)
+                self.current_document['is_published'] = '0'
                 if table == 'fs_doc_fsdokument':
-                    current_subdocument['fsdokument_ptr_id'] = str(docid)
+                    self.current_subdocument['fsdokument_ptr_id'] = str(docid)
 
         # then iterate through other properties, dynamically
         # calling appropriate functions to massage data and put it
         # where it belongs.
         for (s,p,o) in g:
             funcname = g.qname(p).replace(":","_")
-            if funcname in globals():
-                sys.stderr.write("    Calling %s\n" % funcname)
-                globals()[funcname](o,doctype)
+            #if funcname in globals():
+            if hasattr(self,funcname):
+                sys.stderr.write("    Calling self.%s\n" % funcname)
+                f = getattr(self,funcname)
+                #globals()[funcname](o,doctype)
+                f(o,doctype)
             else:
                 sys.stderr.write("  Cant handle predicate %s\n" % funcname.replace("_",":"))
 
         # check for required fields:
-        d = current_document
-        sub_d = current_subdocument
+        d = self.current_document
+        sub_d = self.current_subdocument
 
         for fld in ('arsutgava','lopnummer','forfattningssamling_id'):
             assert fld in d
@@ -201,11 +211,42 @@ class Command(BaseCommand):
         return d
 
     def get_titel_from_sfsnr(self, sfsnr):
+        if sfsnr in self.titlar:
+            return self.titlar[sfsnr]
+        titlefile = "titles.n3"
+        url = "https://lagen.nu/sfs/parsed/rdf.nt"
+        if not os.path.exists(titlefile):
         # TODO: 1: Download big n3 file from lagen.nu
+            print "Downloading N3 file"
+            stream = urlopen(url)
+            nt = open(titlefile,"w")
+            for line in stream:
         #       2: Save dct:title lines
+                if '<http://purl.org/dc/terms/title>' in line:
+                    nt.write(line)
+            nt.close()
+
         #       3: lookup title
+        if not self.titlegraph:
+            print "Loading title graph from %s" % titlefile
+            self.titlegraph = Graph()
+            self.titlegraph.bind('dct','http://purl.org/dc/terms/')
+            self.titlegraph.bind('rpubl','http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#')
+            self.titlegraph.parse(titlefile, format="nt")
+
+        subj = URIRef("http://rinfo.lagrummet.se/publ/sfs/%s" % sfsnr)
+        pred = DCT['title']
+        titles = list(self.titlegraph.objects(subj,pred))
+        if titles:
+            title = titles[0]
+        else:
+            # probably old 
+            title = "SFS %s" % sfsnr
+        
         #       4: save title in self.titlar so we can look for it later.
-        return "TODO: lagtitel"
+        self.titlar[sfsnr] = title
+
+        return title
     
     def get_or_create_forfattningssamling(self, kortnamn):
         forfattningssamling_id = None
@@ -280,9 +321,9 @@ class Command(BaseCommand):
     def upphaver_or_andrar(self,resource,key):
         (slug,fsnr) = str(resource).split("/")[-2:]
         (arsutgava,lopnummer) = fsnr.split(":")
-        fs_id = get_or_create_forfattningssamling(slug.upper())
-        from_doc_id = current_document['id']
-        fsdokument_id = get_or_create_fsdokument(fs_id,arsutgava,lopnummer)
+        fs_id = self.get_or_create_forfattningssamling(slug.upper())
+        from_doc_id = self.current_document['id']
+        fsdokument_id = self.get_or_create_fsdokument(fs_id,arsutgava,lopnummer)
         conn_id = len(self.data[key])+1
         self.data[key].append({'id':str(conn_id),
                           'from_myndighetsforeskrift_id':str(from_doc_id),
@@ -297,26 +338,26 @@ class Command(BaseCommand):
     def dct_identifier(self,obj,doctype): pass
 
     def dct_title(self,obj, doctype):
-        current_document['titel'] = unicode(obj)
+        self.current_document['titel'] = unicode(obj)
 
     def rpubl_arsutgava(self,obj, doctype):
-        current_document['arsutgava'] = str(obj)
+        self.current_document['arsutgava'] = str(obj)
 
     def rpubl_lopnummer(self,obj, doctype):
-        current_document['lopnummer'] = str(obj)
+        self.current_document['lopnummer'] = str(obj)
 
-    def rpubl_utkomFranTrycket(self,obj, doctype):
-        current_document['utkom_fran_tryck'] = str(obj)
+    def rpubl_utkomFranTryck(self,obj, doctype):
+        self.current_document['utkom_fran_tryck'] = str(obj)
 
-    def rpubl_beslutandedatum(self,obj, doctype):
-        current_document['beslutsdatum'] = str(obj)
+    def rpubl_beslutsdatum(self,obj, doctype):
+        self.current_document['beslutsdatum'] = str(obj)
 
     def rpubl_ikrafttradandedatum(self,obj, doctype):
-        current_document['ikrafttradandedatum'] = str(obj)
+        self.current_document['ikrafttradandedatum'] = str(obj)
 
     def rpubl_beslutadAv(self, obj, doctype):
         # 1. calculate myndighetsnamn
-        namn = org_resource_to_namn(obj)
+        namn = self.org_resource_to_namn(obj)
         # 2. find id of myndighet
         myndighet_id = None
         for d in self.data['fs_doc_myndighet']:
@@ -327,32 +368,67 @@ class Command(BaseCommand):
             myndighet_id = len(self.data['fs_doc_myndighet'])+1
             self.data['fs_doc_myndighet'].append({'id':str(myndighet_id),'namn':namn})
         # 4. set id value
-        current_subdocument['beslutad_av_id'] = str(myndighet_id)
+        self.current_subdocument['beslutad_av_id'] = str(myndighet_id)
+
+    def dct_publisher(self, obj, doctype):
+        # 1. calculate myndighetsnamn
+        namn = self.org_resource_to_namn(obj)
+        # 2. find id of myndighet
+        myndighet_id = None
+        for d in self.data['fs_doc_myndighet']:
+            if d['namn'] == namn:
+                myndighet_id = d['id']
+        # 3. add myndighet if not found
+        if not myndighet_id:
+            myndighet_id = len(self.data['fs_doc_myndighet'])+1
+            self.data['fs_doc_myndighet'].append({'id':str(myndighet_id),'namn':namn})
+        # 4. set id value
+        self.current_subdocument['utgivare_id'] = str(myndighet_id)
 
     def rpubl_forfattningssamling(self, obj, doctype):
         # 1. calculate kortnamn
         slug = obj.split("/")[-1]
         kortnamn = slug.upper()
-        forfattningssamling_id = get_or_create_forfattningssamling(kortnamn)
+        forfattningssamling_id = self.get_or_create_forfattningssamling(kortnamn)
         # 4. set id value
-        current_document['forfattningssamling_id'] = str(forfattningssamling_id)
+        self.current_document['forfattningssamling_id'] = str(forfattningssamling_id)
 
+    def rpubl_genomforDirektiv(self, obj, doctype):
+        # 1. Create the celex dict
+        celex = hashabledict()
+        celex['titel'] = 'CELEX %s' % obj
+        celex['celexnummer'] = obj
+        
+        # 2. Have we defined this before (does it have a id)?
+        celex_id = None
+        if celex in self.celex:
+            celex_id = self.celex[celex]
 
+        # 3. If not, allocate an id and define it (once in our convenience
+        # lookup dict w/o id, and once, with a new copy, in the real list w/ id)
+        if not celex_id:
+            celex_id = len(self.celex) + 1
+            self.celex[celex] = celex_id
+
+            celex_copy = celex.copy()
+            celex_copy['id'] = str(celex_id)
+            self.data['fs_doc_celexreferens'].append(celex_copy)
+        
     def rpubl_bemyndigande(self, obj, doctype):
         # 1. Calculate the bemyndigande dict
-        bemyndigande = parse_bemyndigande(obj)
+        bemyndigande = self.parse_bemyndigande(obj)
         if not bemyndigande:
             return
         # 2. Have we defined this before (does it have a id)?
         bemyndigande_id = None
-        if bemyndigande in bemyndiganden:
-            bemyndigande_id = bemyndiganden[bemyndigande]
+        if bemyndigande in self.bemyndiganden:
+            bemyndigande_id = self.bemyndiganden[bemyndigande]
 
         # 3. If not, allocate an id and define it (once in our convenience
         # lookup dict w/o id, and once, with a new copy, in the real list w/ id)
         if not bemyndigande_id:
-            bemyndigande_id = len(bemyndiganden) + 1
-            bemyndiganden[bemyndigande] = bemyndigande_id
+            bemyndigande_id = len(self.bemyndiganden) + 1
+            self.bemyndiganden[bemyndigande] = bemyndigande_id
 
             bemyndigande_copy = bemyndigande.copy()
             bemyndigande_copy['id'] = str(bemyndigande_id)
@@ -360,7 +436,7 @@ class Command(BaseCommand):
 
 
         # 4. add entry to connection table
-        docid = current_document['id'] # could use len(self.data['fs_doc_fsdokument'])
+        docid = self.current_document['id'] # could use len(self.data['fs_doc_fsdokument'])
         conn_id = len(self.data['fs_doc_myndighetsforeskrift_bemyndiganden'])+1
         self.data['fs_doc_myndighetsforeskrift_bemyndiganden'].append({'id':str(conn_id),
                                                                   'myndighetsforeskrift_id':docid,
@@ -372,13 +448,12 @@ class Command(BaseCommand):
 
     def rpubl_upphaver(self, obj,doctype):
         # FIXME: Sometimes this should be fs_doc_allmannarad_upphavningar
-        upphaver_or_andrar(obj,'fs_doc_myndighetsforeskrift_upphavningar')
+        self.upphaver_or_andrar(obj,'fs_doc_myndighetsforeskrift_upphavningar')
 
     def rpubl_andrar(self, obj,doctype):
-        upphaver_or_andrar(obj,'fs_doc_myndighetsforeskrift_andringar')
-        return data
+        self.upphaver_or_andrar(obj,'fs_doc_myndighetsforeskrift_andringar')
     
-    def load_db(self,data,db_path):
+    def load_db(self,db_path):
         """Run sample data on empty DB.
 
         The updated DB displays inserted records when used with FST and
@@ -386,13 +461,13 @@ class Command(BaseCommand):
         """
         print "copying fst_no_docs.db to %s" % db_path
         import shutil
-        shutil.copy2("fst_no_docs.db", db_path)
+        shutil.copy2("../tools/fst_no_docs.db", db_path)
         db_connection = sqlite3.connect(db_path)
         db_connection.text_factory = str  # bugger 8-bit bytestrings
 
-        print "loaded indata, %s top-level keys" % len(data)
-        for table in data.keys():
-            fill_table(table,data,db_connection)
+        print "loaded indata, %s top-level keys" % len(self.data)
+        for table in self.data.keys():
+            self.fill_table(table,self.data,db_connection)
 
     def get_insert_string(self,row):
         """ Build SQL string for fieldnames and values.
@@ -416,22 +491,22 @@ class Command(BaseCommand):
         """Insert records in SQlite using a list of dictionaries """
         print "Filling table %s" % table_name
         for row in data[table_name]:
-            print "   record"
-            fill_record(table_name, row, db_connection)
+            # print "   record"
+            self.fill_record(table_name, row, db_connection)
 
 
     def fill_record(self,table_name, row, db_connection):
         """Insert record in SQlite using a Python dictionary """
         cursor = db_connection.cursor()
         insert_statement = "INSERT INTO %s " % table_name
-        insert_data = get_insert_string(row)
+        insert_data = self.get_insert_string(row)
         sql = insert_statement + insert_data
-        print sql
+        # print sql
         cursor.execute(sql)
         db_connection.commit()
         
-    def generate_rdf_post_for(self):
+    def generate_rdf_posts(self):
         for cls in (Myndighetsforeskrift, AllmannaRad, KonsolideradForeskrift):
             for obj in cls.objects.all():
-                print "Generating rdf post for %s" % obj
+                print "Generating rdf post for %s" % obj.identifierare
                 generate_rdf_post_for(obj)
