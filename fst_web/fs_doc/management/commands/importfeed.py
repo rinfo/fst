@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from django.core.management.base import BaseCommand, CommandError
-import sys,os,re,shutil,hashlib
+import sys,os,re,shutil,hashlib,stat
+import xml.etree.ElementTree as ET
 from pprint import pprint
 from collections import defaultdict
-import xml.etree.ElementTree as ET
 from urllib import urlopen, urlretrieve
 
+from django.core.management.base import BaseCommand, CommandError
+from django.conf import settings
 from rdflib import Graph, Literal, URIRef, Namespace, RDF
 import sqlite3
 
@@ -52,11 +53,10 @@ class Command(BaseCommand):
     current_subdocument = {}
     
     def handle(self, *args, **options):
-
+        db_path = settings.DATABASES['default']['NAME']
         for url in args:
             self.stdout.write('Loading data from %s\n' % url)
             self.importfeed(url)
-            db_path = "database/fst.db" # FIXME: find!
             self.load_db(db_path)
             self.generate_rdf_posts()
 
@@ -65,9 +65,16 @@ class Command(BaseCommand):
         tree = ET.parse(stream)
         ns = 'http://www.w3.org/2005/Atom'
         for entry in list(reversed(tree.findall('.//{%s}entry'%ns))):
-            rdf_url = entry.find("{%s}link[@type='application/rdf+xml']"%ns).get("href")
-            pdf_url = entry.find("{%s}content[@type='application/pdf']"%ns).get("src")
-            print "RDF: %s\nPDF: %s" % (rdf_url,pdf_url)
+            pdf_url = None
+            rdf_url = None
+            for node in entry:
+                if (node.tag == "{%s}link"%ns and 
+                    node.get('type') == 'application/rdf+xml'):
+                    rdf_url = node.get("href")
+                elif (node.tag == "{%s}content"%ns and 
+                      node.get('type') == 'application/pdf'):
+                    pdf_url = node.get("src")
+            sys.stderr.write("RDF: %s\nPDF: %s\n" % (rdf_url,pdf_url))
             self.add_entry(rdf_url,pdf_url)
         #pprint(self.data)
 
@@ -108,7 +115,7 @@ class Command(BaseCommand):
             funcname = g.qname(p).replace(":","_")
             #if funcname in globals():
             if hasattr(self,funcname):
-                sys.stderr.write("    Calling self.%s\n" % funcname)
+                #sys.stderr.write("    Calling self.%s\n" % funcname)
                 f = getattr(self,funcname)
                 #globals()[funcname](o,doctype)
                 f(o,doctype)
@@ -217,7 +224,7 @@ class Command(BaseCommand):
         url = "https://lagen.nu/sfs/parsed/rdf.nt"
         if not os.path.exists(titlefile):
         # TODO: 1: Download big n3 file from lagen.nu
-            print "Downloading N3 file"
+            sys.stderr.write("Downloading N3 file (will take a few minutes...)\n")
             stream = urlopen(url)
             nt = open(titlefile,"w")
             for line in stream:
@@ -228,7 +235,7 @@ class Command(BaseCommand):
 
         #       3: lookup title
         if not self.titlegraph:
-            print "Loading title graph from %s" % titlefile
+            sys.stderr.write("Loading title graph from %s\n" % titlefile)
             self.titlegraph = Graph()
             self.titlegraph.bind('dct','http://purl.org/dc/terms/')
             self.titlegraph.bind('rpubl','http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#')
@@ -395,9 +402,13 @@ class Command(BaseCommand):
 
     def rpubl_genomforDirektiv(self, obj, doctype):
         # 1. Create the celex dict
+        celexnum = obj.split("/")[-1]
+        if len(celexnum) == 8:
+            # Pad old-style 392L0049 to new style 31992L0049
+            celexnum = celexnum[0] + "19" + celexnum[1:]
         celex = hashabledict()
-        celex['titel'] = 'CELEX %s' % obj
-        celex['celexnummer'] = obj
+        celex['titel'] = 'CELEX %s' % celexnum
+        celex['celexnummer'] = celexnum
         
         # 2. Have we defined this before (does it have a id)?
         celex_id = None
@@ -459,13 +470,17 @@ class Command(BaseCommand):
         The updated DB displays inserted records when used with FST and
         Django admin. We must verify all necessary related tables are created.
         """
-        print "copying fst_no_docs.db to %s" % db_path
+        sys.stderr.write("copying fst_no_docs.db to %s\n" % db_path)
         import shutil
         shutil.copy2("../tools/fst_no_docs.db", db_path)
+        # Group and other should have write permission
+        mode = os.stat(db_path)[stat.ST_MODE]
+        os.chmod(db_path,mode|stat.S_IWGRP|stat.S_IWOTH)
+        
         db_connection = sqlite3.connect(db_path)
         db_connection.text_factory = str  # bugger 8-bit bytestrings
 
-        print "loaded indata, %s top-level keys" % len(self.data)
+        sys.stderr.write("loaded indata, %s top-level keys\n" % len(self.data))
         for table in self.data.keys():
             self.fill_table(table,self.data,db_connection)
 
@@ -489,7 +504,7 @@ class Command(BaseCommand):
 
     def fill_table(self,table_name, data, db_connection):
         """Insert records in SQlite using a list of dictionaries """
-        print "Filling table %s" % table_name
+        sys.stderr.write("Filling table %s\n" % table_name)
         for row in data[table_name]:
             # print "   record"
             self.fill_record(table_name, row, db_connection)
@@ -508,5 +523,5 @@ class Command(BaseCommand):
     def generate_rdf_posts(self):
         for cls in (Myndighetsforeskrift, AllmannaRad, KonsolideradForeskrift):
             for obj in cls.objects.all():
-                print "Generating rdf post for %s" % obj.identifierare
+                sys.stderr.write("Generating rdf post for %s\n" % obj.identifierare)
                 generate_rdf_post_for(obj)
