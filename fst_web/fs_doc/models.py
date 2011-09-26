@@ -1,19 +1,83 @@
 # -*- coding: utf-8 -*-
 """Django definitions of documents and related classes used by FST"""
 
-from datetime import datetime
+import errno
 import hashlib
+import os
+import tempfile
+from datetime import datetime
 from django.conf import settings
-from django.db import models
-from django.db.models.signals import post_delete
 from django.core import urlresolvers
+from django.core.files import locks
+from django.core.files.move import file_move_safe
+from django.utils.text import get_valid_filename
+from django.core.files.storage import FileSystemStorage, Storage
+from django.core.validators import RegexValidator
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
+from django.db import models
+from django.db.models.signals import post_delete
 from django.template import loader, Context
 from django.utils.feedgenerator import rfc3339_date
 from fst_web.fs_doc import rdfviews
 
 RINFO_PUBL_BASE = "http://rinfo.lagrummet.se/publ/"
+
+
+class OverwritingStorage(FileSystemStorage):
+    """ File storage that allows overwriting of stored files.
+
+    See: http://haineault.com/blog/147/ (describes problem)
+         http://djangosnippets.org/snippets/2173/ (implements fix)
+         http://djangosnippets.org/comments/cr/15/976/#c1670 (installation)
+    """
+
+    def get_available_name(self, name):
+        return name
+
+    def _save(self, name, content):
+        """
+        Lifted partially from django/core/files/storage.py
+        """
+        full_path = self.path(name)
+
+        directory = os.path.dirname(full_path)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        elif not os.path.isdir(directory):
+            raise IOError("%s exists and is not a directory." % directory)
+
+        # This file has a file path that we can move.
+        if hasattr(content, 'temporary_file_path'):
+            temp_data_location = content.temporary_file_path()
+        else:
+            tmp_prefix = "tmp_%s" % (get_valid_filename(name), )
+            temp_data_location = tempfile.mktemp(
+                prefix = tmp_prefix, dir = self.location)
+            try:
+                # This is a normal uploadedfile that we can stream.
+                # This fun binary flag incantation makes os.open throw an
+                # OSError if the file already exists before we open it.
+                fd = os.open(temp_data_location,
+                             os.O_WRONLY | os.O_CREAT |
+                             os.O_EXCL | getattr(os, 'O_BINARY', 0))
+                locks.lock(fd, locks.LOCK_EX)
+                for chunk in content.chunks():
+                    os.write(fd, chunk)
+                locks.unlock(fd)
+                os.close(fd)
+            except Exception, e:
+                if os.path.exists(temp_data_location):
+                    os.remove(temp_data_location)
+                raise
+
+        file_move_safe(temp_data_location, full_path)
+        content.close()
+
+        if settings.FILE_UPLOAD_PERMISSIONS is not None:
+            os.chmod(full_path, settings.FILE_UPLOAD_PERMISSIONS)
+
+        return name
 
 
 class Document(models.Model):
@@ -37,6 +101,22 @@ class Document(models.Model):
                to_slug(settings.FST_ORG_NAME)
 
 
+def current_year():
+    return datetime.now().year
+
+
+def next_lopnummer():
+    docs = FSDokument.objects.filter(arsutgava = current_year())
+    numbers = []
+    for doc in docs:
+        numbers.append(int(doc.lopnummer))
+    if numbers:
+        next_nr = max(numbers) + 1
+    else:
+        next_nr = 1
+    return next_nr
+
+
 class FSDokument(Document):
     """Superclass of 'Myndighetsforeskrift' and 'AllmannaRad'.
 
@@ -46,10 +126,19 @@ class FSDokument(Document):
     arsutgava = models.CharField("Årsutgåva",
                                  max_length=13,
                                  unique=False,
-                                 default=2011)
-    lopnummer = models.CharField("Löpnummer",
-                                 max_length=3,
-                                 unique=False)
+                                 default= current_year(),
+                                 validators=[RegexValidator(
+                                     regex="^(19|20)\d\d",
+                                     message=u"Ange år som 19YY eller 20YY")])
+
+    lopnummer = models.CharField(
+        "Löpnummer",
+        max_length=3,
+        unique=False,
+        default= next_lopnummer,
+        validators=[RegexValidator(
+            regex="^\d+$",
+            message=u"Löpnummer får bara innehålla siffror")])
 
     is_published = models.BooleanField(u"Publicerad via FST",
                                        default=False,
@@ -63,7 +152,7 @@ class FSDokument(Document):
         unique=False)
 
     sammanfattning = models.TextField(
-        max_length= 8192,
+        max_length=8192,
         blank=True,
         unique=False,
         help_text=
@@ -72,8 +161,7 @@ class FSDokument(Document):
     # NOTE: The FST webservice currently only supports document collections
     # of type 'forfattningssamling'.
     forfattningssamling = models.ForeignKey('Forfattningssamling',
-                                            verbose_name=
-                                            u"författningssamling")
+        verbose_name=u"författningssamling")
 
     beslutsdatum = models.DateField("Beslutsdatum")
 
@@ -108,7 +196,7 @@ class FSDokument(Document):
 
         return ('fst_web.fs_doc.views.fs_dokument',
                 [self.get_fs_dokument_slug()])
-    
+
     def get_admin_url(self):
         """Return URL for editing this document in Django admin."""
 
@@ -117,7 +205,6 @@ class FSDokument(Document):
             "admin:fs_doc_" + content_type.model + "_change",
             args=(self.id,))
         return edit_url
-
 
     def get_fs_dokument_slug(self):
         return "%s/%s:%s" % (self.forfattningssamling.slug,
@@ -138,6 +225,7 @@ class AllmannaRad(FSDokument):
 
     content = models.FileField(u"PDF-version",
                                upload_to="allmanna_rad",
+                               storage=OverwritingStorage(),
                                help_text=
                                """Se till att dokumentet är i PDF-format.""")
 
@@ -204,6 +292,7 @@ class Myndighetsforeskrift(FSDokument):
 
     content = models.FileField(u"PDF-version",
                                upload_to="foreskrift",
+                               storage=OverwritingStorage(),
                                help_text=
                                """Se till att dokumentet är i PDF-format.""")
 
@@ -367,8 +456,12 @@ class Bilaga(HasFile):
                              blank = True,
                              help_text = """T.ex. <em>Bilaga 1</em>""")
 
-    file = models.FileField(u"Fil", upload_to="bilaga", blank=True, help_text=
-                             """Om ingen fil anges förutsätts bilagan \
+    file = models.FileField(u"Fil",
+                            upload_to="bilaga",
+                            storage=OverwritingStorage(),
+                            blank=True,
+                            help_text=
+                            """Om ingen fil anges förutsätts bilagan \
                             vara en del av föreskriftsdokumentet.""")
 
     class Meta:
@@ -388,7 +481,8 @@ class OvrigtDokument(HasFile):
                              help_text="""T.ex. <em>Besluts-PM för ...</em>""")
 
     file = models.FileField(u"Fil",
-                            upload_to="ovrigt")
+                            upload_to="ovrigt",
+                            storage=OverwritingStorage())
 
     class Meta:
         verbose_name = u"övrigt dokument"
@@ -450,9 +544,9 @@ class Konsolideringar_foreskrift(models.Model):
     # NOTE: if AllmannaRad can be "konsoliderade", generalize this to
     # FSDokument instead of Myndighetsforeskrift
     from_doc = models.ForeignKey('Myndighetsforeskrift',
-                               related_name = 'consolidating')
+                                 related_name = 'consolidating')
     to_doc = models.ForeignKey('Myndighetsforeskrift',
-                             related_name ='consolidated')
+                               related_name ='consolidated')
 
 
 class KonsolideradForeskrift(Document):
@@ -468,15 +562,17 @@ class KonsolideradForeskrift(Document):
                                help_text=
                                """Se till att dokumentet är i PDF-format.""")
 
-     # Store checksum of uploaded file
+        # Store checksum of uploaded file
     content_md5 = models.CharField(max_length=32,
                                    blank=True)
 
-    grundforfattning = models.ForeignKey('Myndighetsforeskrift',
-                                 related_name='grundforfattning')
+    grundforfattning = models.ForeignKey(
+        'Myndighetsforeskrift',
+        related_name='grundforfattning')
 
-    senaste_andringsforfattning = models.ForeignKey('Myndighetsforeskrift',
-                                 related_name='senaste_andringsforfattning')
+    senaste_andringsforfattning = models.ForeignKey(
+        'Myndighetsforeskrift',
+        related_name='senaste_andringsforfattning')
 
     class Meta:
         verbose_name = u"konsoliderad föreskrift"
@@ -501,19 +597,19 @@ class KonsolideradForeskrift(Document):
     def get_fs_dokument_slug(self):
         return "%s/konsolidering/%s" % (
             self.grundforfattning.get_fs_dokument_slug(),
-                                        self.konsolideringsdatum)
+            self.konsolideringsdatum)
 
     def get_konsolideringsunderlag(self):
         base = self.grundforfattning
         latest = self.senaste_andringsforfattning
         yield base
         for doc in Myndighetsforeskrift.objects.filter(
-                forfattningssamling=base.forfattningssamling,
-                id__in=base.andringar_foreskrift.all(),
-                arsutgava__gte=base.arsutgava,
-                lopnummer__gt=base.lopnummer,
-                arsutgava__lte=latest.arsutgava,
-                lopnummer__lte=latest.lopnummer):
+            forfattningssamling=base.forfattningssamling,
+            id__in=base.andringar_foreskrift.all(),
+            arsutgava__gte=base.arsutgava,
+            lopnummer__gt=base.lopnummer,
+            arsutgava__lte=latest.arsutgava,
+            lopnummer__lte=latest.lopnummer):
             yield doc
 
     def role_label(self):
@@ -562,11 +658,11 @@ class Bemyndigandereferens(models.Model):
             kap_text = " kap."
         else:
             kap_text = ""
-        return u"%s %s %s § %s %s " % (self.kapitelnummer, 
-                                         kap_text,
-                                         self.paragrafnummer,
-                                         self.sfsnummer,
-                                         self.titel)
+        return u"%s %s %s § %s %s " % (self.kapitelnummer,
+                                        kap_text,
+                                        self.paragrafnummer,
+                                        self.sfsnummer,
+                                        self.titel)
 
 
 class GenericUniqueMixin(object):
@@ -646,12 +742,10 @@ class AtomEntry(models.Model, GenericUniqueMixin):
             'rdf_url': \
             None if self.deleted \
             else self.content_object.get_absolute_url() + "rdf", \
-            'fst_site_url': settings.FST_SITE_URL
+            'fst_instance_url': settings.FST_INSTANCE_URL
         })
         return template.render(context)
 
-
- 
 
 def delete_entry(sender, instance, **kwargs):
     """Delete associated Atom entry when a document is deleted."""
@@ -659,27 +753,33 @@ def delete_entry(sender, instance, **kwargs):
     if existing_entry:
         existing_entry.rdf_post.delete()
         existing_entry.delete()
-#     deleted_entry = AtomEntry(
-#         content_object=instance,
-#         updated=datetime.now(),
-#         published=datetime.now(),
-#         deleted=datetime.now(),
-#         entry_id=instance.get_rinfo_uri())
-# 
-#     deleted_entry.save()
-# 
-#     class Meta:
-#         unique_together = ('content_type', 'object_id')
+     #deleted_entry = AtomEntry(
+         #content_object=instance,
+         #updated=datetime.now(),
+         #published=datetime.now(),
+         #deleted=datetime.now(),
+         #entry_id=instance.get_rinfo_uri())
+
+     #deleted_entry.save()
+
+     #class Meta:
+         #unique_together = ('content_type', 'object_id')
 
 
-#post_delete.connect(delete_entry, sender=Myndighetsforeskrift,
-#                    dispatch_uid="fs_doc.Myndighetsforeskrift.create_delete_signal")
-# 
-#post_delete.connect(delete_entry, sender=AllmannaRad,
-#                    dispatch_uid="fs_doc.AllmannaRad.create_delete_signal")
-# 
-#post_delete.connect(delete_entry, sender=KonsolideradForeskrift,
-#                    dispatch_uid="fs_doc.KonsolideradForeskrift.create_delete_signal")
+#post_delete.connect(
+    #delete_entry,
+    #sender=Myndighetsforeskrift,
+    #dispatch_uid="fs_doc.Myndighetsforeskrift.create_delete_signal")
+
+#post_delete.connect(
+    #delete_entry,
+    #sender=AllmannaRad,
+    #dispatch_uid="fs_doc.AllmannaRad.create_delete_signal")
+
+#post_delete.connect(
+    #delete_entry,
+    #sender=KonsolideradForeskrift,
+    #dispatch_uid="fs_doc.KonsolideradForeskrift.create_delete_signal")
 
 
 def get_file_md5(opened_file):
@@ -703,3 +803,40 @@ def to_slug(tag):
     slug = tag.replace('å', 'aa').replace('ä', 'ae').\
          replace('ö', 'oe').replace(' ', '_')
     return slug
+
+
+def generate_atom_entry_for(obj, update_only=False):
+    updated = datetime.utcnow()
+
+    # Check if we already published this document
+    obj_type = ContentType.objects.get_for_model(obj)
+    entries = AtomEntry.objects.filter(content_type__pk=obj_type.id,
+                                       object_id=obj.id)
+    # Find entry for object
+    for entry in entries.order_by("published"):
+        entry_published = entry.published
+        break
+    else:
+        if update_only:
+            return
+        # For new documents
+        entry_published = updated
+
+    # Get RDF representation of object
+    rdf_post = RDFPost.get_for(obj)
+
+    entry = AtomEntry.get_or_create(obj)
+    entry.entry_id = obj.get_rinfo_uri()
+    entry.updated = updated
+    entry.published = entry_published
+    entry.rdf_post = rdf_post
+    entry.save()
+
+
+def generate_rdf_post_for(obj):
+    # Create RDF metadata
+    rdf_post = RDFPost.get_or_create(obj)
+    rdf_post.slug = obj.get_fs_dokument_slug()
+    rdf_post.data = obj.to_rdfxml()
+    rdf_post.save()
+    return rdf_post

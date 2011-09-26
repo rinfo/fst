@@ -8,7 +8,7 @@ from django.test import TestCase
 from rdflib import Graph, Literal, URIRef, RDF
 from django.core.urlresolvers import reverse
 from fst_web.fs_doc import models
-from fst_web.fs_doc.admin import generate_atom_entry_for, generate_rdf_post_for
+from fst_web.fs_doc.models import generate_atom_entry_for, generate_rdf_post_for
 from fst_web.fs_doc.rdfviews import DCT, DCES, RPUBL, RINFO_BASE
 
 

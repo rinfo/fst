@@ -60,7 +60,7 @@ def atomfeed(request):
     feed_contact_name = settings.FST_ORG_CONTACT_NAME
     feed_contact_url = settings.FST_ORG_CONTACT_URL
     feed_contact_email = settings.FST_ORG_CONTACT_EMAIL
-    fst_site_url = settings.FST_SITE_URL
+    fst_instance_url = settings.FST_INSTANCE_URL
 
     template = loader.get_template('atomfeed.xml')
     context = Context(locals())
