@@ -1,7 +1,9 @@
-# -*- coding: UTF-8 -*-
+# -*- coding: utf-8 -*-
 from fabric.api import *
 
 env.virtualenv = '/opt/rinfo/fst'
+env.hosts = ['fst.lagrummet.se']
+env.user = 'rinfo'
 
 def launch_instance(name):
     create_instance(name)
