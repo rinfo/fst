@@ -124,6 +124,13 @@ INSTALLED_APPS = (
     'fst_web.adminplus'
 )
 
+# Ensure that users are logged out automatically.
+# Kill sessions when browser is closed AND log out inactive users
+# after specified time.
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 3600  # Cookie expires after 60 minutes
+
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error.
