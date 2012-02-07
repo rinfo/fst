@@ -164,7 +164,7 @@ class AllmannaRadAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                    #'andrar',
                    'omtryck')
     ordering = ('-beslutsdatum', 'titel')
-    search_fields = ('titel',)
+    search_fields = ('titel', )
     inlines = [BilagaInline, OvrigtDokumentInline]
     readonly_fields = ('is_published', 'identifierare',)
     save_on_top = True
@@ -359,7 +359,19 @@ def amnesord(request):
     return _response(request, 'per_amnesord.html', locals())
 
 
-def artal(request):
+def arsutgava(request):
+    """Display documents grouped by year """
+
+    def get_identifierare(obj):
+            return obj.identifierare
+
+    f_list = list(Myndighetsforeskrift.objects.all())
+    a_list = list(AllmannaRad.objects.all())
+    fs_documents = list(chain(f_list, a_list))
+    fs_documents.sort(key=get_identifierare,reverse = True)
+    return _response(request, 'per_identifierare.html', locals())
+
+def ikrafttradande(request):
     """Display documents grouped by year """
         
     def get_ikrafttradandedatum(obj):
@@ -392,11 +404,16 @@ def beslutsdatum(request):
 
 
 admin.site.register_view(
-    'artal', artal,
-    u'Lista föreskrifter och allmänna råd (per år för ikraftträdande)')
+    'arsutgava', arsutgava,
+    u'Alla föreskrifter och allmänna råd')
+
+admin.site.register_view(
+    'ikrafttradande', ikrafttradande,
+    u'Lista per år för ikraftträdande')
+
 admin.site.register_view(
     'beslutsdatum', beslutsdatum,
-    u'Lista de ' + str(LIST_PER_PAGE_COUNT) + ' senast beslutade dokumenten')
+    u'Lista de ' + str(LIST_PER_PAGE_COUNT) + ' senast beslutade')
 
 
 # TODO - Fix this view so get_admin_url doesn't get called with FSDokument

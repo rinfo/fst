@@ -1,0 +1,19 @@
+{% extends 'adminplus/base.html' %}
+
+
+{% block content %}
+    <h2>Föreskrifter och allmänna råd</h2>
+    
+    <p>Samtliga författningsdokument</p>
+
+    {% regroup fs_documents by arsutgava as doc_per_ar %}
+
+    {% for arsutgava in doc_per_ar %}
+        <h2>{{arsutgava.grouper}}</h2>
+        <ul class="foreskrifter">
+            {% for doc in arsutgava.list %}
+            <li><a href="{{doc.get_admin_url}}">{{doc.identifierare}} {{doc.titel}}</a></li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+{% endblock %}
