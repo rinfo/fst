@@ -164,7 +164,7 @@ class AllmannaRadAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                    #'andrar',
                    'omtryck')
     ordering = ('-beslutsdatum', 'titel')
-    search_fields = ('titel', )
+    search_fields = ('titel', 'arsutgava', 'lopnummer')
     inlines = [BilagaInline, OvrigtDokumentInline]
     readonly_fields = ('is_published', 'identifierare',)
     save_on_top = True
@@ -242,7 +242,7 @@ class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                    #'andrar',
                    'omtryck')
     ordering = ('-beslutsdatum', 'titel')
-    search_fields = ('titel', )
+    search_fields = ('titel',  'arsutgava', 'lopnummer')
     inlines = [BilagaInline, OvrigtDokumentInline]
     readonly_fields = ('is_published', 'identifierare',)
     save_on_top = True
