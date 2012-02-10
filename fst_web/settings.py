@@ -8,7 +8,7 @@ Use the default values in 'demo_settings.py' as a starting point.
 """
 
 ROOT = os.path.abspath(os.path.dirname(__file__))
-path = lambda *args: os.path.join(ROOT, *args)
+make_root_path = lambda *args: os.path.join(ROOT, *args)
 
 # Encoding of files read from disk (template and initial SQL files).
 FILE_CHARSET = 'utf-8'
@@ -106,7 +106,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'fst_web.urls'
 
 # Specify one or more directories where templates can be found
-TEMPLATE_DIRS = (path('templates'), )
+TEMPLATE_DIRS = (make_root_path('templates'), )
 
 INSTALLED_APPS = (
     'django.contrib.auth',
