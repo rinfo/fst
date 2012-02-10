@@ -108,6 +108,9 @@ ROOT_URLCONF = 'fst_web.urls'
 # Specify one or more directories where templates can be found
 TEMPLATE_DIRS = (make_root_path('templates'), )
 
+# Specify directory where logs can be found
+LOG_DIR = (make_root_path('logs'))
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -141,3 +144,72 @@ try:
 except ImportError:
     from demo_settings import *
 
+# Setup standard logging: daily rotating files for requests, app logging,
+# debbugging DB calls et cetera
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(asctime)s %(message)s'
+        },
+        },
+    'handlers': {
+        'console': {
+            'level': '%s' % LOG_LEVEL,
+            'class': 'logging.StreamHandler',
+            },
+        'app_handler': {
+            'level': '%s' % LOG_LEVEL,
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(LOG_DIR, 'fst_web.app.log'),
+            'maxBytes': 1024 * 1024 * 5, # 5 MB
+            'backupCount': 5,
+            'formatter': 'verbose',
+            },
+        'db_handler': {
+            'level': '%s' % LOG_LEVEL,
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(LOG_DIR, 'fst_web.db.log'),
+            'maxBytes': 1024 * 1024 * 5, # 5 MB
+            'backupCount': 5,
+            'formatter': 'simple',
+            },
+        'request_handler': {
+            'level': '%s' % LOG_LEVEL,
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(LOG_DIR, 'django_request.log'),
+            'maxBytes': 1024 * 1024 * 5, # 5 MB
+            'backupCount': 5,
+            'formatter': 'simple',
+            }
+    },
+    'loggers': {'': {'handlers':
+                         ['app_handler'],
+                     'level': '%s' % LOG_LEVEL,
+                     'propagate': False
+    },
+                'django.request': {
+                    'handlers': ['request_handler'],
+                    'level': '%s' % LOG_LEVEL,
+                    'propagate': False
+                },
+                'django.db.backends': {
+                    'handlers': ['db_handler'],
+                    'level': DB_DEBUG_LEVEL,
+                    'propagate': False,
+                    }
+    }
+}
+
+if EMAIL_HOST_USER:
+    LOGGING['handlers']['mail_admins'] = {
+        'level': 'ERROR',
+        'class': 'django.utils.log.AdminEmailHandler',
+        'include_html': False,
+        }
+
+    LOGGING['loggers']['django.request']['handlers'].append('mail_admins')
