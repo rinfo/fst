@@ -5,6 +5,7 @@ from os import path
 from datetime import datetime
 from itertools import chain
 from operator import attrgetter
+import re
 from django import forms
 from django.contrib import admin
 from django.contrib.admin import widgets
@@ -362,13 +363,19 @@ def amnesord(request):
 def arsutgava(request):
     """Display documents grouped by year """
 
-    def get_identifierare(obj):
-            return obj.identifierare
+    def get_key(obj):
+        for num, rest, in re.findall(r'(\d+)(.*)',
+                                                     obj.lopnummer):
+            num = int(num)
+            break
+        else:
+            num, rest= lopnummer, ''
+        return (obj.arsutgava, num)
 
     f_list = list(Myndighetsforeskrift.objects.all())
     a_list = list(AllmannaRad.objects.all())
     fs_documents = list(chain(f_list, a_list))
-    fs_documents.sort(key=get_identifierare,reverse = True)
+    fs_documents.sort(key=get_key,reverse = True)
     return _response(request, 'per_identifierare.html', locals())
 
 def ikrafttradande(request):
