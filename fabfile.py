@@ -54,7 +54,6 @@ def new(name, version=None):
         run("python manage.py loaddata fs_doc/fixtures/example_no_docs.json")
 
         # allow apache to write to the database and upload directory
-        run("mkdir uploads")
         run("chmod -R o+rw database uploads")
 
     # TODO
