@@ -57,9 +57,9 @@ ADMIN_MEDIA_PREFIX = '/media/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
+# Put strings here, like "/home/html/static" or "C:/www/django/static".
+# Always use forward slashes, even on Windows.
+# Don't forget to use absolute paths, not relative paths.
 )
 
 # List of finder classes that know how to find static files in
@@ -67,8 +67,8 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
-)
+    #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    )
 
 # Default. More documentaton here:
 # http://docs.djangoproject.com/en/dev/ref/contrib/sites/
@@ -78,8 +78,8 @@ SITE_ID = 1
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
-)
+    #     'django.template.loaders.eggs.Loader',
+    )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     # Used by default in Django 1.3 (they have to be manually defined when
@@ -92,7 +92,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.messages.context_processors.messages",
     # Project-specific:
     "fst_web.context_processors.add_request_vars",
-)
+    )
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -101,7 +101,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-)
+    )
 
 ROOT_URLCONF = 'fst_web.urls'
 
@@ -122,32 +122,91 @@ INSTALLED_APPS = (
     # Application specific here
     'fst_web.fs_doc',
     'fst_web.adminplus'
-)
+    )
 
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error.
-# See http://docs.djangoproject.com/en/dev/topics/logging for
-# more details on how to customize your logging configuration.
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
-        },
-    'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
-            },
-    }
-}
+# Ensure that users are logged out automatically if inactive for
+# specified time.
+SESSION_SAVE_EVERY_REQUEST = True # Refresh cookie on new activity
+SESSION_COOKIE_AGE = 30 * 60  # Cookie expires after this number of seconds
 
+# Specify how detailed log output you want
+LOG_LEVEL = "WARNING"
+DB_DEBUG_LEVEL = "WARNING" # Silence noisy debug output
+
+EMAIL_HOST_USER = None # Email notifications are enabled in local settings
+
+# Check for instance-specific settings
 try:
     from local_settings import *
 except ImportError:
     from demo_settings import *
+
+# Setup standard logging: daily rotating files for requests, app logging,
+# debbugging DB calls et cetera
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(asctime)s %(message)s'
+        },
+        },
+    'handlers': {
+        'console': {
+            'level': '%s' % LOG_LEVEL,
+            'class': 'logging.StreamHandler',
+            },
+        'app_handler': {
+            'level': '%s' % LOG_LEVEL,
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': 'logs/fst_web.app.log',
+            'maxBytes': 1024 * 1024 * 5, # 5 MB
+            'backupCount': 5,
+            'formatter': 'verbose',
+            },
+        'db_handler': {
+            'level': '%s' % LOG_LEVEL,
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': 'logs/fst_web.db.log',
+            'maxBytes': 1024 * 1024 * 5, # 5 MB
+            'backupCount': 5,
+            'formatter': 'simple',
+            },
+        'request_handler': {
+            'level': '%s' % LOG_LEVEL,
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': 'logs/django_request.log',
+            'maxBytes': 1024 * 1024 * 5, # 5 MB
+            'backupCount': 5,
+            'formatter': 'simple',
+            }
+    },
+    'loggers': {'': {'handlers':
+                         ['app_handler'],
+                     'level': '%s' % LOG_LEVEL,
+                     'propagate': False
+    },
+                'django.request': {
+                    'handlers': ['request_handler'],
+                    'level': '%s' % LOG_LEVEL,
+                    'propagate': False
+                },
+                'django.db.backends': {
+                    'handlers': ['db_handler'],
+                    'level': DB_DEBUG_LEVEL,
+                    'propagate': False,
+                    }
+    }
+}
+
+if EMAIL_HOST_USER:
+    LOGGING['handlers']['mail_admins'] = {
+        'level': 'ERROR',
+        'class': 'django.utils.log.AdminEmailHandler',
+        'include_html': False,
+        }
+
+    LOGGING['loggers']['django.request']['handlers'].append('mail_admins')
