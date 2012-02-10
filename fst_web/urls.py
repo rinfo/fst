@@ -48,9 +48,8 @@ urlpatterns = patterns('',
         TextPlainView.as_view(template_name='robots.txt')),
 
      # Add application favicon. Gets rid of lots of annoying log messages.
-     url(r'^favicon\.ico$', RedirectView.as_view(url='/static/imgages/favicon' \
+     url(r'^favicon\.ico$', RedirectView.as_view(url='/static/images/favicon' \
                                                      '.ico')),
-
     # Enable Django admin
     (r'^admin/', include(admin.site.urls)),
     #(r'^admin/(.*)', admin.site.root),
