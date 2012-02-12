@@ -53,8 +53,8 @@ def new(name, version=None):
         print ".. Remember to rename the initial EXFS"
         run("python manage.py loaddata fs_doc/fixtures/example_no_docs.json")
 
-        # allow apache to write to the database and upload directory
-        run("chmod -R o+rw database uploads")
+        # allow apache to write to the database, upload and logs directory
+        run("chmod -R o+rw database uploads logs")
 
     # TODO
     print '.. Remember to add new WSGIScriptAlias row in "/opt/rinfo/fst/fst.conf"'
