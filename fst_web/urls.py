@@ -6,6 +6,7 @@ from django.contrib import admin
 from adminplus import AdminSitePlus
 from django.conf.urls.defaults import patterns, include, url
 from django.views.generic.base import TemplateView, RedirectView
+from django.views.generic.simple import direct_to_template
 
 class TextPlainView(TemplateView):
     def render_to_response(self, context, **kwargs):
@@ -44,12 +45,10 @@ urlpatterns = patterns('',
     (r'^feed/$', 'fst_web.fs_doc.views.atomfeed'),
 
     # Tell web crawlers how to behave via robots.txt
-    #url(r'^robots\.txt$',
-    #    TextPlainView.as_view(template_name='robots.txt')),
+    (r'^robots\.txt$', 'django.views.generic.simple.direct_to_template', {'template': 'robots.txt', 'mimetype': 'text/plain'}),
 
      # Add application favicon. Gets rid of lots of annoying log messages.
-    # url(r'^favicon\.ico$', RedirectView.as_view(url= os.path.join(ROOT,
-    # 'static', 'images'))),
+    (r'^favicon\.ico$', 'django.views.generic.simple.redirect_to', {'url': '/static/images/favicon.ico'}),
 
     # Enable Django admin
     (r'^admin/', include(admin.site.urls)),
