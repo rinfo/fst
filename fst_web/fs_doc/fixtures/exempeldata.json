@@ -1,14 +1,6 @@
 [
     {
         "pk": 1, 
-        "model": "sites.site", 
-        "fields": {
-            "domain": "127.0.0.1:8000", 
-            "name": "localhost"
-        }
-    }, 
-    {
-        "pk": 1, 
         "model": "fs_doc.fsdokument", 
         "fields": {
             "omtryck": false, 
