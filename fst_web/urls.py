@@ -45,10 +45,10 @@ urlpatterns = patterns('',
     (r'^feed/$', 'fst_web.fs_doc.views.atomfeed'),
 
     # Tell web crawlers how to behave via robots.txt
-    (r'^robots\.txt$', 'django.views.generic.simple.direct_to_template', {'template': 'robots.txt', 'mimetype': 'text/plain'}),
+    (r'^robots\.txt$', 'django.views.generic.base.TemplateView', {'template': 'robots.txt', 'mimetype': 'text/plain'}),
 
      # Add application favicon. Gets rid of lots of annoying log messages.
-    (r'^favicon\.ico$', 'django.views.generic.simple.redirect_to', {'url': '/static/images/favicon.ico'}),
+    (r'^favicon\.ico$', 'django.views.generic.base.RedirectView', {'url': '/static/images/favicon.ico'}),
 
     # Enable Django admin
     (r'^admin/', include(admin.site.urls)),
