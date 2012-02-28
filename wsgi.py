@@ -7,7 +7,7 @@ import os
 import sys
 import site
 
-#VIRTUALENV_PATH = '/path/of/your/virtualenv'
+VIRTUALENV_PATH = '/path/of/your/virtualenv'
 PYTHON_SITE_PACKAGES = 'lib/python2.6/site-packages'
 
 # Specify the site-packages folder of your virtualenv
