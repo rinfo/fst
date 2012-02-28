@@ -46,13 +46,12 @@ MEDIA_ROOT = os.path.join(os.path.dirname(__file__), 'uploads')
 # Example: "/home/media/media.lawrence.com/static/"
 STATIC_ROOT = ''
 
-# URL prefix for static files.
-# Example: "http://media.lawrence.com/static/"
+# NOTE! In Django 1.4 this replaces "ADMIN_MEDIA_PREFIX"
+# URL prefix for admin static files -- CSS, JavaScript and images.
 STATIC_URL = '/static/'
 
+# NOTE! This is deprecated in Django 1.4
 # URL prefix for admin static files -- CSS, JavaScript and images.
-# Make sure to use a trailing slash.
-# Examples: "http://foo.com/static/admin/", "/static/admin/".
 ADMIN_MEDIA_PREFIX = '/media/'
 
 # Additional locations of static files
@@ -129,29 +128,46 @@ INSTALLED_APPS = (
 
 # Ensure that users are logged out automatically if inactive for
 # specified time.
-SESSION_SAVE_EVERY_REQUEST = True # Refresh cookie on new activity
-SESSION_COOKIE_AGE = 30 * 60  # Cookie expires after this number of seconds
+SESSION_SAVE_EVERY_REQUEST = True  # Refresh cookie on new activity
+SESSION_COOKIE_AGE = 30 * 60   # Cookie expires after this number of seconds
 
 # Specify how detailed log output you want
 LOG_LEVEL = "WARNING"
-DB_DEBUG_LEVEL = "WARNING" # Silence noisy debug output
+DB_DEBUG_LEVEL = "WARNING"  # Silence noisy debug output
 
-EMAIL_HOST_USER = None # Email notifications are enabled in local settings
+EMAIL_HOST_USER = None  # Email notifications are enabled in local settings
 
-# Check for instance-specific settings
+#MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES +
+# ('debug_toolbar.middleware.DebugToolbarMiddleware',)
+#INSTALLED_APPS = INSTALLED_APPS + ('debug_toolbar',)
+# INTERNAL_IPS = ('127.0.0.1',) #
+
+# New for Django 1.4: list all possible password algorithms.
+# Unless your application has very special security needs, default is fine.
+PASSWORD_HASHERS = (
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.BCryptPasswordHasher',
+    'django.contrib.auth.hashers.SHA1PasswordHasher',
+    'django.contrib.auth.hashers.MD5PasswordHasher',
+    'django.contrib.auth.hashers.CryptPasswordHasher',
+)
+
+# Look for instance-specific settings
 try:
-    from local_settings import *
+    from local_settings import *  # Use local settings if they exist
 except ImportError:
-    from demo_settings import *
+    from demo_settings import *  # else fall back to demo settings
 
 # Setup standard logging: daily rotating files for requests, app logging,
-# debbugging DB calls et cetera
+# debbugging DB calls etc.
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+            'format': '%(levelname)s %(asctime)s %(module)s \%(process)d %'
+                      '(thread)d %(message)s'
         },
         'simple': {
             'format': '%(levelname)s %(asctime)s %(message)s'
@@ -166,7 +182,7 @@ LOGGING = {
             'level': '%s' % LOG_LEVEL,
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': os.path.join(LOG_DIR, 'fst_web.app.log'),
-            'maxBytes': 1024 * 1024 * 5, # 5 MB
+            'maxBytes': 1024 * 1024 * 5,  # 5 MB
             'backupCount': 5,
             'formatter': 'verbose',
             },
@@ -174,7 +190,7 @@ LOGGING = {
             'level': '%s' % LOG_LEVEL,
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': os.path.join(LOG_DIR, 'fst_web.db.log'),
-            'maxBytes': 1024 * 1024 * 5, # 5 MB
+            'maxBytes': 1024 * 1024 * 5,  # 5 MB
             'backupCount': 5,
             'formatter': 'simple',
             },
@@ -182,7 +198,7 @@ LOGGING = {
             'level': '%s' % LOG_LEVEL,
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': os.path.join(LOG_DIR, 'django_request.log'),
-            'maxBytes': 1024 * 1024 * 5, # 5 MB
+            'maxBytes': 1024 * 1024 * 5,  # 5 MB
             'backupCount': 5,
             'formatter': 'simple',
             }

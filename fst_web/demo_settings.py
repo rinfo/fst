@@ -79,4 +79,3 @@ FST_ORG_CONTACT_EMAIL = "lagrum@exempelmyndigheten.se"
 # These values will be supplied by Rättsinformationsprojektet.
 FST_DATASET_URI = "tag:exempelmyndigheten.se,2009:rinfo:feed"
 FST_DATASET_TITLE = u"Flöde för Exempelmyndighetens författningssamling"
-
