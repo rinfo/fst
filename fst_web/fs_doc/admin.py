@@ -14,7 +14,7 @@ from django.conf import settings
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import  loader, Context, RequestContext
 from django.contrib import admin
-from adminplus import AdminSitePlus
+from fst_web.adminplus import AdminSitePlus
 from fst_web.fs_doc.models import *
 
 
