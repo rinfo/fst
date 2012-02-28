@@ -120,7 +120,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
-    'django.contrib.admindocs',
+    #'django.contrib.admindocs',
     # Application specific here
     'fst_web.fs_doc',
     'fst_web.adminplus'
