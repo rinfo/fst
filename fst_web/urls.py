@@ -22,10 +22,10 @@ admin.autodiscover()
 # URL-routing
 
 urlpatterns = patterns('',
-    # Display static files
-    (r'^static/(?P<path>.*)$', 'django.views.static.serve',
-         {'document_root': os.path.join(os.path.dirname(__file__),
-                                        'static').replace('\\', '/')}),
+	# Display static files
+	#(r'^static/(?P<path>.*)$', 'django.views.static.serve',
+	#     {'document_root': os.path.join(os.path.dirname(__file__),
+	#                                    'static').replace('\\', '/')}),
 
     # Get files from server
     (r'^dokument/(?P<path>.*)$', 'django.views.static.serve',
