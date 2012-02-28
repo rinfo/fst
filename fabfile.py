@@ -15,6 +15,7 @@ def integ():
     """
     env.hosts = ["rinfo-fst"]
 
+
 @task
 def prod():
     """
@@ -37,8 +38,11 @@ def new(name, version=None):
 
         run("cp demo_settings.py local_settings.py")
 
-        print ".. Remember to edit local_settings.py" # TODO:
-        #''.join([choice('abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)') for i in range(50)])
+        print ".. Remember to edit local_settings.py"  # TODO:
+        #''.join(
+        # [choice(
+        # 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)')
+        # for i in range(50)])
         # s/Exempel/${GovName}/g
         # s/exempel/${govname}/g
         # s/exfs/${name}/g
@@ -48,7 +52,8 @@ def new(name, version=None):
 
         # create user and rights
         # TODO: optionally pre-adjust:
-        #run("cp fs_doc/fixtures/example_no_docs.json fs_doc/fixtures/initial_no_docs.json")
+        #run("cp fs_doc/fixtures/example_no_docs.json" +
+        # "fs_doc/fixtures/initial_no_docs.json")
         # s/EXFS/${NewFs}/g
         print ".. Remember to rename the initial EXFS"
         run("python manage.py loaddata fs_doc/fixtures/example_no_docs.json")
@@ -57,7 +62,7 @@ def new(name, version=None):
         run("chmod -R o+rw database uploads logs")
 
     # TODO
-    print '.. Remember to add new WSGIScriptAlias row in "/opt/rinfo/fst/fst.conf"'
+    print '.. Remember to add new WSGIScriptAlias in "/opt/rinfo/fst/fst.conf"'
     #sudo("apachectl restart")
 
 
@@ -85,4 +90,3 @@ def bak():
     """
     run("tar czvf %(bak_path)s %(instances_dir)s" % env)
     get(env.bak_path, env.local_bak)
-
