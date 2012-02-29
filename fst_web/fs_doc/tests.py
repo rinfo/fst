@@ -52,7 +52,7 @@ NS_AT = "http://purl.org/atompub/tombstones/1.0"
 
     #def setUp(self):
         #self.username = 'editor'  # This user already exists in fixture
-        #self.pw = 'editor'        # and is a regular staff user
+        #self.pw = 'editor'        # and is a regular sta   ff user
         #self.assertTrue(self.client.login(
             #username=self.username,
             #password=self.pw),
@@ -187,9 +187,16 @@ class WebTestCase(TestCase):
         # Get document to publish
         foreskrift = models.Myndighetsforeskrift.objects.get(
             forfattningssamling__slug="exfs", arsutgava="2009", lopnummer="1")
-        generate_rdf_post_for(foreskrift)
         # Publish document. TODO - use explicit publish method here!
         generate_atom_entry_for(foreskrift)
+
+        # Feed now should have exactly one entry element
+        response = self.client.get('/feed/')
+        self.failUnlessEqual(response.status_code, 200)
+        self.assertEqual(response['content-type'],
+                         'application/atom+xml; charset=utf-8')
+        dom = parseString(response.content)
+        self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'entry')), 1)
 
         # Check that RDF representation exists
         response = self.client.get('/publ/exfs/2009:1/rdf')
