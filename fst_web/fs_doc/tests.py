@@ -45,44 +45,6 @@ NS_AT = "http://purl.org/atompub/tombstones/1.0"
         #self.assertContains(response, "fs_doc")
 
 
-#class AdminTestCase(TestCase):
-    #"""Test admin functionality for logged in staff user """
-
-    #fixtures = ['exempeldata.json']
-
-    #def setUp(self):
-        #self.username = 'editor'  # This user already exists in fixture
-        #self.pw = 'editor'        # and is a regular sta   ff user
-        #self.assertTrue(self.client.login(
-            #username=self.username,
-            #password=self.pw),
-                        #"Logging in user %s, pw %s failed." %
-                        #(self.username, self.pw))
-
-    #def tearDown(self):
-        #self.client.logout()
-
-    #def test_access(self):
-        #"""Verify that ordinary user has restricted access"""
-
-        #post_data = {}
-        #response = self.client.post(
-            #reverse('admin:index'), post_data)
-        #self.assertContains(response, "fs_doc")    # Permissions for this
-        #self.assertNotContains(response, "auth")   # No access
-        #self.assertNotContains(response, "sites")  # No access
-
-    #def test_translation_allmannarad(self):
-        #"""Verify existence of translated labels with Swedish characters """
-
-        #post_data = {}
-        #response = self.client.post(reverse(
-            #'admin:fs_doc_allmannarad_add'), post_data)
-        ## The expected field labels show up somewhere
-        #self.assertContains(response, "Årsutgåva")
-        #self.assertContains(response, "Löpnummer")
-
-
 class WebTestCase(TestCase):
     """Simplistic functional test of public URL:s  """
 
