@@ -31,12 +31,14 @@ def move_sampledocs_to_fixture():
 
 
 def clear_db(flags=""):
-    local("rm -f database/fst_demo.db && python manage.py syncdb %s" % flags)
+    local("rm -f database/fst_demo.db && python ../manage.py syncdb %s" %
+          flags)
 
 
 def reset_db(fixture_name="exempeldata"):
     clear_db("--noinput")
-    local("python manage.py loaddata fs_doc/fixtures/%s.json" % fixture_name)
+    local("python ../manage.py loaddata fs_doc/fixtures/%s.json" %
+          fixture_name)
 
 
 def reset_test():
@@ -45,11 +47,14 @@ def reset_test():
 
 
 def test():
-    local("python manage.py test")
+    local("python ../manage.py test")
 
 
 def make_fixture(name):
-    local("python manage.py dumpdata --indent 4 "
-          " --exclude admin --exclude sessions.session "
-          " --exclude contenttypes.contenttype --exclude fs_doc.atomentry "
-          " > fs_doc/fixtures/%s.json" % name)
+    local("python ../manage.py dumpdata --natural --indent 4 "\
+          "--exclude admin " \
+          " --exclude sessions.session  "\
+          " --exclude auth.permission "\
+          "--exclude contenttypes.contenttype "\
+          " --exclude fs_doc.atomentry "\
+          "> fs_doc/fixtures/%s.json" % name)
