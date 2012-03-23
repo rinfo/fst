@@ -23,15 +23,29 @@ def prod():
     env.hosts = ["fst.lagrummet.se"]
     env.user = 'rinfo'
 
+@task
+def prod2():
+    """
+    Set target env to PENDING NEW PRODUCTION.
+    """
+    env.hosts = ["fst-rinfo.oort.to"]
+    env.user = 'rinfo'
 
 @task
 def setup_server():
-    sudo("apt-get install git")
+    sudo("apt-get install curl")
+    sudo("apt-get install apache2 -y")
+    sudo("apt-get install libapache2-mod-wsgi")
     sudo("apt-get install python-dev")
     sudo("apt-get install python-pip")
+    sudo("pip install virtualenv")
+    sudo("apt-get install git")
+
+@task
+def create_env(name="fst-default"):
+    pass
     # TODO: setup virtualenv
     # TODO: pip install -r requirements.txt (same for all instances)
-
 
 @task
 def create_instance(name, version=None):
