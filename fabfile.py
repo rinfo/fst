@@ -15,17 +15,26 @@ def integ():
     """
     env.hosts = ["rinfo-fst"]
 
-
 @task
 def prod():
     """
     Set target env to PRODUCTION.
     """
     env.hosts = ["fst.lagrummet.se"]
+    env.user = 'rinfo'
 
 
 @task
-def new(name, version=None):
+def setup_server():
+    sudo("apt-get install git")
+    sudo("apt-get install python-dev")
+    sudo("apt-get install python-pip")
+    # TODO: setup virtualenv
+    # TODO: pip install -r requirements.txt (same for all instances)
+
+
+@task
+def create_instance(name, version=None):
     """
     Create a new FST instance with the given ``name``.
     """
@@ -63,7 +72,7 @@ def new(name, version=None):
 
     # TODO
     print '.. Remember to add new WSGIScriptAlias in "/opt/rinfo/fst/fst.conf"'
-    #sudo("apachectl restart")
+    #restart_apache()
 
 
 @task
@@ -90,3 +99,16 @@ def bak():
     """
     run("tar czvf %(bak_path)s %(instances_dir)s" % env)
     get(env.bak_path, env.local_bak)
+
+@task
+def stop_apache():
+    sudo("apachectl stop")
+
+@task
+def start_apache():
+    sudo("apachectl start")
+
+@task
+def restart_apache():
+    sudo("apachectl restart")
+
