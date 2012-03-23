@@ -1,9 +1,11 @@
 # -*- coding: UTF-8 -*-
 from fabric.api import *
+from fabric.contrib.files import exists
 from fabric.contrib.project import rsync_project
 
 
 env.instances_dir = "/opt/rinfo/fst/instances"
+
 env.bak_path = "bak/opt-rinfo-fst-instances.tar.gz"
 env.local_bak = "/opt/work/rinfo/fst/backup"
 
@@ -43,47 +45,66 @@ def setup_server():
     sudo("apt-get install git -y")
 
 @task
-def create_env(name="fst-default"):
-    pass
-    # TODO: setup virtualenv
-    # TODO: pip install -r requirements.txt (same for all instances)
+def setup_env(name="venv-default"):
+    venv_dir = "%s/%s" % (env.instances_dir, name)
+    sudo("mkdir -p %(instances_dir)s" % env)
+    sudo("chown -R %(user)s %(instances_dir)s" % env)
+    if not exists(venv_dir):
+        run("virtualenv --distribute %s" % venv_dir)
+    return venv_dir
 
 @task
 def create_instance(name, version=None):
     """
     Create a new FST instance with the given ``name``.
     """
-    with cd(env.instances_dir):
-        run("git clone git://github.com/rinfo/fst.git %s" % name)
 
-    with cd("%s/%s/fst_web" % (env.instances_dir, name)):
+    venv_dir = setup_env()
+
+    clone_dir = env.instances_dir + "/" + name
+
+    if not exists(clone_dir):
+        with cd(env.instances_dir):
+            run("git clone git://github.com/rinfo/fst.git %s" % name)
+
+    with cd(clone_dir):
+        run("git pull")
         if version:
             run("git checkout tags/%s" % version)
 
-        run("cp demo_settings.py local_settings.py")
+    with cd(clone_dir):
+        with prefix("source %s/bin/activate" % venv_dir):
+            # TODO: updates for all instances!
+            run("pip install -r requirements.txt")
 
-        print ".. Remember to edit local_settings.py"  # TODO:
-        #''.join(
-        # [choice(
-        # 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)')
-        # for i in range(50)])
-        # s/Exempel/${GovName}/g
-        # s/exempel/${govname}/g
-        # s/exfs/${name}/g
+    with cd("%s/fst_web" % clone_dir):
 
-        # you need no superuser; done in the next step
-        run("python manage.py syncdb")
+        with prefix("source %s/bin/activate" % venv_dir):
 
-        # create user and rights
-        # TODO: optionally pre-adjust:
-        #run("cp fs_doc/fixtures/example_no_docs.json" +
-        # "fs_doc/fixtures/initial_no_docs.json")
-        # s/EXFS/${NewFs}/g
-        print ".. Remember to rename the initial EXFS"
-        run("python manage.py loaddata fs_doc/fixtures/example_no_docs.json")
+            run("cp demo_settings.py local_settings.py")
 
-        # allow apache to write to the database, upload and logs directory
-        run("chmod -R o+rw database uploads logs")
+            print ".. Remember to edit local_settings.py"  # TODO:
+            #''.join(
+            # [choice(
+            # 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)')
+            # for i in range(50)])
+            # s/Exempel/${GovName}/g
+            # s/exempel/${govname}/g
+            # s/exfs/${name}/g
+
+            # you need no superuser; done in the next step
+            run("python manage.py syncdb")
+
+            # create user and rights
+            # TODO: optionally pre-adjust:
+            #run("cp fs_doc/fixtures/example_no_docs.json" +
+            # "fs_doc/fixtures/initial_no_docs.json")
+            # s/EXFS/${NewFs}/g
+            print ".. Remember to rename the initial EXFS"
+            run("python manage.py loaddata fs_doc/fixtures/example_no_docs.json")
+
+            # allow apache to write to the database, upload and logs directory
+            run("chmod -R o+rw database uploads logs")
 
     # TODO
     print '.. Remember to add new WSGIScriptAlias in "/opt/rinfo/fst/fst.conf"'
