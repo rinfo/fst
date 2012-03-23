@@ -4,10 +4,15 @@ from fabric.contrib.files import exists
 from fabric.contrib.project import rsync_project
 
 
-env.instances_dir = "/opt/rinfo/fst/instances"
+env.fst_dir = "/opt/rinfo/fst/"
+env.instances_dir = "%(fst_dir)s/instances" % env
 
 env.bak_path = "bak/opt-rinfo-fst-instances.tar.gz"
 env.local_bak = "/opt/work/rinfo/fst/backup"
+
+def make_user_dir(dirpath):
+    sudo("mkdir -p %s" % dirpath)
+    sudo("chown -R %s %s" % (env.user, dirpath))
 
 
 @task
@@ -46,9 +51,8 @@ def setup_server():
 
 @task
 def setup_env(name="venv-default"):
-    venv_dir = "%s/%s" % (env.instances_dir, name)
-    sudo("mkdir -p %(instances_dir)s" % env)
-    sudo("chown -R %(user)s %(instances_dir)s" % env)
+    venv_dir = "%s/%s" % (env.fst_dir, name)
+    make_user_dir(env.fst_dir)
     if not exists(venv_dir):
         run("virtualenv --distribute %s" % venv_dir)
     return venv_dir
@@ -61,6 +65,7 @@ def create_instance(name, version=None):
 
     venv_dir = setup_env()
 
+    make_user_dir(env.instances_dir)
     clone_dir = env.instances_dir + "/" + name
 
     if not exists(clone_dir):
