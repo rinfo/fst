@@ -1,4 +1,4 @@
--e svn+http://code.djangoproject.com/svn/django/trunk
+django==1.4
 isodate==0.4.7
 rdflib==3.2.0
 wsgiref==0.1.2
