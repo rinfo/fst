@@ -33,13 +33,14 @@ def prod2():
 
 @task
 def setup_server():
-    sudo("apt-get install curl")
+    sudo("apt-get update")
+    sudo("apt-get install curl -y")
     sudo("apt-get install apache2 -y")
-    sudo("apt-get install libapache2-mod-wsgi")
-    sudo("apt-get install python-dev")
-    sudo("apt-get install python-pip")
+    sudo("apt-get install libapache2-mod-wsgi -y")
+    sudo("apt-get install python-dev -y")
+    sudo("apt-get install python-pip -y")
     sudo("pip install virtualenv")
-    sudo("apt-get install git")
+    sudo("apt-get install git -y")
 
 @task
 def create_env(name="fst-default"):
