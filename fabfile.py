@@ -58,7 +58,7 @@ def setup_env(name="venv-default"):
     return venv_dir
 
 @task
-def create_instance(name, version=None):
+def create_instance(name, version=None, develop=True):
     """
     Create a new FST instance with the given ``name``.
     """
@@ -74,6 +74,8 @@ def create_instance(name, version=None):
 
     with cd(clone_dir):
         run("git pull")
+        if develop:
+            run("git checkout develop")
         if version:
             run("git checkout tags/%s" % version)
 
@@ -82,34 +84,37 @@ def create_instance(name, version=None):
             # TODO: updates for all instances!
             run("pip install -r requirements.txt")
 
-    with cd("%s/fst_web" % clone_dir):
-
-        with prefix("source %s/bin/activate" % venv_dir):
-
-            run("cp demo_settings.py local_settings.py")
-
-            print ".. Remember to edit local_settings.py"  # TODO:
-            #''.join(
-            # [choice(
-            # 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)')
-            # for i in range(50)])
-            # s/Exempel/${GovName}/g
-            # s/exempel/${govname}/g
-            # s/exfs/${name}/g
-
             # you need no superuser; done in the next step
             run("python manage.py syncdb")
+        with cd("%s/fst_web" % clone_dir):
+            with prefix("source %s/bin/activate" % venv_dir):
 
-            # create user and rights
-            # TODO: optionally pre-adjust:
-            #run("cp fs_doc/fixtures/example_no_docs.json" +
-            # "fs_doc/fixtures/initial_no_docs.json")
-            # s/EXFS/${NewFs}/g
-            print ".. Remember to rename the initial EXFS"
-            run("python manage.py loaddata fs_doc/fixtures/example_no_docs.json")
+                run("cp demo_settings.py local_settings.py")
 
-            # allow apache to write to the database, upload and logs directory
-            run("chmod -R o+rw database uploads logs")
+                # allow apache to write to the database, upload and logs directory
+                run("chmod -R o+rw database uploads logs")
+
+                print ".. Remember to edit local_settings.py"  # TODO:
+                #''.join(
+                # [choice(
+                # 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)')
+                # for i in range(50)])
+                # s/Exempel/${GovName}/g
+                # s/exempel/${govname}/g
+                # s/exfs/${name}/g
+
+        with cd(clone_dir):
+            with prefix("source %s/bin/activate" % venv_dir):
+                # create user and rights
+                # TODO: optionally pre-adjust:
+                #run("cp fs_doc/fixtures/example_no_docs.json" +
+                # "fs_doc/fixtures/initial_no_docs.json")
+                # s/EXFS/${NewFs}/g
+                print ".. Remember to rename the initial EXFS"
+                run("python manage.py loaddata "
+                    "fst_web/fs_doc/fixtures/exempeldata.json")
+
+
 
     # TODO
     print '.. Remember to add new WSGIScriptAlias in "/opt/rinfo/fst/fst.conf"'
