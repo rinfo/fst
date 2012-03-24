@@ -1,17 +1,15 @@
 """ WSGI application settings for FST instance
 
-The default setup at Domstolsverket assumes every instance of FST is running
-under it's own virtualenv.
+The default setup at Domstolsverket assumes that instances of FST run
+under the default virtualenv unless something else is explicitly specified.
 """
 import os
 import sys
 import site
 
-# Remember to replace this with your production server path!
-VIRTUALENV_PATH = '/path/of/your/virtualenv'
-# Be careful with the Python version: we will upgrade to 2.7 soon!
-PYTHON_SITE_PACKAGES = 'lib/python2.6/site-packages'
-
+# Change this to match your production server path!
+VIRTUALENV_PATH = '/opt/rinfo/fst/venv-default'
+PYTHON_SITE_PACKAGES = 'lib/python2.7/site-packages'
 # Specify the site-packages folder of your virtualenv
 ALLDIRS = [os.path.join(VIRTUALENV_PATH, PYTHON_SITE_PACKAGES)]
 
@@ -23,7 +21,6 @@ prev_sys_path = list(sys.path)
 # Add all third-party libraries from your virtualenv
 for directory in ALLDIRS:
     site.addsitedir(directory)
-
 # Reorder sys.path so new directories come first.
 new_sys_path = []
 for item in list(sys.path):
@@ -35,14 +32,13 @@ sys.path[:0] = new_sys_path
 # Activate the virtualenv
 activate_this = os.path.join(VIRTUALENV_PATH, 'bin/activate_this.py')
 execfile(activate_this, dict(__file__=activate_this))
-from os.path import abspath, dirname, join
 
 # Some more path trickery...
+from os.path import abspath, dirname, join
 sys.path.insert(0, abspath(join(dirname(__file__), "../../")))
 
-# Now let's run our Django app under WSGI!
+# Get the default settings
 from django.conf import settings
-
 os.environ["DJANGO_SETTINGS_MODULE"] = "fst_web.settings"
 
 # Make sure both project and app are on sys.path
@@ -53,6 +49,6 @@ if subpath not in sys.path:
 if path not in sys.path:
     sys.path.insert(0, path)
 
+# Finally... run our Django app under WSGI!
 from django.core.wsgi import get_wsgi_application
-
 application = get_wsgi_application()
