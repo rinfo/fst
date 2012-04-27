@@ -109,6 +109,9 @@ def create_instance(name, version=None, develop=True):
                 run("cp demo_settings.py local_settings.py")
 
                 # allow apache to write to the database, upload and logs directory
+                # FIXME: set correct user and perms:
+                #run("chown -R www-data database uploads logs")
+                #run("chmod -R u+rw database uploads logs")
                 run("chmod -R o+rw database uploads logs")
 
                 print ".. Remember to edit local_settings.py"  # TODO:
@@ -119,6 +122,7 @@ def create_instance(name, version=None, develop=True):
                 # s/Exempel/${GovName}/g
                 # s/exempel/${govname}/g
                 # s/exfs/${name}/g
+                # FIXME: and change debug to False!
 
         with cd(clone_dir):
             with prefix("source %s/bin/activate" % venv_dir):
