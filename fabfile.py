@@ -102,7 +102,7 @@ def create_instance(name, version=None, develop=True):
             run("pip install -r requirements.txt")
 
             # you need no superuser; done in the next step
-            run("python manage.py syncdb")
+            run("python manage.py syncdb --noinput")
         with cd("%s/fst_web" % clone_dir):
             with prefix("source %s/bin/activate" % venv_dir):
 
