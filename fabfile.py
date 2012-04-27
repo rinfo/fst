@@ -1,4 +1,5 @@
 # -*- coding: UTF-8 -*-
+import os.path
 from fabric.api import *
 from fabric.contrib.files import exists
 from fabric.contrib.project import rsync_project
@@ -31,14 +32,6 @@ def prod():
     env.user = 'rinfo'
 
 @task
-def prod2():
-    """
-    Set target env to PENDING NEW PRODUCTION.
-    """
-    env.hosts = ["fst-rinfo.oort.to"]
-    env.user = 'rinfo'
-
-@task
 def setup_server():
     sudo("apt-get update")
     sudo("apt-get install curl -y")
@@ -48,6 +41,30 @@ def setup_server():
     sudo("apt-get install python-pip -y")
     sudo("pip install virtualenv")
     sudo("apt-get install git -y")
+    configure_apache()
+
+@task
+def configure_apache():
+    """
+    Set up apache2 configuration for FST.
+    """
+    sudo("a2enmod rewrite")
+    sudo("a2enmod ssl")
+    sudo("a2ensite default-ssl")
+    upload_apache_conf()
+    restart_apache()
+
+@task
+def upload_apache_conf():
+    script_dir = os.path.dirname(__file__)
+    configs = [
+        ("deploy/apache2/sites-available/default", "/etc/apache2/sites-available/"),
+        ("deploy/apache2/sites-available/default-ssl", "/etc/apache2/sites-available/"),
+        ("deploy/apache2/httpd.conf", "/etc/apache2/"),
+    ]
+    for path, dest in configs:
+        localpath = os.path.join(script_dir, *path.split('/'))
+        put(localpath, dest, use_sudo=True)
 
 @task
 def setup_env(name="venv-default"):
