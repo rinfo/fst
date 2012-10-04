@@ -5,7 +5,7 @@ from fabric.contrib.files import exists
 from fabric.contrib.project import rsync_project
 
 
-env.fst_dir = "/opt/rinfo/fst/"
+env.fst_dir = "/opt/rinfo/fst"
 env.instances_dir = "%(fst_dir)s/instances" % env
 
 env.bak_path = "bak/opt-rinfo-fst-instances.tar.gz"
