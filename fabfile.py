@@ -106,6 +106,9 @@ def create_instance(name, version=None, develop=True):
         with cd("%s/fst_web" % clone_dir):
             with prefix("source %s/bin/activate" % venv_dir):
 
+                if not exists("local_settings.py"):
+                    run("cp local_settings.py local_settings.py.bak")
+
                 run("cp demo_settings.py local_settings.py")
 
                 # allow apache to write to the database, upload and logs directory
@@ -124,22 +127,28 @@ def create_instance(name, version=None, develop=True):
                 # s/exfs/${name}/g
                 # FIXME: and change debug to False!
 
-        with cd(clone_dir):
-            with prefix("source %s/bin/activate" % venv_dir):
-                # create user and rights
-                # TODO: optionally pre-adjust:
-                #run("cp fs_doc/fixtures/example_no_docs.json" +
-                # "fs_doc/fixtures/initial_no_docs.json")
-                # s/EXFS/${NewFs}/g
-                print ".. Remember to rename the initial EXFS"
-                run("python manage.py loaddata "
-                    "fst_web/fs_doc/fixtures/exempeldata.json")
-
-
-
     # TODO
     print '.. Remember to add new WSGIScriptAlias in "/opt/rinfo/fst/fst.conf"'
     #restart_apache()
+
+
+@task
+def load_example_data(name):
+    """
+    Load example setup data fixture into named instance.
+    """
+    venv_dir = "%s/%s" % (env.fst_dir, name)
+    clone_dir = env.instances_dir + "/" + name
+    with cd(clone_dir):
+        with prefix("source %s/bin/activate" % venv_dir):
+            # create user and rights
+            # TODO: optionally pre-adjust:
+            #run("cp fs_doc/fixtures/example_no_docs.json" +
+            # "fs_doc/fixtures/initial_no_docs.json")
+            # s/EXFS/${NewFs}/g
+            print ".. Remember to rename the initial EXFS"
+            run("python manage.py loaddata "
+                "fst_web/fs_doc/fixtures/exempeldata.json")
 
 
 @task
