@@ -106,7 +106,7 @@ def create_instance(name, version=None, develop=True):
         with cd("%s/fst_web" % clone_dir):
             with prefix("source %s/bin/activate" % venv_dir):
 
-                if not exists("local_settings.py"):
+                if exists("local_settings.py"):
                     run("cp local_settings.py local_settings.py.bak")
 
                 run("cp demo_settings.py local_settings.py")
