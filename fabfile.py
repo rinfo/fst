@@ -107,10 +107,10 @@ def create_instance(name, version=None, develop=True):
         with cd("%s/fst_web" % clone_dir):
             with prefix("source %s/bin/activate" % venv_dir):
 
-                if exists("local_settings.py"):
-                    run("cp local_settings.py local_settings.py.bak")
-
-                run("cp demo_settings.py local_settings.py")
+                if not exists("local_settings.py"):
+                    run("cp demo_settings.py local_settings.py")
+                else:
+                    print "Make sure local_settings.py reflects recommendations in demo_settings.py"
 
                 # allow apache to write to the database, upload and logs directory
                 # FIXME: set correct user and perms:
