@@ -7,6 +7,7 @@ from fabric.contrib.project import rsync_project
 
 env.fst_dir = "/opt/rinfo/fst"
 env.instances_dir = "%(fst_dir)s/instances" % env
+env.fst_apache_conf = "%(fst_dir)s/fst.conf" % env
 
 env.bak_path = "bak/opt-rinfo-fst-instances.tar.gz"
 env.local_bak = "/opt/work/rinfo/fst/backup"
@@ -118,17 +119,16 @@ def create_instance(name, version=None, develop=True):
                 run("chmod -R o+rw database uploads logs")
 
                 print ".. Remember to edit local_settings.py"  # TODO:
-                #''.join(
-                # [choice(
-                # 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)')
-                # for i in range(50)])
-                # s/Exempel/${GovName}/g
-                # s/exempel/${govname}/g
-                # s/exfs/${name}/g
+                #import string as S
+                #print ''.join([choice(S.ascii_lowercase + S.digits + '!@#$%^&*(-_=+)')
+                #        for i in range(50)])
+                # s/Exempel/${OrgName}/g
+                # s/exempel/${orgname}/g
+                # s/exfs/${series}/g
                 # FIXME: and change debug to False!
 
     # TODO
-    print '.. Remember to add new WSGIScriptAlias in "/opt/rinfo/fst/fst.conf"'
+    print '.. Remember to add new WSGIScriptAlias in ' + env.fst_apache_conf
     #restart_apache()
 
 
@@ -169,12 +169,13 @@ def info(name):
 
 
 @task
-def bak():
+def bak(download='1'):
     """
     Create a backup archive of all FST instances and download to ``local_bak``.
     """
-    run("tar czvf %(bak_path)s %(instances_dir)s" % env)
-    get(env.bak_path, env.local_bak)
+    run("tar czvf %(bak_path)s %(instances_dir)s %(fst_apache_conf)s" % env)
+    if int(download):
+        get(env.bak_path, env.local_bak)
 
 @task
 def stop_apache():
