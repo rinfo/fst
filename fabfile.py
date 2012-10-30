@@ -14,7 +14,7 @@ env.local_bak = "/opt/work/rinfo/fst/backup"
 
 def make_user_dir(dirpath):
     sudo("mkdir -p %s" % dirpath)
-    sudo("chown -R %s %s" % (env.user, dirpath))
+    sudo("chown %s %s" % (env.user, dirpath))
 
 
 @task
@@ -73,7 +73,7 @@ def manual_python():
     Print instructions for compiling Python on a Debian Linux.
     """
     print "Install reasonable dependencies for Python:"
-    print "$ apt-get install dpkg-dev zlib1g-dev libbz2-dev libexpat1-dev libncurses5-dev libreadline6-dev libssl-dev"
+    print "$ apt-get install dpkg-dev zlib1g-dev libbz2-dev libexpat1-dev libncurses5-dev libreadline6-dev libsqlite3-dev libssl-dev"
     print "Download and compile Python 2.7:"
     print "$ cd ~/installers/"
     print "$ curl -O http://python.org/ftp/python/2.7.3/Python-2.7.3.tar.bz2"
