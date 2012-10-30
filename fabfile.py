@@ -68,6 +68,27 @@ def upload_apache_conf():
         put(localpath, dest, use_sudo=True)
 
 @task
+def manual_python():
+    """
+    Print instructions for compiling Python on a Debian Linux.
+    """
+    print "Install reasonable dependencies for Python:"
+    print "$ apt-get install dpkg-dev zlib1g-dev libbz2-dev libexpat1-dev libncurses5-dev libreadline6-dev libssl-dev"
+    print "Download and compile Python 2.7:"
+    print "$ cd ~/installers/"
+    print "$ curl -O http://python.org/ftp/python/2.7.3/Python-2.7.3.tar.bz2"
+    print "$ tar xjvf Python-2.7.3.tar.bz2"
+    print "$ cd Python-2.7.3/"
+    print "$ ./configure"
+    print "$ make"
+    print "$ sudo make install"
+    print "Install distribute and virtualenv:"
+    print "$ cd ~/installers/"
+    print "$ curl -O http://python-distribute.org/distribute_setup.py"
+    print "$ sudo python distribute_setup.py"
+    print "$ sudo easy_install virtualenv"
+
+@task
 def setup_env(name="venv-default"):
     venv_dir = "%s/%s" % (env.fst_dir, name)
     make_user_dir(env.fst_dir)
@@ -113,10 +134,8 @@ def create_instance(name, version=None, develop=True):
                     print "Make sure local_settings.py reflects recommendations in demo_settings.py"
 
                 # allow apache to write to the database, upload and logs directory
-                # FIXME: set correct user and perms:
-                #run("chown -R www-data database uploads logs")
-                #run("chmod -R u+rw database uploads logs")
-                run("chmod -R o+rw database uploads logs")
+                sudo("chown -R www-data database uploads logs")
+                sudo("chmod -R a-w,u+rw database uploads logs")
 
                 print ".. Remember to edit local_settings.py"  # TODO:
                 #import string as S
