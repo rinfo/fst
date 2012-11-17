@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
-import os
 from django.conf import settings
-from django.conf.urls.defaults import *
 from django.contrib import admin
+from django.conf.urls import patterns, include
+from django.views.generic.base import TemplateView
+
 from adminplus import AdminSitePlus
-from django.conf.urls.defaults import patterns, include, url
-from django.views.generic.base import TemplateView, RedirectView
-from django.views.generic.simple import direct_to_template
 
 
 class TextPlainView(TemplateView):

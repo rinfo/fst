@@ -2,6 +2,7 @@
 
 {% block breadcrumbs %}
   <div class="breadcrumbs">
-    <a href="{% url admin:index %}">Hem</a> &rsaquo; {{ title }}
+      {% load url from future %}
+      <a href="{% url 'admin:index' %}">Hem</a> &rsaquo; {{ title }}
   </div>
 {% endblock %}
