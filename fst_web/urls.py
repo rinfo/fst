@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.conf.urls import patterns, include
 from django.views.generic.base import TemplateView
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from adminplus import AdminSitePlus
 
@@ -55,3 +56,5 @@ urlpatterns = patterns('',
     (r'^admin/', include(admin.site.urls)),
                        #(r'^admin/(.*)', admin.site.root),
 )
+
+urlpatterns += staticfiles_urlpatterns()
