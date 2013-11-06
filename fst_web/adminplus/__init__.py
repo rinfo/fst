@@ -24,7 +24,7 @@ class AdminSitePlus(AdminSite):
     def get_urls(self):
         """Add our custom views to the admin urlconf."""
         urls = super(AdminSitePlus, self).get_urls()
-        from django.conf.urls.defaults import patterns, url
+        from django.conf.urls import patterns, url
         for path, view, name in self.custom_views:
             urls += patterns('',
                 url(r'^%s$' % path, self.admin_view(view)),
