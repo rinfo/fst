@@ -33,6 +33,14 @@ def prod():
     env.user = 'rinfo'
 
 @task
+def fst_new():
+    """
+    Set target env to PRODUCTION.
+    """
+    env.hosts = ["109.74.8.81"]
+    env.user = 'rinfo'
+
+@task
 def setup_server():
     sudo("apt-get update")
     sudo("apt-get install curl -y")
@@ -76,9 +84,9 @@ def manual_python():
     print "$ apt-get install dpkg-dev zlib1g-dev libbz2-dev libexpat1-dev libncurses5-dev libreadline6-dev libsqlite3-dev libssl-dev"
     print "Download and compile Python 2.7:"
     print "$ cd ~/installers/"
-    print "$ curl -O http://python.org/ftp/python/2.7.3/Python-2.7.3.tar.bz2"
-    print "$ tar xjvf Python-2.7.3.tar.bz2"
-    print "$ cd Python-2.7.3/"
+    print "$ curl -O http://python.org/ftp/python/2.7.6/Python-2.7.5.tar.bz2"
+    print "$ tar xjvf Python-2.7.5.tar.bz2"
+    print "$ cd Python-2.7.5/"
     print "$ ./configure"
     print "$ make"
     print "$ sudo make install"
