@@ -168,14 +168,9 @@ def load_example_data(name):
     clone_dir = env.instances_dir + "/" + name
     with cd(clone_dir):
         with prefix("source %s/bin/activate" % venv_dir):
-            # create user and rights
-            # TODO: optionally pre-adjust:
-            #run("cp fs_doc/fixtures/example_no_docs.json" +
-            # "fs_doc/fixtures/initial_no_docs.json")
-            # s/EXFS/${NewFs}/g
-            print ".. Remember to rename the initial EXFS"
+            # Setup users and access permissions
             run("python manage.py loaddata "
-                "fst_web/fs_doc/fixtures/exempeldata.json")
+                "fst_web/fs_doc/database/default_users.json")
 
 
 @task
