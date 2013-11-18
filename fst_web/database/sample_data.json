@@ -1,0 +1,361 @@
+[
+    {
+        "pk": 1, 
+        "model": "sites.site", 
+        "fields": {
+            "domain": "127.0.0.1", 
+            "name": "127.0.0.1"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "fs_doc.fsdokument", 
+        "fields": {
+            "omtryck": false, 
+            "arsutgava": "2009", 
+            "beslutsdatum": "2009-01-30", 
+            "sammanfattning": "", 
+            "ikrafttradandedatum": "2009-03-30", 
+            "amnesord": [
+                1
+            ], 
+            "utkom_fran_tryck": "2009-02-01", 
+            "forfattningssamling": 1, 
+            "lopnummer": "1", 
+            "content_md5": "5c2c3fc272e57cb1f1c5d9d3d1aeec3b", 
+            "is_published": false, 
+            "titel": "F\u00f6reskrifter om administration hos statliga myndigheter"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "fs_doc.fsdokument", 
+        "fields": {
+            "omtryck": true, 
+            "arsutgava": "2009", 
+            "beslutsdatum": "2009-04-01", 
+            "sammanfattning": "", 
+            "ikrafttradandedatum": "2009-05-01", 
+            "amnesord": [
+                1
+            ], 
+            "utkom_fran_tryck": "2009-04-20", 
+            "forfattningssamling": 1, 
+            "lopnummer": "2", 
+            "content_md5": "6becd47ccdc1d4441a7d7d45d2111049", 
+            "is_published": false, 
+            "titel": "F\u00f6reskrifter om \u00e4ndring i f\u00f6reskrifter 2009:1 om administration hos statliga myndigheter"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "fs_doc.fsdokument", 
+        "fields": {
+            "omtryck": false, 
+            "arsutgava": "2009", 
+            "beslutsdatum": "2009-04-30", 
+            "sammanfattning": "", 
+            "ikrafttradandedatum": "2009-05-30", 
+            "amnesord": [
+                2
+            ], 
+            "utkom_fran_tryck": "2009-05-15", 
+            "forfattningssamling": 1, 
+            "lopnummer": "3", 
+            "content_md5": "38f6775435ee332650f718435ed0c6f9", 
+            "is_published": false, 
+            "titel": "F\u00f6reskrifter om budgetering hos statliga myndigheter"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "fs_doc.fsdokument", 
+        "fields": {
+            "omtryck": false, 
+            "arsutgava": "2011", 
+            "beslutsdatum": "2011-05-01", 
+            "sammanfattning": "", 
+            "ikrafttradandedatum": "2011-06-04", 
+            "amnesord": [
+                3
+            ], 
+            "utkom_fran_tryck": "2011-05-20", 
+            "forfattningssamling": 1, 
+            "lopnummer": "1", 
+            "content_md5": "043a600c1b5bec6664c62c7a45bf9ff9", 
+            "is_published": false, 
+            "titel": "Exempelmyndighetens allm\u00e4nna r\u00e5d om adminstration"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "fs_doc.allmannarad", 
+        "fields": {
+            "andringar": [], 
+            "utgivare": null, 
+            "amnesord": [
+                3
+            ], 
+            "upphavningar": [], 
+            "content": "allmanna_rad/EXFS-2011-1.pdf", 
+            "konsolideringar": [], 
+            "beslutad_av": null
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "fs_doc.myndighetsforeskrift", 
+        "fields": {
+            "andringar": [], 
+            "bemyndiganden": [
+                2, 
+                3
+            ], 
+            "utgivare": null, 
+            "amnesord": [
+                1
+            ], 
+            "upphavningar": [], 
+            "celexreferenser": [
+                3
+            ], 
+            "content": "foreskrift/EXFS-2009-1.pdf", 
+            "konsolideringar": [], 
+            "beslutad_av": null
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "fs_doc.myndighetsforeskrift", 
+        "fields": {
+            "andringar": [
+                1
+            ], 
+            "bemyndiganden": [
+                2
+            ], 
+            "utgivare": null, 
+            "amnesord": [
+                1
+            ], 
+            "upphavningar": [], 
+            "celexreferenser": [
+                1, 
+                2, 
+                3
+            ], 
+            "content": "foreskrift/EXFS-2009-2.pdf", 
+            "konsolideringar": [], 
+            "beslutad_av": null
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "fs_doc.myndighetsforeskrift", 
+        "fields": {
+            "andringar": [], 
+            "bemyndiganden": [
+                1, 
+                2
+            ], 
+            "utgivare": null, 
+            "amnesord": [
+                2
+            ], 
+            "upphavningar": [], 
+            "celexreferenser": [], 
+            "content": "foreskrift/EXFS-2009-3.pdf", 
+            "konsolideringar": [], 
+            "beslutad_av": null
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "fs_doc.myndighet", 
+        "fields": {
+            "namn": "Exempelmyndigheten"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "fs_doc.forfattningssamling", 
+        "fields": {
+            "titel": "Exempelmyndighetens f\u00f6rfattningssamling", 
+            "kortnamn": "EXFS", 
+            "slug": "exfs"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "fs_doc.bilaga", 
+        "fields": {
+            "foreskrift": 1, 
+            "titel": "Bilaga 1", 
+            "file": "bilaga/EXFS-2009-1-bilaga.pdf", 
+            "file_md5": "1f6bb720ec9c725ef5d3b2508be53d87"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "fs_doc.celexreferens", 
+        "fields": {
+            "celexnummer": "32001L0400", 
+            "titel": ""
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "fs_doc.celexreferens", 
+        "fields": {
+            "celexnummer": "32008L0300", 
+            "titel": ""
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "fs_doc.celexreferens", 
+        "fields": {
+            "celexnummer": "31979L0409", 
+            "titel": "R\u00e5dets direktiv 79/409/EEG av den 2 april 1979 om bevarande av vilda f\u00e5glar"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "fs_doc.amnesord", 
+        "fields": {
+            "titel": "Administration", 
+            "beskrivning": ""
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "fs_doc.amnesord", 
+        "fields": {
+            "titel": "Budgetering", 
+            "beskrivning": ""
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "fs_doc.amnesord", 
+        "fields": {
+            "titel": "Centralisering", 
+            "beskrivning": ""
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "fs_doc.konsolideradforeskrift", 
+        "fields": {
+            "senaste_andringsforfattning": 2, 
+            "titel": "F\u00f6reskrifter om budgetering hos statliga myndigheter", 
+            "grundforfattning": 1, 
+            "content": "konsoliderad_foreskrift/EXFS-2009-1_2009-2.pdf", 
+            "konsolideringsdatum": "2011-05-30", 
+            "content_md5": "76687aa72a292d289f6091e4b19597f7"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "fs_doc.bemyndigandereferens", 
+        "fields": {
+            "paragrafnummer": "13", 
+            "sfsnummer": "1234:1", 
+            "titel": "Exempelf\u00f6rordning", 
+            "kommentar": "", 
+            "kapitelnummer": ""
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "fs_doc.bemyndigandereferens", 
+        "fields": {
+            "paragrafnummer": "11", 
+            "sfsnummer": "1234:1", 
+            "titel": "Exempelf\u00f6rordning", 
+            "kommentar": "", 
+            "kapitelnummer": ""
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "fs_doc.bemyndigandereferens", 
+        "fields": {
+            "paragrafnummer": "8", 
+            "sfsnummer": "1962:700", 
+            "titel": "Brottsbalken", 
+            "kommentar": "", 
+            "kapitelnummer": "4"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "fs_doc.rdfpost", 
+        "fields": {
+            "md5": "0db40350d48b95d5c840e516e1aa6d6b", 
+            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<rdf:RDF\n  xmlns=\"http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#\"\n  xmlns:dct=\"http://purl.org/dc/terms/\"\n  xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n  xmlns:dces=\"http://purl.org/dc/elements/1.1/\"\n>\n  <Myndighetsforeskrift rdf:about=\"http://rinfo.lagrummet.se/publ/exfs/2009:1\">\n    <utkomFranTryck rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-02-01</utkomFranTryck>\n    <bilaga>\n      <rdf:Description rdf:about=\"http://rinfo.lagrummet.se/publ/exfs/2009:1#bilaga_1\">\n        <dct:title>Bilaga 1</dct:title>\n      </rdf:Description>\n    </bilaga>\n    <forfattningssamling rdf:resource=\"http://rinfo.lagrummet.se/serie/fs/exfs\"/>\n    <dct:publisher rdf:resource=\"http://rinfo.lagrummet.se/org/exempelmyndigheten\"/>\n    <arsutgava>2009</arsutgava>\n    <ikrafttradandedatum rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-03-30</ikrafttradandedatum>\n    <genomforDirektiv rdf:resource=\"http://rinfo.lagrummet.se/ext/eur-lex/31979L0409\"/>\n    <dct:identifier>EXFS 2009:1</dct:identifier>\n    <beslutsdatum rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-01-30</beslutsdatum>\n    <dct:title xml:lang=\"sv\">F\u00f6reskrifter om administration hos statliga myndigheter</dct:title>\n    <dces:subject xml:lang=\"sv\">Administration</dces:subject>\n    <bemyndigande>\n      <Forfattningsreferens rdf:nodeID=\"EKHYWeqT3\">\n        <angerGrundforfattning rdf:resource=\"http://rinfo.lagrummet.se/publ/sfs/1962:700\"/>\n        <angerKapitelnummer>4</angerKapitelnummer>\n        <angerParagrafnummer>8</angerParagrafnummer>\n      </Forfattningsreferens>\n    </bemyndigande>\n    <bemyndigande>\n      <Forfattningsreferens rdf:nodeID=\"EKHYWeqT2\">\n        <angerGrundforfattning rdf:resource=\"http://rinfo.lagrummet.se/publ/sfs/1234:1\"/>\n        <angerParagrafnummer>11</angerParagrafnummer>\n      </Forfattningsreferens>\n    </bemyndigande>\n    <lopnummer>1</lopnummer>\n  </Myndighetsforeskrift>\n</rdf:RDF>\n", 
+            "object_id": 1, 
+            "content_type": [
+                "fs_doc", 
+                "myndighetsforeskrift"
+            ], 
+            "slug": "exfs/2009:1"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "fs_doc.rdfpost", 
+        "fields": {
+            "md5": "39501afa984bc3a302962286519ecc60", 
+            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<rdf:RDF\n  xmlns=\"http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#\"\n  xmlns:dct=\"http://purl.org/dc/terms/\"\n  xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n  xmlns:dces=\"http://purl.org/dc/elements/1.1/\"\n>\n  <Myndighetsforeskrift rdf:about=\"http://rinfo.lagrummet.se/publ/exfs/2009:2\">\n    <dct:title xml:lang=\"sv\">F\u00f6reskrifter om \u00e4ndring i f\u00f6reskrifter 2009:1 om administration hos statliga myndigheter</dct:title>\n    <ikrafttradandedatum rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-05-01</ikrafttradandedatum>\n    <bemyndigande>\n      <Forfattningsreferens rdf:nodeID=\"EKHYWeqT6\">\n        <angerGrundforfattning rdf:resource=\"http://rinfo.lagrummet.se/publ/sfs/1234:1\"/>\n        <angerParagrafnummer>11</angerParagrafnummer>\n      </Forfattningsreferens>\n    </bemyndigande>\n    <beslutsdatum rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-04-01</beslutsdatum>\n    <genomforDirektiv rdf:resource=\"http://rinfo.lagrummet.se/ext/eur-lex/31979L0409\"/>\n    <genomforDirektiv rdf:resource=\"http://rinfo.lagrummet.se/ext/eur-lex/32001L0400\"/>\n    <genomforDirektiv rdf:resource=\"http://rinfo.lagrummet.se/ext/eur-lex/32008L0300\"/>\n    <utkomFranTryck rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-04-20</utkomFranTryck>\n    <dces:subject xml:lang=\"sv\">Administration</dces:subject>\n    <omtryckAv rdf:resource=\"http://rinfo.lagrummet.se/publ/exfs/2009:1\"/>\n    <arsutgava>2009</arsutgava>\n    <dct:publisher rdf:resource=\"http://rinfo.lagrummet.se/org/exempelmyndigheten\"/>\n    <lopnummer>2</lopnummer>\n    <dct:identifier>EXFS 2009:2</dct:identifier>\n    <forfattningssamling rdf:resource=\"http://rinfo.lagrummet.se/serie/fs/exfs\"/>\n    <andrar rdf:resource=\"http://rinfo.lagrummet.se/publ/exfs/2009:1\"/>\n  </Myndighetsforeskrift>\n</rdf:RDF>\n", 
+            "object_id": 2, 
+            "content_type": [
+                "fs_doc", 
+                "myndighetsforeskrift"
+            ], 
+            "slug": "exfs/2009:2"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "fs_doc.rdfpost", 
+        "fields": {
+            "md5": "cde845cd343c647688808177f48c4df2", 
+            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<rdf:RDF\n  xmlns=\"http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#\"\n  xmlns:dct=\"http://purl.org/dc/terms/\"\n  xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n  xmlns:dces=\"http://purl.org/dc/elements/1.1/\"\n>\n  <Myndighetsforeskrift rdf:about=\"http://rinfo.lagrummet.se/publ/exfs/2009:3\">\n    <bemyndigande>\n      <Forfattningsreferens rdf:nodeID=\"EKHYWeqT9\">\n        <angerParagrafnummer>13</angerParagrafnummer>\n        <angerGrundforfattning rdf:resource=\"http://rinfo.lagrummet.se/publ/sfs/1234:1\"/>\n      </Forfattningsreferens>\n    </bemyndigande>\n    <bemyndigande>\n      <Forfattningsreferens rdf:nodeID=\"EKHYWeqT10\">\n        <angerParagrafnummer>11</angerParagrafnummer>\n        <angerGrundforfattning rdf:resource=\"http://rinfo.lagrummet.se/publ/sfs/1234:1\"/>\n      </Forfattningsreferens>\n    </bemyndigande>\n    <dct:identifier>EXFS 2009:3</dct:identifier>\n    <beslutsdatum rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-04-30</beslutsdatum>\n    <utkomFranTryck rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-05-15</utkomFranTryck>\n    <lopnummer>3</lopnummer>\n    <dct:publisher rdf:resource=\"http://rinfo.lagrummet.se/org/exempelmyndigheten\"/>\n    <forfattningssamling rdf:resource=\"http://rinfo.lagrummet.se/serie/fs/exfs\"/>\n    <arsutgava>2009</arsutgava>\n    <ikrafttradandedatum rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-05-30</ikrafttradandedatum>\n    <dct:title xml:lang=\"sv\">F\u00f6reskrifter om budgetering hos statliga myndigheter</dct:title>\n    <dces:subject xml:lang=\"sv\">Budgetering</dces:subject>\n  </Myndighetsforeskrift>\n</rdf:RDF>\n", 
+            "object_id": 3, 
+            "content_type": [
+                "fs_doc", 
+                "myndighetsforeskrift"
+            ], 
+            "slug": "exfs/2009:3"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "fs_doc.rdfpost", 
+        "fields": {
+            "md5": "9484faa6ea7cde03625bc84191ac46e3", 
+            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<rdf:RDF\n  xmlns=\"http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#\"\n  xmlns:dct=\"http://purl.org/dc/terms/\"\n  xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n  xmlns:dces=\"http://purl.org/dc/elements/1.1/\"\n>\n  <AllmannaRad rdf:about=\"http://rinfo.lagrummet.se/publ/exfs/2011:1\">\n    <dct:title xml:lang=\"sv\">Exempelmyndighetens allm\u00e4nna r\u00e5d om adminstration</dct:title>\n    <ikrafttradandedatum rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2011-06-04</ikrafttradandedatum>\n    <dct:identifier>EXFS 2011:1</dct:identifier>\n    <dces:subject xml:lang=\"sv\">Centralisering</dces:subject>\n    <utkomFranTryck rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2011-05-20</utkomFranTryck>\n    <beslutsdatum rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2011-05-01</beslutsdatum>\n    <forfattningssamling rdf:resource=\"http://rinfo.lagrummet.se/serie/fs/exfs\"/>\n    <dct:publisher rdf:resource=\"http://rinfo.lagrummet.se/org/exempelmyndigheten\"/>\n    <arsutgava>2011</arsutgava>\n    <lopnummer>1</lopnummer>\n  </AllmannaRad>\n</rdf:RDF>\n", 
+            "object_id": 4, 
+            "content_type": [
+                "fs_doc", 
+                "allmannarad"
+            ], 
+            "slug": "exfs/2011:1"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "fs_doc.rdfpost", 
+        "fields": {
+            "md5": "797b0cbaa1544e343865402c3881a7a8", 
+            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<rdf:RDF\n  xmlns=\"http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#\"\n  xmlns:dct=\"http://purl.org/dc/terms/\"\n  xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n>\n  <KonsolideradGrundforfattning rdf:about=\"http://rinfo.lagrummet.se/publ/exfs/2009:1/konsolidering/2011-05-30\">\n    <dct:publisher rdf:resource=\"http://rinfo.lagrummet.se/org/exempelmyndigheten\"/>\n    <dct:title xml:lang=\"sv\">F\u00f6reskrifter om budgetering hos statliga myndigheter</dct:title>\n    <konsoliderar rdf:resource=\"http://rinfo.lagrummet.se/publ/exfs/2009:1\"/>\n    <dct:issued rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2011-05-30</dct:issued>\n    <konsolideringsunderlag rdf:resource=\"http://rinfo.lagrummet.se/publ/exfs/2009:1\"/>\n    <konsolideringsunderlag rdf:resource=\"http://rinfo.lagrummet.se/publ/exfs/2009:2\"/>\n    <dct:identifier>EXFS 2009:1 i lydelse enligt 2011-05-30</dct:identifier>\n  </KonsolideradGrundforfattning>\n</rdf:RDF>\n", 
+            "object_id": 1, 
+            "content_type": [
+                "fs_doc", 
+                "konsolideradforeskrift"
+            ], 
+            "slug": "exfs/2009:1/konsolidering/2011-05-30"
+        }
+    }
+]
