@@ -25,7 +25,7 @@ class SimpleTest(TestCase):
         self.client = Client()
 
     def test_admin_is_accesible(self):
-        response = self.client.get('admin/')
+        response = self.client.get('/admin/')
         # Check that HTTP response is 200 OK.
         self.assertEqual(response.status_code, 200)
 
