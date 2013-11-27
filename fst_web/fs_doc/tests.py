@@ -5,6 +5,7 @@ import shutil
 from xml.dom.minidom import parseString
 from datetime import datetime
 from django.test import TestCase
+from django.test.client import Client
 from rdflib import Graph, Literal, URIRef, RDF
 from django.core.urlresolvers import reverse
 from fst_web.fs_doc import models
@@ -16,6 +17,17 @@ NS_ATOM = "http://www.w3.org/2005/Atom"
 NS_ATOM_FH = "http://purl.org/syndication/history/1.0"
 NS_ATOMLE = "http://purl.org/atompub/link-extensions/1.0"
 NS_AT = "http://purl.org/atompub/tombstones/1.0"
+
+class SimpleTest(TestCase):
+    """Simulate browser using Django test client """
+
+    def setUp(self):
+        self.client = Client()
+
+    def test_admin_is_accesible(self):
+        response = self.client.get('admin/')
+        # Check that HTTP response is 200 OK.
+        self.assertEqual(response.status_code, 200)
 
 
 #class AdminSuperUserTestCase(TestCase):
