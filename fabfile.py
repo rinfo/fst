@@ -12,6 +12,7 @@ env.fst_apache_conf = "%(fst_dir)s/fst.conf" % env
 env.bak_path = "bak/opt-rinfo-fst-instances.tar.gz"
 env.local_bak = "/opt/work/rinfo/fst/backup"
 
+
 def make_user_dir(dirpath):
     sudo("mkdir -p %s" % dirpath)
     sudo("chown %s %s" % (env.user, dirpath))
@@ -24,6 +25,7 @@ def integ():
     """
     env.hosts = ["rinfo-fst"]
 
+
 @task
 def prod():
     """
@@ -32,6 +34,7 @@ def prod():
     env.hosts = ["fst.lagrummet.se"]
     env.user = 'rinfo'
 
+
 @task
 def fst_new():
     """
@@ -39,6 +42,7 @@ def fst_new():
     """
     env.hosts = ["109.74.8.81"]
     env.user = 'rinfo'
+
 
 @task
 def setup_server():
@@ -52,6 +56,7 @@ def setup_server():
     sudo("apt-get install git -y")
     configure_apache()
 
+
 @task
 def configure_apache():
     """
@@ -62,6 +67,7 @@ def configure_apache():
     sudo("a2ensite default-ssl")
     upload_apache_conf()
     restart_apache()
+
 
 @task
 def upload_apache_conf():
@@ -74,6 +80,7 @@ def upload_apache_conf():
     for path, dest in configs:
         localpath = os.path.join(script_dir, *path.split('/'))
         put(localpath, dest, use_sudo=True)
+
 
 @task
 def manual_python():
@@ -96,6 +103,7 @@ def manual_python():
     print "$ sudo python distribute_setup.py"
     print "$ sudo easy_install virtualenv"
 
+
 @task
 def setup_env(name="venv-default"):
     venv_dir = "%s/%s" % (env.fst_dir, name)
@@ -103,6 +111,7 @@ def setup_env(name="venv-default"):
     if not exists(venv_dir):
         run("virtualenv --distribute %s" % venv_dir)
     return venv_dir
+
 
 @task
 def create_instance(name, version=None, develop=True):
@@ -118,7 +127,6 @@ def create_instance(name, version=None, develop=True):
     if not exists(clone_dir):
         with cd(env.instances_dir):
             run("git clone git://github.com/rinfo/fst.git %s" % name)
-
 
     with cd(clone_dir):
         run("git pull")
@@ -139,7 +147,7 @@ def create_instance(name, version=None, develop=True):
             instance_settings_file = "%s/deploy/instance_settings/%s/instance_settings.py" % (clone_dir, name)
             print instance_settings_file
             if exists(instance_settings_file):
-                run("cp %s %s/fst_web/instance_settings.py"  % (instance_settings_file, clone_dir))
+                run("cp %s %s/fst_web/instance_settings.py" % (instance_settings_file, clone_dir))
             else:
                 print "No instance_settings found. Using default sample settings"
 
@@ -157,8 +165,6 @@ def create_instance(name, version=None, develop=True):
                 sudo("chown -R www-data database uploads logs")
                 sudo("chmod -R a-w,u+rw database uploads logs")
 
-
-
                 print ".. Remember to edit instance_settings.py"  # TODO:
                 #import string as S
                 #print ''.join([choice(S.ascii_lowercase + S.digits + '!@#$%^&*(-_=+)')
@@ -170,8 +176,8 @@ def create_instance(name, version=None, develop=True):
 
     # Add new WSGIScriptAlias in ' + env.fst_apache_conf
     sudo("chmod -R 666 " + env.fst_apache_conf)
-    new_wsgi_alias = "WSGIScriptAlias /" + name +  "  /opt/rinfo/fst/instances/" + name + "/wsgi.py"
-    run("echo  \"" + new_wsgi_alias + "\" >> " +  env.fst_apache_conf)
+    new_wsgi_alias = "WSGIScriptAlias /" + name + "  /opt/rinfo/fst/instances/" + name + "/wsgi.py"
+    run("echo  \"" + new_wsgi_alias + "\" >> " + env.fst_apache_conf)
     restart_apache()
 
 
@@ -215,13 +221,16 @@ def bak(download='1'):
     if int(download):
         get(env.bak_path, env.local_bak)
 
+
 @task
 def stop_apache():
     sudo("apachectl stop")
 
+
 @task
 def start_apache():
     sudo("apachectl start")
+
 
 @task
 def restart_apache():
