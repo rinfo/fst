@@ -119,6 +119,7 @@ def create_instance(name, version=None, develop=True):
         with cd(env.instances_dir):
             run("git clone git://github.com/rinfo/fst.git %s" % name)
 
+
     with cd(clone_dir):
         run("git pull")
         if develop:
@@ -133,6 +134,15 @@ def create_instance(name, version=None, develop=True):
 
             # you need no superuser; done in the next step
             run("python manage.py syncdb --noinput")
+            run("python manage.py loaddata fst_web/database/default_users.json")
+
+            instance_settings_file = "%s/deploy/instance_settings/%s/instance_settings.py" % (clone_dir, name)
+            print instance_settings_file
+            if exists(instance_settings_file):
+                run("cp instance_settings_file %s/fst_web/instance_settings.py"  % clone_dir)
+            else:
+                print "No instance_settings found. Using default sample settings"
+                
         with cd("%s/fst_web" % clone_dir):
             with prefix("source %s/bin/activate" % venv_dir):
 
@@ -141,11 +151,15 @@ def create_instance(name, version=None, develop=True):
                 else:
                     print "Make sure local_settings.py reflects recommendations in demo_settings.py"
 
+
+
                 # allow apache to write to the database, upload and logs directory
                 sudo("chown -R www-data database uploads logs")
                 sudo("chmod -R a-w,u+rw database uploads logs")
 
-                print ".. Remember to edit local_settings.py"  # TODO:
+
+
+                print ".. Remember to edit instance_settings.py"  # TODO:
                 #import string as S
                 #print ''.join([choice(S.ascii_lowercase + S.digits + '!@#$%^&*(-_=+)')
                 #        for i in range(50)])
@@ -154,9 +168,11 @@ def create_instance(name, version=None, develop=True):
                 # s/exfs/${series}/g
                 # FIXME: and change debug to False!
 
-    # TODO
-    print '.. Remember to add new WSGIScriptAlias in ' + env.fst_apache_conf
-    #restart_apache()
+    # Add new WSGIScriptAlias in ' + env.fst_apache_conf
+    sudo("chmod -R 666 " + env.fst_apache_conf)
+    new_wsgi_alias = "WSGIScriptAlias /" + name +  "  /opt/rinfo/fst/instances/" + name + "/wsgi.py"
+    run("echo  \"" + new_wsgi_alias + "\" >> " +  env.fst_apache_conf)
+    restart_apache()
 
 
 @task
@@ -209,5 +225,6 @@ def start_apache():
 
 @task
 def restart_apache():
-    sudo("apachectl restart")
+    sudo("apachectl stop")
+    sudo("apachectl start")
 
