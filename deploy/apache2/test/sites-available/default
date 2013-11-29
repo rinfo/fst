@@ -1,20 +1,20 @@
 <VirtualHost *:80>
 	ServerAdmin webmaster@localhost
 
-	DocumentRoot /var/www
+	# Django/mod_wsgi/FST configuration
+	Include /opt/rinfo/fst/fst.conf
+    Alias /static/admin/ /opt/rinfo/fst/venv-default/lib/python2.7/site-packages/django/contrib/admin/static/admin/
 
+	DocumentRoot /var/www
+	<Directory />
+		Options FollowSymLinks
+		AllowOverride None
+	</Directory>
 	<Directory /var/www/>
 		Options Indexes FollowSymLinks MultiViews
 		AllowOverride None
 		Order allow,deny
-
 		allow from all
-		# Attempt to redirect all traffic from HTTP to HTTPS
-		RewriteEngine On
-		RewriteBase /
-		RewriteCond %{HTTPS} !=on
-		RewriteRule ^(.*)$ https://fst.lagrummet.se/$1 [L,R]
-		# Thats's it!
 	</Directory>
 
 	ErrorLog ${APACHE_LOG_DIR}/error.log
