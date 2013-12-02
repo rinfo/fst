@@ -168,7 +168,6 @@ def create_instance(name, version=None, develop=True):
 
                 # Generate secret key and add to settings file
                 secret = "SECRET_KEY = '/%s'" % generate_secret_key()
-                print secret
                 run("echo " + secret + " >> instance_settings.py")
 
                 # FIXME: and change debug to False!
