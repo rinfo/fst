@@ -18,4 +18,4 @@ FST_DATASET_URI = "tag:blabla.se,2009:rinfo:feed"
 FST_DATASET_TITLE = u"Flöde för BlaBlaMyndighetens författningssamling"
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = '2i!!@xy4goq72irz5ldb%gmogc4w&#bgx64j6q9%l)r9^4i-v-'
+
