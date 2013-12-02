@@ -2,7 +2,6 @@
 import os.path
 from fabric.api import *
 from fabric.contrib.files import exists
-from fabric.contrib.project import rsync_project
 
 
 env.fst_dir = "/opt/rinfo/fst"
@@ -36,9 +35,9 @@ def prod():
 
 
 @task
-def fst_new():
+def fst_dev():
     """
-    Set target env to PRODUCTION.
+    Set target env to FST_DEV.
     """
     env.hosts = ["109.74.8.81"]
     env.user = 'rinfo'
@@ -73,8 +72,10 @@ def configure_apache():
 def upload_apache_conf():
     script_dir = os.path.dirname(__file__)
     configs = [
-        ("deploy/apache2/sites-available/default", "/etc/apache2/sites-available/"),
-        ("deploy/apache2/sites-available/default-ssl", "/etc/apache2/sites-available/"),
+        ("deploy/apache2/sites-available/default",
+         "/etc/apache2/sites-available/"),
+        ("deploy/apache2/sites-available/default-ssl",
+         "/etc/apache2/sites-available/"),
         ("deploy/apache2/httpd.conf", "/etc/apache2/"),
     ]
     for path, dest in configs:
@@ -88,7 +89,9 @@ def manual_python():
     Print instructions for compiling Python on a Debian Linux.
     """
     print "Install reasonable dependencies for Python:"
-    print "$ apt-get install dpkg-dev zlib1g-dev libbz2-dev libexpat1-dev libncurses5-dev libreadline6-dev libsqlite3-dev libssl-dev"
+    print "$ apt-get install dpkg-dev zlib1g-dev libbz2-dev libexpat1-dev "
+    print "$ apt-get install libncurses5-dev libreadline6-dev libsqlite3-dev"
+    print "$ apt-get install  libssl-dev"
     print "Download and compile Python 2.7:"
     print "$ cd ~/installers/"
     print "$ curl -O http://python.org/ftp/python/2.7.6/Python-2.7.6.tar.bz2"
@@ -142,14 +145,18 @@ def create_instance(name, version=None, develop=True):
 
             # you need no superuser; done in the next step
             run("python manage.py syncdb --noinput")
-            run("python manage.py loaddata fst_web/database/default_users.json")
+            run("python manage.py loaddata " +
+                "fst_web/database/default_users.json")
 
-            instance_settings_file = "%s/deploy/instance_settings/%s/instance_settings.py" % (clone_dir, name)
+            instance_settings_file = \
+                "%s/deploy/instance_settings/%s/instance_settings.py" % \
+                (clone_dir, name)
             print instance_settings_file
             if exists(instance_settings_file):
-                run("cp %s %s/fst_web/instance_settings.py" % (instance_settings_file, clone_dir))
+                run("cp %s %s/fst_web/instance_settings.py" %
+                    (instance_settings_file, clone_dir))
             else:
-                print "No instance_settings found. Using default sample settings"
+                print "No instance_settings found. Using default settings"
 
         with cd("%s/fst_web" % clone_dir):
             with prefix("source %s/bin/activate" % venv_dir):
@@ -157,28 +164,39 @@ def create_instance(name, version=None, develop=True):
                 if not exists("local_settings.py"):
                     run("cp demo_settings.py local_settings.py")
                 else:
-                    print "Make sure local_settings.py reflects recommendations in demo_settings.py"
+                    print "Warning! Using demo version of local settings."
 
+                # Generate secret key and add to settings file
+                secret = "SECRET_KEY = '/%s'" % generate_secret_key()
+                print secret
+                run("echo " + secret + " >> instance_settings.py")
 
+                # FIXME: and change debug to False!
 
-                # allow apache to write to the database, upload and logs directory
+                # allow apache to write database, upload and logs directory
                 sudo("chown -R www-data database uploads logs")
                 sudo("chmod -R a-w,u+rw database uploads logs")
 
-                print ".. Remember to edit instance_settings.py"  # TODO:
-                #import string as S
-                #print ''.join([choice(S.ascii_lowercase + S.digits + '!@#$%^&*(-_=+)')
-                #        for i in range(50)])
-                # s/Exempel/${OrgName}/g
-                # s/exempel/${orgname}/g
-                # s/exfs/${series}/g
-                # FIXME: and change debug to False!
-
-    # Add new WSGIScriptAlias in ' + env.fst_apache_conf
+    # Create middleware configuration for this instance
+    new_wsgi_alias = \
+        "WSGIScriptAlias /%s  /opt/rinfo/fst/instances/%s/wsgi.py" %\
+        (name, name)
+    # Append new instance at the end of configuration file.
     sudo("chmod -R 666 " + env.fst_apache_conf)
-    new_wsgi_alias = "WSGIScriptAlias /" + name + "  /opt/rinfo/fst/instances/" + name + "/wsgi.py"
     run("echo  \"" + new_wsgi_alias + "\" >> " + env.fst_apache_conf)
+
     restart_apache()
+
+
+def generate_secret_key():
+    """
+    Generate random string for use in settings file
+    """
+    from random import random
+    from string import ascii_lowercase
+
+    lis = list(ascii_lowercase)
+    return "".join([lis[int(random() * 26)] for _ in xrange(50)])
 
 
 @task
@@ -236,4 +254,3 @@ def start_apache():
 def restart_apache():
     sudo("apachectl stop")
     sudo("apachectl start")
-
