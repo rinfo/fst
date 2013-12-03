@@ -167,8 +167,8 @@ def create_instance(name, version=None, develop=True):
                     print "Warning! Using demo version of local settings."
 
                 # Generate secret key and add to settings file
-                secret = "SECRET_KEY = '/%s'" % generate_secret_key()
-                run("echo " + secret + " >> instance_settings.py")
+                secret = "SECRET_KEY = '%s'" % generate_secret_key()
+                sudo("echo \"" + secret +  "\" >>  instance_settings.py")
 
                 # FIXME: and change debug to False!
 
@@ -177,12 +177,12 @@ def create_instance(name, version=None, develop=True):
                 sudo("chmod -R a-w,u+rw database uploads logs")
 
     # Create middleware configuration for this instance
+    sudo("chmod -R 666 " + env.fst_apache_conf)
     new_wsgi_alias = \
         "WSGIScriptAlias /%s  /opt/rinfo/fst/instances/%s/wsgi.py" %\
         (name, name)
     # Append new instance at the end of configuration file.
-    sudo("chmod -R 666 " + env.fst_apache_conf)
-    run("echo  \"" + new_wsgi_alias + "\" >> " + env.fst_apache_conf)
+    sudo("echo  \"" + new_wsgi_alias + "\" >> " + env.fst_apache_conf)
 
     restart_apache()
 

@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = '2i!!@xy4goq72irz5ldb%gmogc4w&#bgx64j6q9%l)r9^4i-v-'
-
 # Prefix of default document collection of this instance
 FST_INSTANCE_PREFIX = "exfs"
 
