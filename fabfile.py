@@ -143,10 +143,10 @@ def create_instance(name, version=None, develop=True):
             # TODO: updates for all instances!
             run("pip install -r requirements.txt")
 
-            # you need no superuser; done in the next step
-            run("python manage.py syncdb --noinput")
-            run("python manage.py loaddata " +
-                "fst_web/database/default_users.json")
+            if not exists("fst_web/local_settings.py"):
+                run("cp fst_web/demo_settings.py fst_web/local_settings.py")
+            else:
+                print "Warning! Using demo version of local settings."
 
             instance_settings_file = \
                 "%s/deploy/instance_settings/%s/instance_settings.py" % \
@@ -163,20 +163,19 @@ def create_instance(name, version=None, develop=True):
                 run("cp %s %s/fst_web/instance_settings.py" %
                     (default_settings_file, clone_dir))
 
-        with cd("%s/fst_web" % clone_dir):
-            with prefix("source %s/bin/activate" % venv_dir):
 
-                if not exists("local_settings.py"):
-                    run("cp demo_settings.py local_settings.py")
-                else:
-                    print "Warning! Using demo version of local settings."
-
+            with cd("%s/fst_web" % clone_dir):
                 # Generate secret key and add to settings file
                 secret = "SECRET_KEY = '%s'" % generate_secret_key()
                 sudo("echo \"" + secret +  "\" >>  instance_settings.py")
+                 # FIXME: and change debug to False!
 
-                # FIXME: and change debug to False!
+            # Load FST default users and permissions
+            run("python manage.py syncdb --noinput") # Don't create superuser here!
+            run("python manage.py loaddata " +
+                        "fst_web/database/default_users.json")
 
+            with cd("%s/fst_web" % clone_dir):
                 # allow apache to write database, upload and logs directory
                 sudo("chown -R www-data database uploads logs")
                 sudo("chmod -R a-w,u+rw database uploads logs")
