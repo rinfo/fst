@@ -123,7 +123,8 @@ INSTALLED_APPS = (
     #'django.contrib.admindocs',
     # Application specific here
     'fst_web.fs_doc',
-    'fst_web.adminplus'
+    'fst_web.adminplus',
+    'django_jenkins'
     )
 
 # Ensure that users are logged out automatically if inactive for
@@ -151,6 +152,18 @@ PASSWORD_HASHERS = (
     'django.contrib.auth.hashers.SHA1PasswordHasher',
     'django.contrib.auth.hashers.MD5PasswordHasher',
     'django.contrib.auth.hashers.CryptPasswordHasher',
+)
+
+JENKINS_TASKS = (
+    #'django_jenkins.tasks.with_coverage',
+    'django_jenkins.tasks.django_tests',   # select one django or
+    #'django_jenkins.tasks.dir_tests'      # directory tests discovery
+    #'django_jenkins.tasks.run_pep8',
+    #'django_jenkins.tasks.run_pyflakes',
+    #'django_jenkins.tasks.run_jslint',
+    #'django_jenkins.tasks.run_csslint',
+    #'django_jenkins.tasks.run_sloccount',
+    #'django_jenkins.tasks.lettuce_tests',
 )
 
 # Look for instance-specific settings
