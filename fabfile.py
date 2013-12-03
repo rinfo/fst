@@ -151,12 +151,17 @@ def create_instance(name, version=None, develop=True):
             instance_settings_file = \
                 "%s/deploy/instance_settings/%s/instance_settings.py" % \
                 (clone_dir, name)
+            default_settings_file = \
+                "%s/deploy/instance_settings/default/instance_settings.py" % \
+                (clone_dir)
             print instance_settings_file
             if exists(instance_settings_file):
                 run("cp %s %s/fst_web/instance_settings.py" %
                     (instance_settings_file, clone_dir))
             else:
                 print "No instance_settings found. Using default settings"
+                run("cp %s %s/fst_web/instance_settings.py" %
+                    (default_settings_file, clone_dir))
 
         with cd("%s/fst_web" % clone_dir):
             with prefix("source %s/bin/activate" % venv_dir):
