@@ -195,7 +195,7 @@ def create_instance(name, develop=True, version=None):
             run("python manage.py syncdb --noinput") # Don't create superuser here!
             run("python manage.py loaddata " +
                         "fst_web/database/default_users.json")
-            run("python manage.py jenkins")
+            run("python manage.py test")
 
 
             with cd("%s/fst_web" % clone_dir):
