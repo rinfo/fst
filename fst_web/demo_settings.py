@@ -16,9 +16,9 @@ TEMPLATE_DEBUG = DEBUG
 
 # Look for instance-specific settings
 try:
-    from instance_settings import *  # Use local settings if they exist
+    from instance_settings import *
 except ImportError:
-    pass
+    from default_instance_settings import *
 
 DATABASES = {
     'default': {

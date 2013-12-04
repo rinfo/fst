@@ -117,6 +117,25 @@ def setup_env(name="venv-default"):
 
 
 @task
+def update_instance(name, version=None, develop=True):
+    """
+    Update exsisting FST instance with specified 'name'.
+    """
+    venv_dir = setup_env()
+    clone_dir = env.instances_dir + "/" + name
+    if not exists(clone_dir):
+        print "Found no instance named: " + name
+    else:
+        with cd(clone_dir):
+            run("git pull")
+            if develop:
+                run("git checkout develop")
+            if version:
+                run("git checkout tags/%s" % version)
+
+
+
+@task
 def create_instance(name, version=None, develop=True):
     """
     Create a new FST instance with the given ``name``.
@@ -132,6 +151,11 @@ def create_instance(name, version=None, develop=True):
             run("git clone git://github.com/rinfo/fst.git %s" % name)
 
     with cd(clone_dir):
+        with prefix("source %s/bin/activate" % venv_dir):
+            run("pip install -r requirements.txt")
+
+
+    with cd(clone_dir):
         run("git pull")
         if develop:
             run("git checkout develop")
@@ -140,7 +164,6 @@ def create_instance(name, version=None, develop=True):
 
     with cd(clone_dir):
         with prefix("source %s/bin/activate" % venv_dir):
-            # TODO: updates for all instances!
             run("pip install -r requirements.txt")
 
             if not exists("fst_web/local_settings.py"):
