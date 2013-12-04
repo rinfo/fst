@@ -136,10 +136,8 @@ def update_instance(name, version=None, develop=True):
 
 
 @task
-def create_instance(name, version=None, develop=True):
-    """
-    Create a new FST instance with the given ``name``.
-    """
+def create_instance(name, develop=True, version=None):
+    """Create a new FST instance with the given ``name``. """
 
     venv_dir = setup_env()
 
@@ -197,6 +195,7 @@ def create_instance(name, version=None, develop=True):
             run("python manage.py syncdb --noinput") # Don't create superuser here!
             run("python manage.py loaddata " +
                         "fst_web/database/default_users.json")
+
 
             with cd("%s/fst_web" % clone_dir):
                 # allow apache to write database, upload and logs directory
