@@ -153,11 +153,6 @@ def create_instance(name, develop=True, version=None):
             run("git clone git://github.com/rinfo/fst.git %s" % name)
 
     with cd(clone_dir):
-        with prefix("source %s/bin/activate" % venv_dir):
-            run("pip install -r requirements.txt")
-
-
-    with cd(clone_dir):
         run("git pull")
         if develop:
             run("git checkout develop")
