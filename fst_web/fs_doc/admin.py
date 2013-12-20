@@ -259,6 +259,7 @@ class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                  ('content', 'omtryck'),
                  ('titel', 'sammanfattning'),
                  ('beslutsdatum', 'utkom_fran_tryck', 'ikrafttradandedatum'),
+                 ('utgivare', 'beslutad_av'),
                  'bemyndiganden'
                  ),
              'classes': ['wide', 'extrapretty']
@@ -409,18 +410,42 @@ def beslutsdatum(request):
     latest_documents = all_docs[:LIST_PER_PAGE_COUNT]
     return _response(request, 'beslutsdatum.html', locals())
 
+def publicerade():
+    """Display start page
+
+    List all documents that are not published
+    Get both 'Myndighetsforeskrift' and 'AllmannaRad'.
+    """
+    f_list = list(Myndighetsforeskrift.objects.filter(is_published==True).order_by(
+        "-beslutsdatum"))
+    a_list = list(AllmannaRad.objects.filter(is_published==True).order_by(
+        "-beslutsdatum"))
+    all_docs = sorted(
+        chain(f_list, a_list),
+        key=attrgetter('beslutsdatum'),
+        reverse=True)
+    latest_documents = all_docs[:LIST_PER_PAGE_COUNT]
+    return _response(request, 'beslutsdatum.html', locals())
+
 
 admin.site.register_view(
     'arsutgava', arsutgava,
     u'Alla föreskrifter och allmänna råd')
 
 admin.site.register_view(
-    'ikrafttradande', ikrafttradande,
-    u'Lista per år för ikraftträdande')
+    'Alla ej publicerade dokument',
+    u'Lista de ' + str(LIST_PER_PAGE_COUNT) + ' senaste',
+    view=publicerade)
 
 admin.site.register_view(
-    'beslutsdatum', beslutsdatum,
-    u'Lista de ' + str(LIST_PER_PAGE_COUNT) + ' senast beslutade')
+    'ikrafttradande', 
+    u'Lista per år för ikraftträdande',
+    view=ikrafttradande)
+
+admin.site.register_view(
+    'beslutsdatum',
+    u'Lista de ' + str(LIST_PER_PAGE_COUNT) + ' senast beslutade',
+    view=beslutsdatum)
 
 
 # TODO - Fix this view so get_admin_url doesn't get called with FSDokument
