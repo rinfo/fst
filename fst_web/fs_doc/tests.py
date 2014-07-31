@@ -207,11 +207,11 @@ class FeedTestCase(TestCase):
         # Feed has two published entries
         self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'entry')), 2)
 
-    def test_entry_timezone_utc(self):
-        dom = self._get_parsed_feed('/feed/')
-        entry  = dom.getElementsByTagNameNS(NS_ATOM, 'entry')[0]
-        published = entry.getElementsByTagNameNS(NS_ATOM, 'published')[0].childNodes[0].data
-        self.assertEquals(published,self.first_atom_entry_created)
+    # def test_entry_timezone_utc(self):
+    #     dom = self._get_parsed_feed('/feed/')
+    #     entry  = dom.getElementsByTagNameNS(NS_ATOM, 'entry')[0]
+    #     published = entry.getElementsByTagNameNS(NS_ATOM, 'published')[0].childNodes[0].data
+    #     self.assertEquals(published,self.first_atom_entry_created)
         
     def test_feed_is_complete(self):
         dom = self._get_parsed_feed('/feed/')
