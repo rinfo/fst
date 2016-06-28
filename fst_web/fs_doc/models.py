@@ -13,8 +13,8 @@ from django.core.files.move import file_move_safe
 from django.utils.text import get_valid_filename
 from django.core.files.storage import FileSystemStorage, Storage
 from django.core.validators import RegexValidator
-from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db import models
 from django.db.models.signals import post_delete
 from django.template import loader, Context
@@ -682,7 +682,7 @@ class GenericUniqueMixin(object):
 class RDFPost(models.Model, GenericUniqueMixin):
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField('object_id', db_index=True)
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
+    content_object = GenericForeignKey('content_type', 'object_id')
 
     slug = models.CharField(max_length=64)
     data = models.TextField()
@@ -711,7 +711,7 @@ class AtomEntry(models.Model, GenericUniqueMixin):
 
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField('object_id', db_index=True)
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
+    content_object = GenericForeignKey('content_type', 'object_id')
 
     entry_id = models.CharField(max_length=512)
 

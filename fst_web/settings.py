@@ -168,9 +168,9 @@ JENKINS_TASKS = (
 
 # Look for instance-specific settings
 try:
-    from local_settings import *  # Use local settings if they exist
+    from .local_settings import *  # Use local settings if they exist
 except ImportError:
-    from demo_settings import *  # else fall back to demo settings
+    from .demo_settings import *  # else fall back to demo settings
 
 # Setup standard logging: daily rotating files for requests, app logging,
 # debbugging DB calls etc.
