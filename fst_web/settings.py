@@ -242,3 +242,5 @@ if EMAIL_HOST_USER:
         }
 
     LOGGING['loggers']['django.request']['handlers'].append('mail_admins')
+
+ TEST_RUNNER = django.test.simple.DjangoTestSuiteRunner
