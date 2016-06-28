@@ -31,7 +31,7 @@ def fs_dokument_rdf(request, fs_dokument_slug):
     rdf_post = get_object_or_404(RDFPost, slug=fs_dokument_slug)
     fs_dokument = rdf_post.content_object
     return HttpResponse(rdf_post.data,
-                        mimetype="application/rdf+xml;charset=utf-8")
+                        content_type="application/rdf+xml;charset=utf-8")
 
 
 def fs_dokument(request, fs_dokument_slug):
@@ -66,4 +66,4 @@ def atomfeed(request):
     context = Context(locals())
 
     return HttpResponse(template.render(context),
-                        mimetype="application/atom+xml; charset=utf-8")
+                        content_type="application/atom+xml; charset=utf-8")

@@ -1,4 +1,4 @@
-Django==1.6.1
+Django==1.7
 Fabric==1.8.0
 SPARQLWrapper==1.5.2
 astroid==1.0.1
