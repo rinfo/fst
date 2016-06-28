@@ -6,3 +6,4 @@ env:
 install: 
  - pip install -r requirements.txt --use-mirrors
  - pip install -q Django==$DJANGO_VERSION --use-mirrors
+script: - python manage.py test
