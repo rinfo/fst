@@ -8,7 +8,7 @@ Use the default values in 'demo_settings.py' as a starting point.
 """
 
 ROOT = os.path.abspath(os.path.dirname(__file__))
-path = lambda *args: os.path.join(ROOT, *args)
+make_root_path = lambda *args: os.path.join(ROOT, *args)
 
 # Encoding of files read from disk (template and initial SQL files).
 FILE_CHARSET = 'utf-8'
@@ -46,13 +46,12 @@ MEDIA_ROOT = os.path.join(os.path.dirname(__file__), 'uploads')
 # Example: "/home/media/media.lawrence.com/static/"
 STATIC_ROOT = ''
 
-# URL prefix for static files.
-# Example: "http://media.lawrence.com/static/"
+# NOTE! In Django 1.4 this replaces "ADMIN_MEDIA_PREFIX"
+# URL prefix for admin static files -- CSS, JavaScript and images.
 STATIC_URL = '/static/'
 
+# NOTE! This is deprecated in Django 1.4
 # URL prefix for admin static files -- CSS, JavaScript and images.
-# Make sure to use a trailing slash.
-# Examples: "http://foo.com/static/admin/", "/static/admin/".
 ADMIN_MEDIA_PREFIX = '/media/'
 
 # Additional locations of static files
@@ -106,7 +105,10 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'fst_web.urls'
 
 # Specify one or more directories where templates can be found
-TEMPLATE_DIRS = (path('templates'), )
+TEMPLATE_DIRS = (make_root_path('templates'), )
+
+# Specify directory where logs can be found
+LOG_DIR = (make_root_path('logs'))
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -118,25 +120,125 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
-    'django.contrib.admindocs',
+    #'django.contrib.admindocs',
     # Application specific here
     'fst_web.fs_doc',
-    'fst_web.adminplus'
+    'fst_web.adminplus',
+    'django_jenkins'
     )
 
 # Ensure that users are logged out automatically if inactive for
 # specified time.
-SESSION_SAVE_EVERY_REQUEST = True # Refresh cookie on new activity
-SESSION_COOKIE_AGE = 30 * 60  # Cookie expires after this number of seconds
+SESSION_SAVE_EVERY_REQUEST = True  # Refresh cookie on new activity
+SESSION_COOKIE_AGE = 30 * 60   # Cookie expires after this number of seconds
 
 # Specify how detailed log output you want
 LOG_LEVEL = "WARNING"
-DB_DEBUG_LEVEL = "WARNING" # Silence noisy debug output
+DB_DEBUG_LEVEL = "WARNING"  # Silence noisy debug output
 
-EMAIL_HOST_USER = None # Email notifications are enabled in local settings
+EMAIL_HOST_USER = None  # Email notifications are enabled in local settings
 
-# Check for instance-specific settings
+#MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES +
+# ('debug_toolbar.middleware.DebugToolbarMiddleware',)
+#INSTALLED_APPS = INSTALLED_APPS + ('debug_toolbar',)
+# INTERNAL_IPS = ('127.0.0.1',) #
+
+# New for Django 1.4: list all possible password algorithms.
+# Unless your application has very special security needs, default is fine.
+PASSWORD_HASHERS = (
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.BCryptPasswordHasher',
+    'django.contrib.auth.hashers.SHA1PasswordHasher',
+    'django.contrib.auth.hashers.MD5PasswordHasher',
+    'django.contrib.auth.hashers.CryptPasswordHasher',
+)
+
+JENKINS_TASKS = (
+    #'django_jenkins.tasks.with_coverage',
+    'django_jenkins.tasks.django_tests',   # select one django or
+    #'django_jenkins.tasks.dir_tests'      # directory tests discovery
+    #'django_jenkins.tasks.run_pep8',
+    #'django_jenkins.tasks.run_pyflakes',
+    #'django_jenkins.tasks.run_jslint',
+    #'django_jenkins.tasks.run_csslint',
+    #'django_jenkins.tasks.run_sloccount',
+    #'django_jenkins.tasks.lettuce_tests',
+)
+
+# Look for instance-specific settings
 try:
-    from local_settings import *
+    from local_settings import *  # Use local settings if they exist
 except ImportError:
-    from demo_settings import *
+    from demo_settings import *  # else fall back to demo settings
+
+# Setup standard logging: daily rotating files for requests, app logging,
+# debbugging DB calls etc.
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s \%(process)d %'
+                      '(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(asctime)s %(message)s'
+        },
+        },
+    'handlers': {
+        'console': {
+            'level': '%s' % LOG_LEVEL,
+            'class': 'logging.StreamHandler',
+            },
+        'app_handler': {
+            'level': '%s' % LOG_LEVEL,
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(LOG_DIR, 'fst_web.app.log'),
+            'maxBytes': 1024 * 1024 * 5,  # 5 MB
+            'backupCount': 5,
+            'formatter': 'verbose',
+            },
+        'db_handler': {
+            'level': '%s' % LOG_LEVEL,
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(LOG_DIR, 'fst_web.db.log'),
+            'maxBytes': 1024 * 1024 * 5,  # 5 MB
+            'backupCount': 5,
+            'formatter': 'simple',
+            },
+        'request_handler': {
+            'level': '%s' % LOG_LEVEL,
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(LOG_DIR, 'django_request.log'),
+            'maxBytes': 1024 * 1024 * 5,  # 5 MB
+            'backupCount': 5,
+            'formatter': 'simple',
+            }
+    },
+    'loggers': {'': {'handlers':
+                         ['app_handler'],
+                     'level': '%s' % LOG_LEVEL,
+                     'propagate': False
+    },
+                'django.request': {
+                    'handlers': ['request_handler'],
+                    'level': '%s' % LOG_LEVEL,
+                    'propagate': False
+                },
+                'django.db.backends': {
+                    'handlers': ['db_handler'],
+                    'level': DB_DEBUG_LEVEL,
+                    'propagate': False,
+                    }
+    }
+}
+
+if EMAIL_HOST_USER:
+    LOGGING['handlers']['mail_admins'] = {
+        'level': 'ERROR',
+        'class': 'django.utils.log.AdminEmailHandler',
+        'include_html': False,
+        }
+
+    LOGGING['loggers']['django.request']['handlers'].append('mail_admins')

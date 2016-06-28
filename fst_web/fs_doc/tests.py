@@ -5,6 +5,7 @@ import shutil
 from xml.dom.minidom import parseString
 from datetime import datetime
 from django.test import TestCase
+from django.test.client import Client
 from rdflib import Graph, Literal, URIRef, RDF
 from django.core.urlresolvers import reverse
 from fst_web.fs_doc import models
@@ -16,6 +17,17 @@ NS_ATOM = "http://www.w3.org/2005/Atom"
 NS_ATOM_FH = "http://purl.org/syndication/history/1.0"
 NS_ATOMLE = "http://purl.org/atompub/link-extensions/1.0"
 NS_AT = "http://purl.org/atompub/tombstones/1.0"
+
+class SimpleTest(TestCase):
+    """Simulate browser using Django test client """
+
+    def setUp(self):
+        self.client = Client()
+
+    def test_admin_is_accesible(self):
+        response = self.client.get('/admin/')
+        # Check that HTTP response is 200 OK.
+        self.assertEqual(response.status_code, 200)
 
 
 #class AdminSuperUserTestCase(TestCase):
@@ -43,44 +55,6 @@ NS_AT = "http://purl.org/atompub/tombstones/1.0"
         #self.assertContains(response, "auth")
         #self.assertContains(response, "sites")
         #self.assertContains(response, "fs_doc")
-
-
-#class AdminTestCase(TestCase):
-    #"""Test admin functionality for logged in staff user """
-
-    #fixtures = ['exempeldata.json']
-
-    #def setUp(self):
-        #self.username = 'editor'  # This user already exists in fixture
-        #self.pw = 'editor'        # and is a regular staff user
-        #self.assertTrue(self.client.login(
-            #username=self.username,
-            #password=self.pw),
-                        #"Logging in user %s, pw %s failed." %
-                        #(self.username, self.pw))
-
-    #def tearDown(self):
-        #self.client.logout()
-
-    #def test_access(self):
-        #"""Verify that ordinary user has restricted access"""
-
-        #post_data = {}
-        #response = self.client.post(
-            #reverse('admin:index'), post_data)
-        #self.assertContains(response, "fs_doc")    # Permissions for this
-        #self.assertNotContains(response, "auth")   # No access
-        #self.assertNotContains(response, "sites")  # No access
-
-    #def test_translation_allmannarad(self):
-        #"""Verify existence of translated labels with Swedish characters """
-
-        #post_data = {}
-        #response = self.client.post(reverse(
-            #'admin:fs_doc_allmannarad_add'), post_data)
-        ## The expected field labels show up somewhere
-        #self.assertContains(response, "Årsutgåva")
-        #self.assertContains(response, "Löpnummer")
 
 
 class WebTestCase(TestCase):
@@ -187,9 +161,16 @@ class WebTestCase(TestCase):
         # Get document to publish
         foreskrift = models.Myndighetsforeskrift.objects.get(
             forfattningssamling__slug="exfs", arsutgava="2009", lopnummer="1")
-        generate_rdf_post_for(foreskrift)
         # Publish document. TODO - use explicit publish method here!
         generate_atom_entry_for(foreskrift)
+
+        # Feed now should have exactly one entry element
+        response = self.client.get('/feed/')
+        self.failUnlessEqual(response.status_code, 200)
+        self.assertEqual(response['content-type'],
+                         'application/atom+xml; charset=utf-8')
+        dom = parseString(response.content)
+        self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'entry')), 1)
 
         # Check that RDF representation exists
         response = self.client.get('/publ/exfs/2009:1/rdf')
@@ -226,11 +207,11 @@ class FeedTestCase(TestCase):
         # Feed has two published entries
         self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'entry')), 2)
 
-    def test_entry_timezone_utc(self):
-        dom = self._get_parsed_feed('/feed/')
-        entry  = dom.getElementsByTagNameNS(NS_ATOM, 'entry')[0]
-        published = entry.getElementsByTagNameNS(NS_ATOM, 'published')[0].childNodes[0].data
-        self.assertEquals(published,self.first_atom_entry_created)
+    # def test_entry_timezone_utc(self):
+    #     dom = self._get_parsed_feed('/feed/')
+    #     entry  = dom.getElementsByTagNameNS(NS_ATOM, 'entry')[0]
+    #     published = entry.getElementsByTagNameNS(NS_ATOM, 'published')[0].childNodes[0].data
+    #     self.assertEquals(published,self.first_atom_entry_created)
         
     def test_feed_is_complete(self):
         dom = self._get_parsed_feed('/feed/')
