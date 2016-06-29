@@ -799,7 +799,7 @@ def to_slug(tag):
     As specified by:
     http://dev.lagrummet.se/dokumentation/system/uri-principer.pdf
     """
-    tag = tag.lower()
+    tag = tag.lower().encode("utf-8")
     slug = tag.replace('å', 'aa').replace('ä', 'ae').\
          replace('ö', 'oe').replace(' ', '_')
     return slug
