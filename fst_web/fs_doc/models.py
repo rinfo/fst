@@ -66,7 +66,7 @@ class OverwritingStorage(FileSystemStorage):
                     os.write(fd, chunk)
                 locks.unlock(fd)
                 os.close(fd)
-            except Exception, e:
+            except Exception as e:
                 if os.path.exists(temp_data_location):
                     os.remove(temp_data_location)
                 raise
@@ -181,7 +181,7 @@ class FSDokument(Document):
     content_md5 = models.CharField(max_length=32,
                                    blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         """Display value for user interface."""
         return u'%s %s' % (self.identifierare, self.titel)
 
@@ -374,7 +374,7 @@ class Myndighet(models.Model):
         verbose_name = u"myndighet"
         verbose_name_plural = u"Myndigheter"
 
-    def __unicode__(self):
+    def __str__(self):
         """Display value for user interface."""
         return u'%s' % (self.namn)
 
@@ -412,7 +412,7 @@ class Forfattningssamling(models.Model):
         verbose_name = u"författningssamling"
         verbose_name_plural = u"Författningssamlingar"
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s %s' % (self.titel, self.kortnamn)
 
     def get_rinfo_uri(self):
@@ -443,7 +443,7 @@ class HasFile(models.Model):
     class Meta:
         abstract = True
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s' % (self.titel)
 
 
@@ -488,7 +488,7 @@ class OvrigtDokument(HasFile):
         verbose_name = u"övrigt dokument"
         verbose_name_plural = u"Övriga dokument"
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s' % (self.titel)
 
 
@@ -504,7 +504,7 @@ class CelexReferens(models.Model):
         verbose_name = u"EG-rättsreferens"
         verbose_name_plural = u"EG-rättsreferenser"
 
-    def __unicode__(self):
+    def __str__(self):
         if len(self.titel.strip()) > 0:
             return self.titel
         else:
@@ -523,7 +523,7 @@ class Amnesord(models.Model):
         verbose_name = u"ämnesord"
         verbose_name_plural = u"Ämnesord"
 
-    def __unicode__(self):
+    def __str__(self):
         return self.titel
 
 
@@ -590,7 +590,7 @@ class KonsolideradForeskrift(Document):
         #return ('fst_web.fs_doc.views.fs_dokument',
                 #[self.get_fs_dokument_slug()])
 
-    def __unicode__(self):
+    def __str__(self):
         """Display value for user interface."""
         return u'%s %s' % (self.identifierare, self.titel)
 
@@ -653,7 +653,7 @@ class Bemyndigandereferens(models.Model):
         verbose_name = u"bemyndigandereferens"
         verbose_name_plural = u"Bemyndigandereferenser"
 
-    def __unicode__(self):
+    def __str__(self):
         if self.kapitelnummer:
             kap_text = " kap."
         else:
@@ -799,7 +799,7 @@ def to_slug(tag):
     As specified by:
     http://dev.lagrummet.se/dokumentation/system/uri-principer.pdf
     """
-    tag = tag.lower().encode("utf-8")
+    tag = tag.lower()
     slug = tag.replace('å', 'aa').replace('ä', 'ae').\
          replace('ö', 'oe').replace(' ', '_')
     return slug
