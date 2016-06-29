@@ -5,7 +5,7 @@ from django.conf.urls import patterns, include
 from django.views.generic.base import TemplateView
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
-from adminplus import AdminSitePlus
+from .adminplus import AdminSitePlus
 
 
 class TextPlainView(TemplateView):
