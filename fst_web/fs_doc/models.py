@@ -682,7 +682,7 @@ class GenericUniqueMixin(object):
 class RDFPost(models.Model, GenericUniqueMixin):
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField('object_id', db_index=True)
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
+    content_object = GenericForeignKey('content_type', 'object_id')
 
     slug = models.CharField(max_length=64)
     data = models.TextField()
@@ -711,7 +711,7 @@ class AtomEntry(models.Model, GenericUniqueMixin):
 
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField('object_id', db_index=True)
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
+    content_object = GenericForeignKey('content_type', 'object_id')
 
     entry_id = models.CharField(max_length=512)
 
