@@ -12,5 +12,7 @@ local_settings.py
 fst_web/uploads/*/*.pdf
 fst_web/database/*.db
 
+# Migrations
+fst_web/fs_doc/migrations/
 # PyCharm
 .idea

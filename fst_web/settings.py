@@ -124,7 +124,6 @@ INSTALLED_APPS = (
     # Application specific here
     'fst_web.fs_doc',
     'fst_web.adminplus',
-    'django_jenkins'
     )
 
 # Ensure that users are logged out automatically if inactive for
