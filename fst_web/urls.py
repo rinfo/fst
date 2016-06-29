@@ -5,7 +5,7 @@ from django.conf.urls import patterns, include
 from django.views.generic.base import TemplateView
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
-from .adminplus import AdminSitePlus
+#from .adminplus import AdminSitePlus
 
 
 class TextPlainView(TemplateView):
@@ -14,7 +14,7 @@ class TextPlainView(TemplateView):
             context, content_type='text/plain', **kwargs)
 
 # Add admin enhancements from AdminPlus
-admin.site = AdminSitePlus()
+#admin.site = AdminSitePlus()
 
 # Enable Django admin autodiscovery
 admin.autodiscover()
