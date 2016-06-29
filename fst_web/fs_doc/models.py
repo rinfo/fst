@@ -13,8 +13,8 @@ from django.core.files.move import file_move_safe
 from django.utils.text import get_valid_filename
 from django.core.files.storage import FileSystemStorage, Storage
 from django.core.validators import RegexValidator
-from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db import models
 from django.db.models.signals import post_delete
 from django.template import loader, Context
