@@ -419,7 +419,7 @@ def publicerade(request):
     """
     f_list = list(Myndighetsforeskrift.objects.all().order_by(
         "-beslutsdatum"))
-    a_list = list(AllmannaRad.objects.all().order_by(
+    a_list = list(AllmannaRad.objects.all() .order_by(
         "-beslutsdatum"))
     all_docs = sorted(
         chain(f_list, a_list),
