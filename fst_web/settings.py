@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
 
-"""General Django settings file for all websites using the FST webservice
-
-In production, every website has it's own file named 'local_settings.py'.
-Use the default values in 'demo_settings.py' as a starting point.
+"""
+General Django settings for FST webservice
 """
 
 ROOT = os.path.abspath(os.path.dirname(__file__))
@@ -73,26 +71,6 @@ STATICFILES_FINDERS = (
 # http://docs.djangoproject.com/en/dev/ref/contrib/sites/
 SITE_ID = 1
 
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-    #     'django.template.loaders.eggs.Loader',
-    )
-
-TEMPLATE_CONTEXT_PROCESSORS = (
-    # Used by default in Django 1.3 (they have to be manually defined when
-    # TEMPLATE_CONTEXT_PROCESSORS is overriden like this):
-    "django.contrib.auth.context_processors.auth",
-    "django.core.context_processors.debug",
-    "django.core.context_processors.i18n",
-    "django.core.context_processors.media",
-    "django.core.context_processors.static",
-    "django.contrib.messages.context_processors.messages",
-    # Project-specific:
-    "fst_web.context_processors.add_request_vars",
-    )
-
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -103,9 +81,6 @@ MIDDLEWARE_CLASSES = (
     )
 
 ROOT_URLCONF = 'fst_web.urls'
-
-# Specify one or more directories where templates can be found
-TEMPLATE_DIRS = (make_root_path('templates'), )
 
 # Specify directory where logs can be found
 LOG_DIR = (make_root_path('logs'))
@@ -121,7 +96,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     #'django.contrib.admindocs',
-    # Application specific here
+    # Application specific here    'fst_web.fs_doc',
     'fst_web.fs_doc',
     'fst_web.adminplus',
     )
@@ -153,23 +128,39 @@ PASSWORD_HASHERS = (
     'django.contrib.auth.hashers.CryptPasswordHasher',
 )
 
-JENKINS_TASKS = (
-    #'django_jenkins.tasks.with_coverage',
-    'django_jenkins.tasks.django_tests',   # select one django or
-    #'django_jenkins.tasks.dir_tests'      # directory tests discovery
-    #'django_jenkins.tasks.run_pep8',
-    #'django_jenkins.tasks.run_pyflakes',
-    #'django_jenkins.tasks.run_jslint',
-    #'django_jenkins.tasks.run_csslint',
-    #'django_jenkins.tasks.run_sloccount',
-    #'django_jenkins.tasks.lettuce_tests',
-)
-
 # Look for instance-specific settings
 try:
     from .local_settings import *  # Use local settings if they exist
 except ImportError:
     from .demo_settings import *  # else fall back to demo settings
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [make_root_path('templates')],
+        'OPTIONS': {
+            'debug': DEBUG,
+            'loaders':
+                ['django.template.loaders.filesystem.Loader',
+                 'django.template.loaders.app_directories.Loader'
+                 ],
+            'context_processors': [
+                # Insert your TEMPLATE_CONTEXT_PROCESSORS here or use this
+                # list if you haven't customized them:
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+                # Project-specific:
+                "fst_web.context_processors.add_request_vars",
+            ],
+
+        },
+    },
+]
 
 # Setup standard logging: daily rotating files for requests, app logging,
 # debbugging DB calls etc.
