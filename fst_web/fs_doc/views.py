@@ -8,16 +8,15 @@ from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import  loader, Context, RequestContext
 from django.utils.feedgenerator import rfc3339_date
-from fst_web.fs_doc.models import Forfattningssamling,\
-KonsolideradForeskrift, FSDokument, Myndighetsforeskrift,\
-AllmannaRad, Amnesord, AtomEntry, RDFPost
+from fst_web.fs_doc.models import Forfattningssamling, FSDokument
+from fst_web.fs_doc.models import KonsolideradForeskrift, AllmannaRad
+from fst_web.fs_doc.models import Myndighetsforeskrift, Amnesord
+from fst_web.fs_doc.models import AtomEntry, RDFPost
 
 
 def _response(request, template, context):
-    return render_to_response(template,
-                              context,
-                              context_instance=RequestContext(request))
-
+    return render_to_response(
+        template, context)
 
 def index(request):
     """Display start page"""
@@ -30,8 +29,8 @@ def fs_dokument_rdf(request, fs_dokument_slug):
 
     rdf_post = get_object_or_404(RDFPost, slug=fs_dokument_slug)
     fs_dokument = rdf_post.content_object
-    return HttpResponse(rdf_post.data,
-                        content_type="application/rdf+xml;charset=utf-8")
+    return HttpResponse(
+        rdf_post.data, content_type="application/rdf+xml;charset=utf-8")
 
 
 def fs_dokument(request, fs_dokument_slug):
@@ -44,8 +43,8 @@ def fs_dokument(request, fs_dokument_slug):
     elif isinstance(fs_dokument, Myndighetsforeskrift):
         return _response(request, 'foreskrift.html', dict(doc=fs_dokument))
     elif isinstance(fs_dokument, KonsolideradForeskrift):
-        return _response(request,
-                         'konsoliderad_foreskrift.html', dict(doc=fs_dokument))
+        return _response(
+            request, 'konsoliderad_foreskrift.html', dict(doc=fs_dokument))
     else:
         pass
 
@@ -61,9 +60,8 @@ def atomfeed(request):
     feed_contact_url = settings.FST_ORG_CONTACT_URL
     feed_contact_email = settings.FST_ORG_CONTACT_EMAIL
     fst_instance_url = settings.FST_INSTANCE_URL
-
-    template = loader.get_template('atomfeed.xml')
     context = Context(locals())
-
-    return HttpResponse(template.render(context),
-                        content_type="application/atom+xml; charset=utf-8")
+    return HttpResponse(
+        _response(
+            request,'atomfeed.xml', context),
+        content_type="application/atom+xml; charset=utf-8")
