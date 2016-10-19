@@ -736,7 +736,6 @@ class AtomEntry(models.Model, GenericUniqueMixin):
             'updated': rfc3339_date(self.updated),
             'published': rfc3339_date(self.published),
             'deleted': rfc3339_date(self.deleted) if self.deleted else None,
-
             'doc': self.content_object,
             'rdf_post': self.rdf_post,
             'rdf_url': \

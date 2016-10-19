@@ -6,6 +6,7 @@ from datetime import datetime
 from itertools import chain
 from operator import attrgetter
 import re
+from django.db import models
 from django import forms
 from django.contrib import admin
 from django.contrib.admin import widgets
@@ -14,7 +15,7 @@ from django.conf import settings
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import  loader, Context, RequestContext
 from django.contrib import admin
-from fst_web.adminplus import AdminSitePlus
+from fst_web.adminplus.sites import AdminSitePlus
 from fst_web.fs_doc.models import *
 
 
@@ -410,15 +411,15 @@ def beslutsdatum(request):
     latest_documents = all_docs[:LIST_PER_PAGE_COUNT]
     return _response(request, 'beslutsdatum.html', locals())
 
-def publicerade():
+def publicerade(request):
     """Display start page
 
     List all documents that are not published
     Get both 'Myndighetsforeskrift' and 'AllmannaRad'.
     """
-    f_list = list(Myndighetsforeskrift.objects.filter(is_published==True).order_by(
+    f_list = list(Myndighetsforeskrift.objects.all().order_by(
         "-beslutsdatum"))
-    a_list = list(AllmannaRad.objects.filter(is_published==True).order_by(
+    a_list = list(AllmannaRad.objects.all().order_by(
         "-beslutsdatum"))
     all_docs = sorted(
         chain(f_list, a_list),
