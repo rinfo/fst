@@ -12,7 +12,6 @@ your particular installation.
 
 # NOTE! Always set this to False before deploying
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
 
 # Look for instance-specific settings
 try:
