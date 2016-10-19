@@ -55,8 +55,9 @@ MANAGERS = ADMINS
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = os.path.join("/", FST_INSTANCE_PREFIX,
-                         "dokument/")
+#MEDIA_URL = os.path.join("/", FST_INSTANCE_PREFIX,
+#                         "dokument/")
+MEDIA_URL = os.path.join("/dokument/")
 
 # Site and port for hosting FST service (do not add ending '/').
 FST_SITE_URL = "http://127.0.0.1:8000"
