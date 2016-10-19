@@ -6,10 +6,10 @@
   {% if custom_list %}
   <div class="module" style="float: left; width: 498px">
     <table style="width: 100%">
-      <caption>Lista föreskrifter och allmänna råd</caption>
+      <caption>Lista dokument</caption>
       <tbody>
         {% for path, name in custom_list %}
-           <tr><th><a href="{{ path }}">{{ name }}</a></th></tr>q
+          <tr><th><a href="{{ path }}">{{ name }}</a></th></tr>
         {% endfor %}
       </tbody>
     </table>
