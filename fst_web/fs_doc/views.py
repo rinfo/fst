@@ -1,16 +1,11 @@
 # -*- coding: utf-8 -*-
-import datetime
-from itertools import chain
-from operator import attrgetter
 from django.conf import settings
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, Http404, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, render_to_response, get_object_or_404
-from django.template import loader, Context, RequestContext
 from django.utils.feedgenerator import rfc3339_date
-from fst_web.fs_doc.models import Forfattningssamling, FSDokument
 from fst_web.fs_doc.models import KonsolideradForeskrift, AllmannaRad
-from fst_web.fs_doc.models import Myndighetsforeskrift, Amnesord
+from fst_web.fs_doc.models import Myndighetsforeskrift
 from fst_web.fs_doc.models import AtomEntry, RDFPost
 
 
@@ -20,6 +15,7 @@ def _response(request, template, context):
 
 def index(request):
     """Display start page"""
+
     return HttpResponseRedirect(reverse('admin:index'))
 
 
@@ -27,7 +23,6 @@ def fs_dokument_rdf(request, fs_dokument_slug):
     """Display RDF representation of document"""
 
     rdf_post = get_object_or_404(RDFPost, slug=fs_dokument_slug)
-    fs_dokument = rdf_post.content_object
     return HttpResponse(
         rdf_post.data, content_type="application/rdf+xml;charset=utf-8")
 
@@ -36,14 +31,14 @@ def fs_dokument(request, fs_dokument_slug):
     """Display document subclassing 'FSDokument' """
 
     rdf_post = get_object_or_404(RDFPost, slug=fs_dokument_slug)
-    fs_dokument = rdf_post.content_object
-    if isinstance(fs_dokument, AllmannaRad):
-        return _response(request, 'allmanna_rad.html', dict(doc=fs_dokument))
-    elif isinstance(fs_dokument, Myndighetsforeskrift):
-        return _response(request, 'foreskrift.html', dict(doc=fs_dokument))
-    elif isinstance(fs_dokument, KonsolideradForeskrift):
+    document_content = rdf_post.content_object
+    if isinstance(document_content, AllmannaRad):
+        return _response(request, 'allmanna_rad.html', dict(doc=document_content))
+    elif isinstance(document_content, Myndighetsforeskrift):
+        return _response(request, 'foreskrift.html', dict(doc=document_content))
+    elif isinstance(document_content, KonsolideradForeskrift):
         return _response(
-            request, 'konsoliderad_foreskrift.html', dict(doc=fs_dokument))
+            request, 'konsoliderad_foreskrift.html', dict(doc=document_content))
     else:
         pass
 
@@ -51,8 +46,8 @@ def fs_dokument(request, fs_dokument_slug):
 def atomfeed(request):
     """ Return Atom Feed representing activities in document collection """
 
-    entries= AtomEntry.objects.order_by("-updated")
-    context= {
+    entries = AtomEntry.objects.order_by("-updated")
+    context = {
         'entries': AtomEntry.objects.order_by("-updated"),
         'last_updated': rfc3339_date(entries[0].updated) if entries else "",
         'feed_id': settings.FST_DATASET_URI,
