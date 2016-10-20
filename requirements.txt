@@ -1,4 +1,4 @@
-Django==1.9
+Django==1.10
 isodate==0.5.4
 pyparsing==2.1.10
 rdflib==4.2.1
