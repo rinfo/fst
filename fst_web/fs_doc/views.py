@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+"""View code for displaying different representations of FST data"""
+
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
@@ -10,6 +12,11 @@ from fst_web.fs_doc.models import AtomEntry, RDFPost
 
 
 def _response(request, template, context):
+    """Utility method for rendering custom view
+
+    This method uses django shortcut utilities.
+    See https://docs.djangoproject.com/en/1.10/topics/http/shortcuts/
+    """
     return render_to_response(template, context)
 
 
@@ -28,7 +35,11 @@ def fs_dokument_rdf(request, fs_dokument_slug):
 
 
 def fs_dokument(request, fs_dokument_slug):
-    """Display document subclassing 'FSDokument' """
+    """Display custom HTML view of document
+
+    Select HTML template according to type of document.
+    All documents are subclasses of FSDokument.
+    """
 
     rdf_post = get_object_or_404(RDFPost, slug=fs_dokument_slug)
     document_content = rdf_post.content_object
@@ -44,7 +55,7 @@ def fs_dokument(request, fs_dokument_slug):
 
 
 def atomfeed(request):
-    """ Return Atom Feed representing activities in document collection """
+    """ Display Atom Feed representing activities in document collection """
 
     entries = AtomEntry.objects.order_by("-updated")
     context = {
