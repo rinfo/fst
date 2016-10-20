@@ -731,7 +731,7 @@ class AtomEntry(models.Model, GenericUniqueMixin):
             # AtomEntry-objects with the delete property set.
             return ""
         template = loader.get_template('foreskrift_entry.xml')
-        context = Context({
+        context = {
             'entry_id': self.entry_id,
             'updated': rfc3339_date(self.updated),
             'published': rfc3339_date(self.published),
@@ -742,7 +742,7 @@ class AtomEntry(models.Model, GenericUniqueMixin):
             None if self.deleted \
             else self.content_object.get_absolute_url() + "rdf", \
             'fst_instance_url': settings.FST_INSTANCE_URL
-        })
+        }
         return template.render(context)
 
 
