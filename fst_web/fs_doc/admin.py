@@ -97,6 +97,9 @@ class HasContentFileForm(HasFileForm):
 
 class FSDokumentAdminMixin(object):
 
+
+    view_on_site = False  # Hide link to raw metadata
+
     def save_model(self, request, obj, form, change):
         """Create an AtomEntry object when 'Myndighetsforeskrift' is saved or
         updated. See 'create_delete_entry' in 'rinfo/models.py' for
