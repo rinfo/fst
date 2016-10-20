@@ -5,8 +5,8 @@ from operator import attrgetter
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, Http404, HttpResponseRedirect
-from django.shortcuts import render_to_response, get_object_or_404
-from django.template import  loader, Context, RequestContext
+from django.shortcuts import render, render_to_response, get_object_or_404
+from django.template import loader, Context, RequestContext
 from django.utils.feedgenerator import rfc3339_date
 from fst_web.fs_doc.models import Forfattningssamling, FSDokument
 from fst_web.fs_doc.models import KonsolideradForeskrift, AllmannaRad
@@ -15,12 +15,11 @@ from fst_web.fs_doc.models import AtomEntry, RDFPost
 
 
 def _response(request, template, context):
-    return render_to_response(
-        template, context)
+    return render_to_response(template, context)
+
 
 def index(request):
     """Display start page"""
-
     return HttpResponseRedirect(reverse('admin:index'))
 
 
@@ -52,16 +51,17 @@ def fs_dokument(request, fs_dokument_slug):
 def atomfeed(request):
     """ Return Atom Feed representing activities in document collection """
 
-    entries = AtomEntry.objects.order_by("-updated")
-    last_updated = rfc3339_date(entries[0].updated) if entries else ""
-    feed_id = settings.FST_DATASET_URI
-    feed_title = settings.FST_DATASET_TITLE
-    feed_contact_name = settings.FST_ORG_CONTACT_NAME
-    feed_contact_url = settings.FST_ORG_CONTACT_URL
-    feed_contact_email = settings.FST_ORG_CONTACT_EMAIL
-    fst_instance_url = settings.FST_INSTANCE_URL
-    context = Context(locals())
+    entries= AtomEntry.objects.order_by("-updated")
+    context= {
+        'entries': AtomEntry.objects.order_by("-updated"),
+        'last_updated': rfc3339_date(entries[0].updated) if entries else "",
+        'feed_id': settings.FST_DATASET_URI,
+        'feed_title': settings.FST_DATASET_TITLE,
+        'feed_contact_name': settings.FST_ORG_CONTACT_NAME,
+        'feed_contact_url': settings.FST_ORG_CONTACT_URL,
+        'feed_contact_email': settings.FST_ORG_CONTACT_EMAIL,
+        'fst_instance_url': settings.FST_INSTANCE_URL,
+    }
     return HttpResponse(
-        _response(
-            request,'atomfeed.xml', context),
+        _response(request, 'atomfeed.xml', context),
         content_type="application/atom+xml; charset=utf-8")
