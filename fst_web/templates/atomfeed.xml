@@ -16,7 +16,7 @@
     <link href="{{fst_instance_url}}/feed/" rel="self"/>
 
     {% for entry in entries %}
-{{entry.to_entryxml}}
+        {{entry.to_entryxml}}
     {% endfor %}
 
 </feed>

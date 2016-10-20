@@ -194,8 +194,7 @@ class FSDokument(Document):
     def get_absolute_url(self):
         """"Construct Django URL path from document attributes"""
 
-        return ('fst_web.fs_doc.views.fs_dokument',
-                [self.get_fs_dokument_slug()])
+        return ('fs_dokument', [self.get_fs_dokument_slug()])
 
     def get_admin_url(self):
         """Return URL for editing this document in Django admin."""
