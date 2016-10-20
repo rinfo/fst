@@ -338,8 +338,7 @@ class KonsolideradForeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
 
 def _response(request, template, context):
     return render_to_response(template,
-                              context,
-                              context_instance=RequestContext(request))
+                              context)
 
 
 def amnesord(request):
