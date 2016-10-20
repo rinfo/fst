@@ -13,33 +13,39 @@ class TextPlainView(TemplateView):
         return super(TextPlainView, self).render_to_response(
             context, content_type='text/plain', **kwargs)
 
-# Add admin enhancements from AdminPlus
-#admin.site = AdminSitePlus()
 
 # Enable Django admin autodiscovery
 admin.autodiscover()
-
 # URL-routing
-
 urlpatterns = [
     # Get files from server
-    url(r'^dokument/(?P<path>.*)$', serve,
-         {'document_root': settings.MEDIA_ROOT.replace('\\', '/')}),
+    url
+    (r'^dokument/(?P<path>.*)$',
+     serve,
+     {'document_root': settings.MEDIA_ROOT.replace('\\', '/')}),
 
     # Display start page ("/")
-    url(r'^$', index, name='index'),
+    url(r'^$',
+        index,
+        name='index'),
 
     # Display specific document as RDF
-    url(r'^publ/(?P<fs_dokument_slug>.*)/rdf$', fs_dokument_rdf),
+    url(r'^publ/(?P<fs_dokument_slug>.*)/rdf$',
+        fs_dokument_rdf,
+        name='fs_dokument_rdf'),
 
     # Display info about specific document
-    url(r'^publ/(?P<fs_dokument_slug>.*)/$', fs_dokument, name='fs_dokument'),
+    url(r'^publ/(?P<fs_dokument_slug>.*)/$',
+        fs_dokument,
+        name='fs_dokument'),
 
     # Display Atom feed with activity in document collection
-    url(r'^feed/$', atomfeed),
+    url(r'^feed/$',
+        atomfeed,
+        name='atomfeed'),
 
     # Tell web crawlers how to behave via robots.txt
-    url(r'^robots\.txt$', TemplateView,{'template': 'robots.txt', 'mimetype': 'text/plain'}),
+    url(r'^robots\.txt$', TemplateView, {'template': 'robots.txt', 'mimetype': 'text/plain'}),
 
     # Add application favicon. Gets rid of lots of annoying log messages.
     url(r'^favicon\.ico$', RedirectView, {'url': '/static/images/favicon.ico'}),
@@ -47,5 +53,4 @@ urlpatterns = [
     # Enable Django admin
     url(r'^admin/', include(admin.site.urls)),
 ]
-
 urlpatterns += staticfiles_urlpatterns()
