@@ -82,6 +82,8 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'fst_web.urls'
 
+WSGI_APPLICATION = 'fst_web.wsgi.application'
+
 # Specify directory where logs can be found
 LOG_DIR = (make_root_path('logs'))
 
