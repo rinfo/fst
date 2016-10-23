@@ -32,7 +32,7 @@ class OverwritingStorage(FileSystemStorage):
          http://djangosnippets.org/comments/cr/15/976/#c1670 (installation)
     """
 
-    def get_available_name(self, name):
+    def get_available_name(self, name, max_length=None):
         return name
 
     def _save(self, name, content):
@@ -40,7 +40,6 @@ class OverwritingStorage(FileSystemStorage):
         Lifted partially from django/core/files/storage.py
         """
         full_path = self.path(name)
-
         directory = os.path.dirname(full_path)
         if not os.path.exists(directory):
             os.makedirs(directory)
@@ -70,13 +69,10 @@ class OverwritingStorage(FileSystemStorage):
                 if os.path.exists(temp_data_location):
                     os.remove(temp_data_location)
                 raise
-
-        file_move_safe(temp_data_location, full_path)
+        file_move_safe(temp_data_location, full_path, allow_overwrite=True)
         content.close()
-
         if settings.FILE_UPLOAD_PERMISSIONS is not None:
             os.chmod(full_path, settings.FILE_UPLOAD_PERMISSIONS)
-
         return name
 
 
