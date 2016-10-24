@@ -23,6 +23,59 @@ from fst_web.fs_doc import rdfviews
 
 RINFO_PUBL_BASE = "http://rinfo.lagrummet.se/publ/"
 
+
+class OverwritingStorage(FileSystemStorage):
+    """ File storage that allows overwriting of stored files.
+
+    See: http://haineault.com/blog/147/ (describes problem)
+         http://djangosnippets.org/snippets/2173/ (implements fix)
+         http://djangosnippets.org/comments/cr/15/976/#c1670 (installation)
+    """
+
+    def get_available_name(self, name, max_length=None):
+        return name
+
+    def _save(self, name, content):
+        """
+        Lifted partially from django/core/files/storage.py
+        """
+        full_path = self.path(name)
+        directory = os.path.dirname(full_path)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        elif not os.path.isdir(directory):
+            raise IOError("%s exists and is not a directory." % directory)
+
+        # This file has a file path that we can move.
+        if hasattr(content, 'temporary_file_path'):
+            temp_data_location = content.temporary_file_path()
+        else:
+            tmp_prefix = "tmp_%s" % (get_valid_filename(name), )
+            temp_data_location = tempfile.mktemp(
+                prefix = tmp_prefix, dir = self.location)
+            try:
+                # This is a normal uploadedfile that we can stream.
+                # This fun binary flag incantation makes os.open throw an
+                # OSError if the file already exists before we open it.
+                fd = os.open(temp_data_location,
+                             os.O_WRONLY | os.O_CREAT |
+                             os.O_EXCL | getattr(os, 'O_BINARY', 0))
+                locks.lock(fd, locks.LOCK_EX)
+                for chunk in content.chunks():
+                    os.write(fd, chunk)
+                locks.unlock(fd)
+                os.close(fd)
+            except Exception as e:
+                if os.path.exists(temp_data_location):
+                    os.remove(temp_data_location)
+                raise
+        file_move_safe(temp_data_location, full_path, allow_overwrite=True)
+        content.close()
+        if settings.FILE_UPLOAD_PERMISSIONS is not None:
+            os.chmod(full_path, settings.FILE_UPLOAD_PERMISSIONS)
+        return name
+
+
 class Document(models.Model):
 
     class Meta:
@@ -167,7 +220,7 @@ class AllmannaRad(FSDokument):
 
     content = models.FileField(u"PDF-version",
                                upload_to="allmanna_rad",
-                               storage=FileSystemStorage(),
+                               storage=OverwritingStorage(),
                                help_text=
                                """Se till att dokumentet är i PDF-format.""")
 
@@ -234,7 +287,7 @@ class Myndighetsforeskrift(FSDokument):
 
     content = models.FileField(u"PDF-version",
                                upload_to="foreskrift",
-                               storage=FileSystemStorage(),
+                               storage=OverwritingStorage(),
                                help_text=
                                """Se till att dokumentet är i PDF-format.""")
 
@@ -400,7 +453,7 @@ class Bilaga(HasFile):
 
     file = models.FileField(u"Fil",
                             upload_to="bilaga",
-                            storage=FileSystemStorage(),
+                            storage=OverwritingStorage(),
                             blank=True,
                             help_text=
                             """Om ingen fil anges förutsätts bilagan \
@@ -424,7 +477,7 @@ class OvrigtDokument(HasFile):
 
     file = models.FileField(u"Fil",
                             upload_to="ovrigt",
-                            storage=FileSystemStorage())
+                            storage=OverwritingStorage())
 
     class Meta:
         verbose_name = u"övrigt dokument"
