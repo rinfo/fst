@@ -12,7 +12,7 @@
         <uri>{{feed_contact_url}}</uri>
         <email>{{feed_contact_email}}</email>
     </author>
-    <link href="{{fst_instance_url}}/feed/" rel="self"/>
+    <link href="{{url}}/feed/" rel="self"/>
 
     {% for entry in entries %}
         {{entry.to_entryxml}}
