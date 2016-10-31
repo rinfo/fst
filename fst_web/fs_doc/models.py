@@ -139,8 +139,8 @@ class FSDokument(Document):
     is_published = models.BooleanField(u"Publicerad via FST",
                                        default=False,
                                        help_text="""Grön bock = publicerad. \
-                                       Rött streck = ej publicerad. \
-                                       Glöm inte att publicera dina ändringar!
+                                       Rött kryss = ej publicerad. \
+                                       Kom ihåg att publicera dina ändringar!
                                      """)
 
     titel = models.CharField(
