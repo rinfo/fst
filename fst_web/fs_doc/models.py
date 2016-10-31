@@ -300,7 +300,7 @@ class Myndighetsforeskrift(FSDokument):
                                              related_name = "foreskrifter",
                                              verbose_name =
                                              u"Bidrar till att genomföra \
-                                             dessa EG-direktiv")
+                                             dessa EU-direktiv")
 
     beslutad_av = models.ForeignKey('Myndighet',
                                     related_name='doc_beslutad_av',
@@ -496,8 +496,8 @@ class CelexReferens(models.Model):
         help_text="Celexnummer, t.ex. <em>31979L0409</em>")
 
     class Meta:
-        verbose_name = u"EG-rättsreferens"
-        verbose_name_plural = u"EG-rättsreferenser"
+        verbose_name = u"EU-rättsreferens"
+        verbose_name_plural = u"EU-rättsreferenser"
 
     def __str__(self):
         if len(self.titel.strip()) > 0:
