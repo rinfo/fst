@@ -149,10 +149,10 @@ class FSDokument(Document):
 
     sammanfattning = models.TextField(
         max_length=8192,
-        blank=True,
         unique=False,
+        default="Sammanfattning saknas",
         help_text=
-        """<em>Valfri sammanfattning av dokuments syfte.</em>""")
+        """<em>Ange valfri sammanfattning av dokuments syfte.</em>""")
 
     # NOTE: The FST webservice currently only supports document collections
     # of type 'forfattningssamling'.
