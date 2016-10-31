@@ -300,7 +300,7 @@ class Myndighetsforeskrift(FSDokument):
                                              related_name = "foreskrifter",
                                              verbose_name =
                                              u"Bidrar till att genomföra \
-                                             dessa EG-direktiv")
+                                             dessa EU-direktiv")
 
     beslutad_av = models.ForeignKey('Myndighet',
                                     related_name='doc_beslutad_av',
