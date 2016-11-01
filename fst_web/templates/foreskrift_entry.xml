@@ -1,4 +1,4 @@
-    <entry>
+<entry>
         <id>{{entry_id}}</id>
         <updated>{{updated}}</updated>
         <published>{{published}}</published>
@@ -6,36 +6,17 @@
         <summary xml:lang="sv">{{doc.sammanfattning|default_if_none:""}}</summary>
         <content src="{{doc.content.url|safe}}"
             type="application/pdf"
-            hash="md5:{{doc.content_md5}}"/>
+            le:md5="{{doc.content_md5}}"/>
         {% if rdf_post %}
         <link rel="alternate"
             href="{{rdf_url}}"
             type="application/rdf+xml"
-            length="{{rdf_post.length}}" hash="md5:{{rdf_post.md5}}"/>
+            length="{{rdf_post.length}}" le:md5="{{rdf_post.md5}}"/>
         {% endif %}
         {% for bilaga in doc.bilagor.all %}
         {% if bilaga.file %}
-
-	{% comment %}
-	{# pending adjustments to checker and/or main strategy for file naming #}
-        <link rel="enclosure"
-            href="{{fst_instance_url}}/{{bilaga.file.url|safe}}"
-            type="application/pdf"
-            dct:isFormatOf="{{bilaga.get_rinfo_uri}}"
-            length="{{bilaga.file.size}}" hash="md5:{{bilaga.file_md5}}"/>
-	{% endcomment %}
-
         {% endif %}
         {% endfor %}
         {% for reldoc in doc.ovriga_dokument.all %}
-
-	{% comment %}
-	{# pending adjustments to checker and/or main strategy for file naming #}
-        <link rel="enclosure"
-            href="{{fst_instance_url}}/{{reldoc.file.url|safe}}"
-            type="application/pdf"
-            length="{{reldoc.file.size}}" hash="md5:{{reldoc.file_md5}}"/>
-	{% endcomment %}
         {% endfor %}
     </entry>
-
