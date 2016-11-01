@@ -226,13 +226,13 @@ class AllmannaRad(FSDokument):
 
     beslutad_av = models.ForeignKey('Myndighet',
                                     related_name='ar_beslutad_av',
-                                    null=True,  # TODO: add GUI to set this!
-                                    blank=True)
+                                    null=True,
+                                    blank=False)
 
     utgivare = models.ForeignKey('Myndighet',
                                  related_name='ar_utgivare',
-                                 null=True,  # TODO: add GUI to set this!
-                                 blank=True)
+                                 null=True,
+                                 blank=False)
 
     andringar = models.ManyToManyField('self',
                                        blank=True,
@@ -304,13 +304,13 @@ class Myndighetsforeskrift(FSDokument):
 
     beslutad_av = models.ForeignKey('Myndighet',
                                     related_name='doc_beslutad_av',
-                                    null=True,  # TODO: add GUI to set this!
-                                    blank=True)
+                                    null=True,
+                                    blank=False)
 
     utgivare = models.ForeignKey('Myndighet',
                                  related_name='doc_utgivare',
-                                 null=True,  # TODO: add GUI to set this!
-                                 blank=True)
+                                 null=True,
+                                 blank=False)
 
     andringar = models.ManyToManyField('self',
                                        blank=True,
