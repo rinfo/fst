@@ -13,6 +13,12 @@ your particular installation.
 # NOTE! Always set this to False before deploying
 DEBUG = True
 
+"""
+If you start getting error messages 'Invalid HTTP_HOSTheader',
+uncomment ALLOWED_HOSTS and add your own IP-address or domain.
+"""
+# ALLOWED_HOSTS = ['localhost', '127.0.0.1', xxx.xx.xx.xxx]
+
 # Look for instance-specific settings
 try:
     from .instance_settings import *
