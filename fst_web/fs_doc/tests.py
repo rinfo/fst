@@ -71,19 +71,19 @@ class WebTestCase(TestCase):
             os.mkdir(testdocs)
 
         # Move documents from fixtures to temporary test folder
-        shutil.copy(os.path.join(base, "fixtures/foreskrift/EXFS-2009-1.pdf"),
+        shutil.copy(os.path.join(base, "fixtures/foreskrift/EXFS_2009-1_Grund.pdf"),
                     testdocs)
         shutil.copy(os.path.join(base,
                                  "fixtures/bilaga/EXFS-2009-1-bilaga.pdf"),
                     testdocs)
         shutil.copy(os.path.join(base,
-                                 "fixtures/foreskrift/EXFS-2009-2.pdf"),
+                                 "fixtures/foreskrift/EXFS_2009-2_Andring_Omtryck.pdf"),
                     testdocs)
         shutil.copy(os.path.join(base,
-                                 "fixtures/foreskrift/EXFS-2009-3.pdf"),
+                                 "fixtures/foreskrift/EXFS_2009-3_Grund.pdf"),
                     testdocs)
         shutil.copy(os.path.join(base,
-                                 "fixtures/allmanna_rad/EXFS-2011-1.pdf"),
+                                 "fixtures/allmanna_rad/EXFS_2011-1_AllmantRad.pdf"),
                     testdocs)
 
     def tearDown(self):
