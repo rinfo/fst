@@ -186,7 +186,7 @@ msgstr ""
 
 #, python-brace-format
 msgid "The {name} \"{obj}\" was added successfully."
-msgstr ""
+msgstr "{name} \"{obj}\" lades till."
 
 #, python-brace-format
 msgid ""
@@ -201,7 +201,7 @@ msgstr ""
 
 #, python-brace-format
 msgid "The {name} \"{obj}\" was changed successfully."
-msgstr ""
+msgstr " {name} \"{obj}\" ändrades."
 
 msgid ""
 "Items must be selected in order to perform actions on them. No items have "
@@ -471,15 +471,12 @@ msgstr "Lägg till"
 msgid "You don't have permission to edit anything."
 msgstr "Du har inte rättigheter att redigera något."
 
-# Missing in Django 1.10 release
 msgid "Recent actions"
 msgstr "Senaste händelserna"
 
-# Missing in Django 1.10 release
 msgid "My actions"
 msgstr "Mina händelser"
 
-#, fuzzy
 msgid "None available"
 msgstr "Inga tillgängliga"
 
@@ -565,7 +562,7 @@ msgid "Save and continue editing"
 msgstr "Spara och fortsätt redigera"
 
 msgid "Thanks for spending some quality time with the Web site today."
-msgstr "Tack för att du spenderade lite kvalitetstid med webbplatsen idag."
+msgstr "Du är nu utloggad ur FST."
 
 msgid "Log in again"
 msgstr "Logga in igen"
