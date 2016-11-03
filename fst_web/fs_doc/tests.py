@@ -30,31 +30,30 @@ class SimpleTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-#class AdminSuperUserTestCase(TestCase):
+class AdminSuperUserTestCase(TestCase):
     #"""Test admin functionality for logged in superuser """
 
-    #fixtures = ['exempeldata.json']
+    fixtures = ['exempeldata.json']
 
-    #def setUp(self):
-        #self.username = 'admin'  # This user already exists in fixture
-        #self.pw = 'admin'        # and is a superuser
-        #self.assertTrue(self.client.login(
-            #username=self.username,
-            #password=self.pw),
-                        #"Logging in user %s, pw %s failed." %
-                        #(self.username, self.pw))
+    def setUp(self):
+        self.username = 'admin'  # This user already exists in fixture
+        self.pw = 'admin'        # and is a superuser
+        self.assertTrue(self.client.login(
+            username=self.username,
+            password=self.pw),
+                        "Logging in user %s, pw %s failed." %
+                        (self.username, self.pw))
 
-    #def tearDown(self):
-        #self.client.logout()
+    def tearDown(self):
+        self.client.logout()
 
-    #def test_superuser_access(self):
+    def test_superuser_access(self):
         #"""Verify that superuser has access to system tables"""
 
-        #post_data = {}
-        #response = self.client.post(reverse('admin:index'), post_data)
-        #self.assertContains(response, "auth")
-        #self.assertContains(response, "sites")
-        #self.assertContains(response, "fs_doc")
+        post_data = {}
+        response = self.client.post(reverse('admin:index'), post_data)
+        self.assertContains(response, "auth")
+        self.assertContains(response, "fs_doc")
 
 
 class WebTestCase(TestCase):
@@ -74,16 +73,16 @@ class WebTestCase(TestCase):
         shutil.copy(os.path.join(base, "fixtures/foreskrift/EXFS_2009-1_Grund.pdf"),
                     testdocs)
         shutil.copy(os.path.join(base,
-                                 "fixtures/bilaga/EXFS-2009-1-bilaga.pdf"),
+                                 "fixtures/bilaga/EXFS_2009-1-bilaga.pdf"),
                     testdocs)
         shutil.copy(os.path.join(base,
-                                 "fixtures/foreskrift/EXFS_2009-2_Andring_Omtryck.pdf"),
+                                 "fixtures/foreskrift/EXFS_2009-2_Andring_omtryck.pdf"),
                     testdocs)
         shutil.copy(os.path.join(base,
                                  "fixtures/foreskrift/EXFS_2009-3_Grund.pdf"),
                     testdocs)
         shutil.copy(os.path.join(base,
-                                 "fixtures/allmanna_rad/EXFS_2011-1_AllmantRad.pdf"),
+                                 "fixtures/allmanna_rad/EXFS_2011-1_Allmant_rad.pdf"),
                     testdocs)
 
     def tearDown(self):
@@ -116,31 +115,42 @@ class WebTestCase(TestCase):
             response,
             "<h2>EXFS 2011:1 Exempelmyndighetens allmänna råd om adminstration")
 
-    #def test_artal(self):
-        #"""Verify that listing by year load
-        #with correct sample data for all document types"""
+    # def test_artal(self):
+    #     #"""Verify that listing by year load
+    #     #with correct sample data for all document types"""
+    #
+    #     response = self.client.get('/admin/artal/')
+    #     self.failUnlessEqual(response.status_code, 200)
+    #     # Headers for years
+    #     self.assertContains(response, "<h2>2009</h2>")
+    #     self.assertContains(response, "<h2>2011</h2>")
+    #     # Documents listed by year
+    #     self.assertContains(response, '<li><a href="/publ/exfs/2009:3/">')
+    #     self.assertContains(response, '<li><a href="/publ/exfs/2011:1/">')
 
-        #response = self.client.get('/admin/artal/')
-        #self.failUnlessEqual(response.status_code, 200)
-        ## Headers for years
-        #self.assertContains(response, "<h2>2009</h2>")
-        #self.assertContains(response, "<h2>2011</h2>")
-        ## Documents listed by year
-        #self.assertContains(response, '<li><a href="/publ/exfs/2009:3/">')
-        #self.assertContains(response, '<li><a href="/publ/exfs/2011:1/">')
+    # def test_amnesord(self):
+    #     """Verify that listing by year load
+    #     with correct sample data for all document types"""
+    #
+    #     response = self.client.get('/admin/amnesord/')
+    #     self.failUnlessEqual(response.status_code, 200)
+    #     # Headers for keywords
+    #     self.assertContains(response, "<h2>Administration</h2>")
+    #     self.assertContains(response, "<h2>Budgetering</h2>")
+    #     # Documents listed by keywords
+    #     self.assertContains(response, '<li><a href="/publ/exfs/2009:3/">')
+    #     self.assertContains(response, '<li><a href="/publ/exfs/2011:1/">')
 
-    #def test_amnesord(self):
-        #"""Verify that listing by year load
-        #with correct sample data for all document types"""
-
-        #response = self.client.get('/admin/amnesord/')
-        #self.failUnlessEqual(response.status_code, 200)
-        ## Headers for keywords
-        #self.assertContains(response, "<h2>Administration</h2>")
-        #self.assertContains(response, "<h2>Budgetering</h2>")
-        ## Documents listed by keywords
-        #self.assertContains(response, '<li><a href="/publ/exfs/2009:3/">')
-        #self.assertContains(response, '<li><a href="/publ/exfs/2011:1/">')
+    # def test_beslutsdatum(self):
+    #     """Verify that listing by year load
+    #     with correct sample data for all document types"""
+    #
+    #     response = self.client.get('/admin/beslutsdatum')
+    #     self.failUnlessEqual(response.status_code, 200)
+    #     # Documents listed by keywords
+    #     self.assertContains(response, '<li><a href="/publ/exfs/2009:3/">')
+    #     self.assertContains(response, '<li><a href="/publ/exfs/2011:2/">')
+    #     self.assertContains(response, '<li><a href="/publ/exfs/2011:1/">')
 
     def test_feed(self):
         """Verify that Atom feed is created and can be read """
@@ -190,8 +200,7 @@ class FeedTestCase(TestCase):
             forfattningssamling__slug="exfs", arsutgava="2009", lopnummer="1")
         generate_rdf_post_for(foreskrift1)
         generate_atom_entry_for(foreskrift1)
-        self.first_atom_entry_created = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
-        
+
         foreskrift2 = models.Myndighetsforeskrift.objects.get(
             forfattningssamling__slug="exfs", arsutgava="2009", lopnummer="2")
         generate_rdf_post_for(foreskrift2)
@@ -207,12 +216,6 @@ class FeedTestCase(TestCase):
         # Feed has two published entries
         self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'entry')), 2)
 
-    # def test_entry_timezone_utc(self):
-    #     dom = self._get_parsed_feed('/feed/')
-    #     entry  = dom.getElementsByTagNameNS(NS_ATOM, 'entry')[0]
-    #     published = entry.getElementsByTagNameNS(NS_ATOM, 'published')[0].childNodes[0].data
-    #     self.assertEquals(published,self.first_atom_entry_created)
-        
     def test_feed_is_complete(self):
         dom = self._get_parsed_feed('/feed/')
         self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM_FH,
