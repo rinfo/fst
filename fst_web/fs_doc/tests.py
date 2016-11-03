@@ -74,16 +74,16 @@ class WebTestCase(TestCase):
         shutil.copy(os.path.join(base, "fixtures/foreskrift/EXFS_2009-1_Grund.pdf"),
                     testdocs)
         shutil.copy(os.path.join(base,
-                                 "fixtures/bilaga/EXFS-2009-1-bilaga.pdf"),
+                                 "fixtures/bilaga/EXFS_2009-1-bilaga.pdf"),
                     testdocs)
         shutil.copy(os.path.join(base,
-                                 "fixtures/foreskrift/EXFS_2009-2_Andring_Omtryck.pdf"),
+                                 "fixtures/foreskrift/EXFS_2009-2_Andring_omtryck.pdf"),
                     testdocs)
         shutil.copy(os.path.join(base,
                                  "fixtures/foreskrift/EXFS_2009-3_Grund.pdf"),
                     testdocs)
         shutil.copy(os.path.join(base,
-                                 "fixtures/allmanna_rad/EXFS_2011-1_AllmantRad.pdf"),
+                                 "fixtures/allmanna_rad/EXFS_2011-1_Allmant_rad.pdf"),
                     testdocs)
 
     def tearDown(self):
@@ -207,12 +207,12 @@ class FeedTestCase(TestCase):
         # Feed has two published entries
         self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'entry')), 2)
 
-    # def test_entry_timezone_utc(self):
-    #     dom = self._get_parsed_feed('/feed/')
-    #     entry  = dom.getElementsByTagNameNS(NS_ATOM, 'entry')[0]
-    #     published = entry.getElementsByTagNameNS(NS_ATOM, 'published')[0].childNodes[0].data
-    #     self.assertEquals(published,self.first_atom_entry_created)
-        
+    def test_entry_timezone_utc(self):
+        dom = self._get_parsed_feed('/feed/')
+        entry  = dom.getElementsByTagNameNS(NS_ATOM, 'entry')[0]
+        published = entry.getElementsByTagNameNS(NS_ATOM, 'published')[0].childNodes[0].data
+        self.assertEquals(published,self.first_atom_entry_created)
+
     def test_feed_is_complete(self):
         dom = self._get_parsed_feed('/feed/')
         self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM_FH,
