@@ -13,10 +13,8 @@ your particular installation.
 # NOTE! Always set this to False before deploying
 DEBUG = True
 
-"""
-If you start getting error messages 'Invalid HTTP_HOSTheader',
-uncomment ALLOWED_HOSTS and add your own IP-address or domain.
-"""
+# NOTE! Before deploying on a public, uncomment ALLOWED_HOSTS
+# and add IP address and/or domain of your site
 # ALLOWED_HOSTS = ['localhost', '127.0.0.1', xxx.xx.xx.xxx]
 
 # Look for instance-specific settings
