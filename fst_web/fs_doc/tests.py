@@ -30,31 +30,30 @@ class SimpleTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-#class AdminSuperUserTestCase(TestCase):
+class AdminSuperUserTestCase(TestCase):
     #"""Test admin functionality for logged in superuser """
 
-    #fixtures = ['exempeldata.json']
+    fixtures = ['exempeldata.json']
 
-    #def setUp(self):
-        #self.username = 'admin'  # This user already exists in fixture
-        #self.pw = 'admin'        # and is a superuser
-        #self.assertTrue(self.client.login(
-            #username=self.username,
-            #password=self.pw),
-                        #"Logging in user %s, pw %s failed." %
-                        #(self.username, self.pw))
+    def setUp(self):
+        self.username = 'admin'  # This user already exists in fixture
+        self.pw = 'admin'        # and is a superuser
+        self.assertTrue(self.client.login(
+            username=self.username,
+            password=self.pw),
+                        "Logging in user %s, pw %s failed." %
+                        (self.username, self.pw))
 
-    #def tearDown(self):
-        #self.client.logout()
+    def tearDown(self):
+        self.client.logout()
 
-    #def test_superuser_access(self):
+    def test_superuser_access(self):
         #"""Verify that superuser has access to system tables"""
 
-        #post_data = {}
-        #response = self.client.post(reverse('admin:index'), post_data)
-        #self.assertContains(response, "auth")
-        #self.assertContains(response, "sites")
-        #self.assertContains(response, "fs_doc")
+        post_data = {}
+        response = self.client.post(reverse('admin:index'), post_data)
+        self.assertContains(response, "auth")
+        self.assertContains(response, "fs_doc")
 
 
 class WebTestCase(TestCase):
