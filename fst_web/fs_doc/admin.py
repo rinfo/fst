@@ -470,8 +470,8 @@ admin.site.register(Myndighet)
 
 # Adminplus fails to add these, so we must do it ourselves
 from django.contrib.auth.admin import User, Group, UserAdmin
-from django.contrib.sites.admin import Site
+#from django.contrib.sites.admin import Site
 
 admin.site.register(Group)
-admin.site.register(Site)
+#admin.site.register(Site)
 admin.site.register(User, UserAdmin)
