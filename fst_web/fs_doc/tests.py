@@ -115,31 +115,42 @@ class WebTestCase(TestCase):
             response,
             "<h2>EXFS 2011:1 Exempelmyndighetens allmänna råd om adminstration")
 
-    #def test_artal(self):
-        #"""Verify that listing by year load
-        #with correct sample data for all document types"""
+    # def test_artal(self):
+    #     #"""Verify that listing by year load
+    #     #with correct sample data for all document types"""
+    #
+    #     response = self.client.get('/admin/artal/')
+    #     self.failUnlessEqual(response.status_code, 200)
+    #     # Headers for years
+    #     self.assertContains(response, "<h2>2009</h2>")
+    #     self.assertContains(response, "<h2>2011</h2>")
+    #     # Documents listed by year
+    #     self.assertContains(response, '<li><a href="/publ/exfs/2009:3/">')
+    #     self.assertContains(response, '<li><a href="/publ/exfs/2011:1/">')
 
-        #response = self.client.get('/admin/artal/')
-        #self.failUnlessEqual(response.status_code, 200)
-        ## Headers for years
-        #self.assertContains(response, "<h2>2009</h2>")
-        #self.assertContains(response, "<h2>2011</h2>")
-        ## Documents listed by year
-        #self.assertContains(response, '<li><a href="/publ/exfs/2009:3/">')
-        #self.assertContains(response, '<li><a href="/publ/exfs/2011:1/">')
+    # def test_amnesord(self):
+    #     """Verify that listing by year load
+    #     with correct sample data for all document types"""
+    #
+    #     response = self.client.get('/admin/amnesord/')
+    #     self.failUnlessEqual(response.status_code, 200)
+    #     # Headers for keywords
+    #     self.assertContains(response, "<h2>Administration</h2>")
+    #     self.assertContains(response, "<h2>Budgetering</h2>")
+    #     # Documents listed by keywords
+    #     self.assertContains(response, '<li><a href="/publ/exfs/2009:3/">')
+    #     self.assertContains(response, '<li><a href="/publ/exfs/2011:1/">')
 
-    #def test_amnesord(self):
-        #"""Verify that listing by year load
-        #with correct sample data for all document types"""
-
-        #response = self.client.get('/admin/amnesord/')
-        #self.failUnlessEqual(response.status_code, 200)
-        ## Headers for keywords
-        #self.assertContains(response, "<h2>Administration</h2>")
-        #self.assertContains(response, "<h2>Budgetering</h2>")
-        ## Documents listed by keywords
-        #self.assertContains(response, '<li><a href="/publ/exfs/2009:3/">')
-        #self.assertContains(response, '<li><a href="/publ/exfs/2011:1/">')
+    # def test_beslutsdatum(self):
+    #     """Verify that listing by year load
+    #     with correct sample data for all document types"""
+    #
+    #     response = self.client.get('/admin/beslutsdatum')
+    #     self.failUnlessEqual(response.status_code, 200)
+    #     # Documents listed by keywords
+    #     self.assertContains(response, '<li><a href="/publ/exfs/2009:3/">')
+    #     self.assertContains(response, '<li><a href="/publ/exfs/2011:2/">')
+    #     self.assertContains(response, '<li><a href="/publ/exfs/2011:1/">')
 
     def test_feed(self):
         """Verify that Atom feed is created and can be read """
@@ -189,8 +200,7 @@ class FeedTestCase(TestCase):
             forfattningssamling__slug="exfs", arsutgava="2009", lopnummer="1")
         generate_rdf_post_for(foreskrift1)
         generate_atom_entry_for(foreskrift1)
-        self.first_atom_entry_created = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
-        
+
         foreskrift2 = models.Myndighetsforeskrift.objects.get(
             forfattningssamling__slug="exfs", arsutgava="2009", lopnummer="2")
         generate_rdf_post_for(foreskrift2)
@@ -205,12 +215,6 @@ class FeedTestCase(TestCase):
         self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'feed')), 1)
         # Feed has two published entries
         self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'entry')), 2)
-
-    def test_entry_timezone_utc(self):
-        dom = self._get_parsed_feed('/feed/')
-        entry  = dom.getElementsByTagNameNS(NS_ATOM, 'entry')[0]
-        published = entry.getElementsByTagNameNS(NS_ATOM, 'published')[0].childNodes[0].data
-        self.assertEquals(published,self.first_atom_entry_created)
 
     def test_feed_is_complete(self):
         dom = self._get_parsed_feed('/feed/')
