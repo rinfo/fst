@@ -7,7 +7,7 @@ Name=fst
 User=fst
 Group=nginx
 WorkingDirectory=/home/fst/fst
-ExecStart=/home/fst/py_env/fst/bin/gunicorn --workers 3 --bind unix:/home/fst/fst/fst_web.sock fst_web.wsgi:application
+ExecStart=/home/fst/.virtualenvs/fst/bin/gunicorn --workers 3 --bind unix:/home/fst/fst/fst_web.sock fst_web.wsgi:application
 
 [Install]
 WantedBy=multi-user.target
