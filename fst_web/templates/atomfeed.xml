@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom"
-    xmlns:at="http://purl.org/atompub/tombstones/1.0"
-    xmlns:fh="http://purl.org/syndication/history/1.0"
-    xmlns:dct="http://purl.org/dc/terms/">
+      xmlns:fh="http://purl.org/syndication/history/1.0"
+      xmlns:at="http://purl.org/atompub/tombstones/1.0"
+      xmlns:le="http://purl.org/atompub/link-extensions/1.0"
+      xmlns:dct="http://purl.org/dc/terms/">
 
     <id>{{feed_id}}</id>
     <updated>{{last_updated}}</updated>
@@ -13,10 +14,9 @@
         <uri>{{feed_contact_url}}</uri>
         <email>{{feed_contact_email}}</email>
     </author>
-    <link href="{{fst_instance_url}}/feed/" rel="self"/>
+    <link href="{{fst_site_url}}/feed/" rel="self"/>
 
-    {% for entry in entries %}
-{{entry.to_entryxml}}
+    {% for entry in entries %}{{entry.to_entryxml}}
+
     {% endfor %}
-
 </feed>
