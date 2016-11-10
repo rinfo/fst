@@ -278,7 +278,7 @@ class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
              'fields': ('upphavningar',),
              'classes': ['collapse', 'wide', 'extrapretty']}
          ),
-        (u'EU-rättsreferenser - celex',
+        (u'EU-rättsreferenser',
          {
              'fields': (
                  'celexreferenser',),
