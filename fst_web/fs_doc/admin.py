@@ -339,6 +339,17 @@ class KonsolideradForeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
             db_field, **kwargs)
 
 
+class AtomEntryAdmin(admin.ModelAdmin):
+    list_display = ('entry_id',)
+    ordering = ('entry_id',)
+    search_fields = ['entry_id',]
+
+
+class RDFPostAdmin(admin.ModelAdmin):
+    list_display = ('slug',)
+    ordering = ('object_id',)
+
+
 def _response(request, template, context):
     return render_to_response(template,
                               context)
@@ -462,7 +473,8 @@ admin.site.register(Bemyndigandereferens, BemyndigandereferensAdmin)
 admin.site.register(CelexReferens, CelexReferensAdmin)
 admin.site.register(Forfattningssamling, ForfattningssamlingAdmin)
 admin.site.register(KonsolideradForeskrift, KonsolideradForeskriftAdmin)
-admin.site.register(AtomEntry)
+admin.site.register(AtomEntry, AtomEntryAdmin)
+admin.site.register(RDFPost,RDFPostAdmin)
 admin.site.register(Myndighet)
 
 
