@@ -413,42 +413,40 @@ def beslutsdatum(request):
     latest_documents = all_docs[:LIST_PER_PAGE_COUNT]
     return _response(request, 'beslutsdatum.html', locals())
 
-def publicerade(request):
+def not_published(request):
     """Display start page
 
     List all documents that are not published
     Get both 'Myndighetsforeskrift' and 'AllmannaRad'.
     """
-    f_list = list(Myndighetsforeskrift.objects.all().order_by(
+    f_list = list(Myndighetsforeskrift.objects.all().filter(is_published=False).order_by(
         "-beslutsdatum"))
-    a_list = list(AllmannaRad.objects.all() .order_by(
+    a_list = list(AllmannaRad.objects.all().filter(is_published=False) .order_by(
         "-beslutsdatum"))
     all_docs = sorted(
         chain(f_list, a_list),
         key=attrgetter('beslutsdatum'),
         reverse=True)
     latest_documents = all_docs[:LIST_PER_PAGE_COUNT]
-    return _response(request, 'beslutsdatum.html', locals())
+    return _response(request, 'not_published.html', locals())
 
-
-admin.site.register_view(
-    'arsutgava', arsutgava,
-    u'Alla föreskrifter och allmänna råd')
-
-admin.site.register_view(
-    'Alla ej publicerade dokument',
-    u'Lista de ' + str(LIST_PER_PAGE_COUNT) + ' senaste',
-    view=publicerade)
-
-admin.site.register_view(
-    'ikrafttradande', 
-    u'Lista per år för ikraftträdande',
-    view=ikrafttradande)
 
 admin.site.register_view(
     'beslutsdatum',
-    u'Lista de ' + str(LIST_PER_PAGE_COUNT) + ' senast beslutade',
+    u'Senast publicerade (per beslutsdatum)',
     view=beslutsdatum)
+
+
+admin.site.register_view(
+    'ikrafttradande', 
+    u'Senast publicerade (per år för ikraftträdande)',
+    view=ikrafttradande)
+
+
+admin.site.register_view(
+    'not_published',
+    u'Ej publicerade dokument',
+    view=not_published)
 
 
 # TODO - Fix this view so get_admin_url doesn't get called with FSDokument
