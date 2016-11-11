@@ -685,6 +685,8 @@ class RDFPost(models.Model, GenericUniqueMixin):
 
     class Meta:
         unique_together = ('content_type', 'object_id')
+        verbose_name = u"RDF-representation"
+        verbose_name_plural = u"Metadata"
 
     def save(self, *args, **kwargs):
         self.md5 = hashlib.md5(self.data).hexdigest()
@@ -715,6 +717,10 @@ class AtomEntry(models.Model, GenericUniqueMixin):
     deleted = models.DateTimeField(blank=True, null=True)
 
     rdf_post = models.OneToOneField(RDFPost, null=True, blank=True)
+
+    class Meta:
+        verbose_name = u"Flödespost"
+        verbose_name_plural = u"Poster i ATOM-flödet"
 
     def to_entryxml(self):
         """XML representation of entry according to Atom standard.
@@ -760,20 +766,20 @@ def delete_entry(sender, instance, **kwargs):
          #unique_together = ('content_type', 'object_id')
 
 
-#post_delete.connect(
-    #delete_entry,
-    #sender=Myndighetsforeskrift,
-    #dispatch_uid="fs_doc.Myndighetsforeskrift.create_delete_signal")
+post_delete.connect(
+    delete_entry,
+    sender=Myndighetsforeskrift,
+    dispatch_uid="fs_doc.Myndighetsforeskrift.create_delete_signal")
 
-#post_delete.connect(
-    #delete_entry,
-    #sender=AllmannaRad,
-    #dispatch_uid="fs_doc.AllmannaRad.create_delete_signal")
+post_delete.connect(
+    delete_entry,
+    sender=AllmannaRad,
+    dispatch_uid="fs_doc.AllmannaRad.create_delete_signal")
 
-#post_delete.connect(
-    #delete_entry,
-    #sender=KonsolideradForeskrift,
-    #dispatch_uid="fs_doc.KonsolideradForeskrift.create_delete_signal")
+post_delete.connect(
+    delete_entry,
+    sender=KonsolideradForeskrift,
+    dispatch_uid="fs_doc.KonsolideradForeskrift.create_delete_signal")
 
 
 def get_file_md5(opened_file):
