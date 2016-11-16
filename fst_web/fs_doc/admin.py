@@ -6,6 +6,7 @@ from datetime import datetime
 from itertools import chain
 from operator import attrgetter
 import re
+from django.db import models
 from django import forms
 from django.contrib import admin
 from django.contrib.admin import widgets
@@ -14,7 +15,7 @@ from django.conf import settings
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import  loader, Context, RequestContext
 from django.contrib import admin
-from fst_web.adminplus import AdminSitePlus
+from fst_web.adminplus.sites import AdminSitePlus
 from fst_web.fs_doc.models import *
 
 
@@ -95,6 +96,9 @@ class HasContentFileForm(HasFileForm):
 
 
 class FSDokumentAdminMixin(object):
+
+
+    view_on_site = False  # Hide link to raw metadata
 
     def save_model(self, request, obj, form, change):
         """Create an AtomEntry object when 'Myndighetsforeskrift' is saved or
@@ -274,7 +278,7 @@ class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
              'fields': ('upphavningar',),
              'classes': ['collapse', 'wide', 'extrapretty']}
          ),
-        (u'EG-rättsreferenser - celex',
+        (u'EU-rättsreferenser',
          {
              'fields': (
                  'celexreferenser',),
@@ -335,10 +339,20 @@ class KonsolideradForeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
             db_field, **kwargs)
 
 
+class AtomEntryAdmin(admin.ModelAdmin):
+    list_display = ('entry_id',)
+    ordering = ('entry_id',)
+    search_fields = ['entry_id',]
+
+
+class RDFPostAdmin(admin.ModelAdmin):
+    list_display = ('slug',)
+    ordering = ('object_id',)
+
+
 def _response(request, template, context):
     return render_to_response(template,
-                              context,
-                              context_instance=RequestContext(request))
+                              context)
 
 
 def amnesord(request):
@@ -410,42 +424,40 @@ def beslutsdatum(request):
     latest_documents = all_docs[:LIST_PER_PAGE_COUNT]
     return _response(request, 'beslutsdatum.html', locals())
 
-def publicerade():
+def not_published(request):
     """Display start page
 
     List all documents that are not published
     Get both 'Myndighetsforeskrift' and 'AllmannaRad'.
     """
-    f_list = list(Myndighetsforeskrift.objects.filter(is_published==True).order_by(
+    f_list = list(Myndighetsforeskrift.objects.all().filter(is_published=False).order_by(
         "-beslutsdatum"))
-    a_list = list(AllmannaRad.objects.filter(is_published==True).order_by(
+    a_list = list(AllmannaRad.objects.all().filter(is_published=False) .order_by(
         "-beslutsdatum"))
     all_docs = sorted(
         chain(f_list, a_list),
         key=attrgetter('beslutsdatum'),
         reverse=True)
     latest_documents = all_docs[:LIST_PER_PAGE_COUNT]
-    return _response(request, 'beslutsdatum.html', locals())
+    return _response(request, 'not_published.html', locals())
 
-
-admin.site.register_view(
-    'arsutgava', arsutgava,
-    u'Alla föreskrifter och allmänna råd')
-
-admin.site.register_view(
-    'Alla ej publicerade dokument',
-    u'Lista de ' + str(LIST_PER_PAGE_COUNT) + ' senaste',
-    view=publicerade)
-
-admin.site.register_view(
-    'ikrafttradande', 
-    u'Lista per år för ikraftträdande',
-    view=ikrafttradande)
 
 admin.site.register_view(
     'beslutsdatum',
-    u'Lista de ' + str(LIST_PER_PAGE_COUNT) + ' senast beslutade',
+    u'Senast publicerade (per beslutsdatum)',
     view=beslutsdatum)
+
+
+admin.site.register_view(
+    'ikrafttradande', 
+    u'Senast publicerade (per år för ikraftträdande)',
+    view=ikrafttradande)
+
+
+admin.site.register_view(
+    'not_published',
+    u'Ej publicerade dokument',
+    view=not_published)
 
 
 # TODO - Fix this view so get_admin_url doesn't get called with FSDokument
@@ -461,12 +473,15 @@ admin.site.register(Bemyndigandereferens, BemyndigandereferensAdmin)
 admin.site.register(CelexReferens, CelexReferensAdmin)
 admin.site.register(Forfattningssamling, ForfattningssamlingAdmin)
 admin.site.register(KonsolideradForeskrift, KonsolideradForeskriftAdmin)
-admin.site.register(AtomEntry)
+admin.site.register(AtomEntry, AtomEntryAdmin)
+admin.site.register(RDFPost,RDFPostAdmin)
 admin.site.register(Myndighet)
 
+
 # Adminplus fails to add these, so we must do it ourselves
-from django.contrib.auth.admin import User, Group
-from django.contrib.sites.admin import Site
-admin.site.register(User)
+from django.contrib.auth.admin import User, Group, UserAdmin
+#from django.contrib.sites.admin import Site
+
 admin.site.register(Group)
-admin.site.register(Site)
+#admin.site.register(Site)
+admin.site.register(User, UserAdmin)

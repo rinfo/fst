@@ -9,8 +9,10 @@ local_settings.py
 .DS_Store
 
 # FST
-fst_web/uploads/*/*.pdf
+fst_web/uploads/
 fst_web/database/*.db
 
+# Migrations
+fst_web/fs_doc/migrations/
 # PyCharm
 .idea

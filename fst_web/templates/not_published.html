@@ -1,0 +1,22 @@
+{% extends 'adminplus/base.html' %}
+
+{% block content %}
+    <h2>Föreskrifter och allmänna råd</h2>
+    {% if latest_documents %}
+    <p>Under arbete - ej publicerade via FST</p>
+    <table class="foreskrifter">
+        <tr>
+            <th>Beslutsdatum</th>
+            <th>Dokument</th>
+            <th>Roll</th>
+        </tr>
+        {% for doc in latest_documents %}
+        <tr>
+            <td>{{doc.beslutsdatum}}</td>
+            <td><a href="{{doc.get_admin_url}}">{{doc.identifierare}} {{doc.titel}}</a></td>
+            <td>{{doc.role_label}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+{% endblock %}
