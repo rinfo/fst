@@ -31,7 +31,7 @@ FST är implementerat med webbramverket [Django](https://www.djangoproject.com/)
 Den tekniska dokumentationen finns på [FST:s wiki](https://github.com/rinfo/fst/wiki). _For detailed technical documentation, see the [FST Wiki](https://github.com/rinfo/fst/wiki)._
 
 De tekniska specifikationer som FST utgått ifrån finns här: http://dev.lagrummet.se/dokumentation/#specifikationer. 
-De centrala delarna är [begreppsmodell för svensk rättsinformation](http://dev.lagrummet.se/dokumentation/model.pdf), [användande av nyhetsflöden för publicering](http://dev.lagrummet.se/dokumentation/system/atom-insamling.pdf) och [principer för att skapa för persistenta identifierare](http://dev.lagrummet.se. Dessa tre är grunden för den tekniska utformningen av FST. 
+De centrala delarna är [begreppsmodell för svensk rättsinformation](http://dev.lagrummet.se/dokumentation/model.pdf), [användande av nyhetsflöden för publicering](http://dev.lagrummet.se/dokumentation/system/atom-insamling.pdf) och [principer för att skapa för persistenta identifierare](http://dev.lagrummet.se). Dessa tre är grunden för den tekniska utformningen av FST. 
 
 _Observera att den icke-tekniska projektdokumentationen från Rättsinformationsprojektet inte är uppdaterad i alla delar._
 
