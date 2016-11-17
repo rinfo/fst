@@ -9,30 +9,31 @@ FST är ett komplement till befintliga IT-lösningar: användare laddar upp befi
 
 ###Att komma igång och använda FST###
 
-Här finns en kort guide som beskriver hur du installerar FST på din egen dator för att provköra eller kanske göra en demo. _Text på engelska_ 
+Här finns en kort guide som beskriver hur du installerar FST på din egen dator för att provköra eller kanske göra en demo:
 
-[Installera FST på en utvecklingsmaskin](https://github.com/rinfo/fst/wiki/Install-on-development-machine)
+[Installera FST på en utvecklingsmaskin](https://github.com/rinfo/fst/wiki/Install-on-development-machine) _engelsk text_ 
 
 Användarhandledningen är till för dig som vill använda FST när tjänsten är installerad. 
-Texten är på svenska och riktar sig till handläggare och jurister. 
+Texten riktar sig till handläggare och jurister:
 
 [Användarhandledning](https://github.com/rinfo/fst/blob/develop/doc/anvandarhandledning_fst.pdf)
 
-Det finns också en detaljerad guide som beskriver hur du installerar FST som tjänst på en publik server. _Text på engelska_ 
+För den som vill installera FST som tjänst på en publik server finns en detaljerad guide:  
 
-[Installera FST som tjänst på en server](https://github.com/rinfo/fst/wiki/Server-installation-FST)
+[Installera FST som tjänst på en server](https://github.com/rinfo/fst/wiki/Server-installation-FST) _engelsk text_
 
 ###Mer information om FST###
-
-Mer teknisk information finns på [FST:s wiki](https://github.com/rinfo/fst/wiki). _For detailed technical information, see the [FST Wiki](https://github.com/rinfo/fst/wiki)._
-
-De tekniska specifikationer som FST utgått ifrån finns här: http://dev.lagrummet.se/dokumentation/#specifikationer. 
-Notera särskilt ([begreppsmodellen för svensk rättsinformation](http://dev.lagrummet.se/dokumentation/model.pdf)), [användandet av nyhetsflöden för publicering](http://dev.lagrummet.se/dokumentation/system/atom-insamling.pdf) och [principer för att skapa persistenta identifierare (URI:er)](http://dev.lagrummet.se/dokumentation/system/uri-principer.pdf), som är den tekniska grunden för FST. _Observera att den icke-tekniska projektdokumentationen från Rättsinformationsprojektet inte är uppdaterad i alla delar._
 
 FST är implementerat med webbramverket [Django](https://www.djangoproject.com/), som är ett beprövat ramverk med öppen källkod och utmärkt [dokumentation](https://docs.djangoproject.com/en/1.10/).
 
 [Denna guide](https://docs.djangoproject.com/en/1.10/intro/tutorial01/) ger en utmärkt introduktion till hur FST:s kod fungerar i praktiken. Lägg särskilt märke till vad som skrivs om [Django admin](https://docs.djangoproject.com/en/1.10/ref/contrib/admin/), som vi använt för FST:s användargränssnitt.
 
+Den tekniska dokumentationen finns på [FST:s wiki](https://github.com/rinfo/fst/wiki). _For detailed technical documentation, see the [FST Wiki](https://github.com/rinfo/fst/wiki)._
+
+De tekniska specifikationer som FST utgått ifrån finns här: http://dev.lagrummet.se/dokumentation/#specifikationer. 
+De centrala delarna är [begreppsmodell för svensk rättsinformation](http://dev.lagrummet.se/dokumentation/model.pdf), [användande av nyhetsflöden för publicering](http://dev.lagrummet.se/dokumentation/system/atom-insamling.pdf) och [principer för att skapa för persistenta identifierare](http://dev.lagrummet.se. Dessa tre är grunden för den tekniska utformningen av FST. 
+
+_Observera att den icke-tekniska projektdokumentationen från Rättsinformationsprojektet inte är uppdaterad i alla delar._
 
 ###Licens###
  
