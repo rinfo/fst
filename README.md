@@ -9,31 +9,38 @@ FST är ett komplement till befintliga IT-lösningar: användare laddar upp befi
 
 ###Att komma igång och använda FST###
 
-Här finns en kort guide som beskriver hur du installerar FST på din egen dator för att provköra eller kanske göra en demo:
-
-[Installera FST på en utvecklingsmaskin](https://github.com/rinfo/fst/wiki/Install-on-development-machine) _engelsk text_ 
-
-Användarhandledningen är till för dig som vill använda FST när tjänsten är installerad. 
-Texten riktar sig till handläggare och jurister:
+Användarhandledningen är till för dig som ska använda FST när tjänstan är installerad.
+Texten är på svenska och riktar sig till handläggare och jurister:
 
 [Användarhandledning](https://github.com/rinfo/fst/blob/develop/doc/anvandarhandledning_fst.pdf)
 
-För den som vill installera FST som tjänst på en publik server finns en detaljerad guide:  
 
-[Installera FST som tjänst på en server](https://github.com/rinfo/fst/wiki/Server-installation-FST) _engelsk text_
+Här finns en kort guide för den som vill installera och provköra FST på sin egen dator. 
+Guiden är på engelska och förutsätter viss vana vid att installera programvara:
 
-###Mer information om FST###
+[Installera FST på din egen dator](https://github.com/rinfo/fst/wiki/Install-on-development-machine)
 
-FST är implementerat med webbramverket [Django](https://www.djangoproject.com/), som är ett beprövat ramverk med öppen källkod och utmärkt [dokumentation](https://docs.djangoproject.com/en/1.10/).
 
-[Denna guide](https://docs.djangoproject.com/en/1.10/intro/tutorial01/) ger en utmärkt introduktion till hur FST:s kod fungerar i praktiken. Lägg särskilt märke till vad som skrivs om [Django admin](https://docs.djangoproject.com/en/1.10/ref/contrib/admin/), som vi använt för FST:s användargränssnitt.
+För den tekniskt kunnige som vill installera FST på en publik server har vi en detaljerad guide på engelska:  
 
-Den tekniska dokumentationen finns på [FST:s wiki](https://github.com/rinfo/fst/wiki). _For detailed technical documentation, see the [FST Wiki](https://github.com/rinfo/fst/wiki)._
+[Installera FST som tjänst på en server](https://github.com/rinfo/fst/wiki/Server-installation-FST) 
 
-De tekniska specifikationer som FST utgått ifrån finns här: http://dev.lagrummet.se/dokumentation/#specifikationer. 
-De centrala delarna är [begreppsmodell för svensk rättsinformation](http://dev.lagrummet.se/dokumentation/model.pdf), [användande av nyhetsflöden för publicering](http://dev.lagrummet.se/dokumentation/system/atom-insamling.pdf) och [principer för att skapa för persistenta identifierare](http://dev.lagrummet.se). Dessa tre är grunden för den tekniska utformningen av FST. 
+###Dokumentation###
 
-_Observera att den icke-tekniska projektdokumentationen från Rättsinformationsprojektet inte är uppdaterad i alla delar._
+Den aktuella tekniska dokumentationen finns på [FST:s wiki](https://github.com/rinfo/fst/wiki). _For current technical documentation, see the [FST Wiki](https://github.com/rinfo/fst/wiki)._
+
+FST är implementerat med webbramverket [Django](https://www.djangoproject.com/), ett beprövat ramverk med öppen källkod och utmärkt [dokumentation](https://docs.djangoproject.com/en/1.10/).
+
+Genom att följa [denna guide](https://docs.djangoproject.com/en/1.10/intro/tutorial01/) får du en god överblick av hur FST:s kod fungerar i praktiken. Här finns också en introduktion till [Django admin](https://docs.djangoproject.com/en/1.10/ref/contrib/admin/), som vi har använt för FST:s användargränssnitt.
+
+De grundläggande tekniska specifikationer som FST utgår från finns här: http://dev.lagrummet.se/dokumentation/#specifikationer. 
+Centrala delar är [begreppsmodellen för svensk rättsinformation](http://dev.lagrummet.se/dokumentation/model.pdf), [användandet av nyhetsflöden för publicering](http://dev.lagrummet.se/dokumentation/system/atom-insamling.pdf) och [principerna för att skapa persistenta identifierare](http://dev.lagrummet.se). Dessa tre styr på ett grundläggande sätt den tekniska utformningen av FST. 
+
+_Observera att delar av den icke-tekniska projektdokumentationen från Rättsinformationsprojektet inte är uppdaterad._
+
+###Kontakt###
+
+För mer information kontakta helene.lundgren@dom.se.
 
 ###Licens###
  
