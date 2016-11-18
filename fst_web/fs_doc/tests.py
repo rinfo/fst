@@ -81,7 +81,7 @@ class EditorUserTestCase(TestCase):
         self.client.logout()
 
     def test_editor_access(self):
-        #"""Verify that editor does NOT have access to system tables"""
+        """Verify that editor does NOT have access to system tables"""
 
         post_data = {}
         response = self.client.post(reverse('admin:index'), post_data)
