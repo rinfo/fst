@@ -1,13 +1,17 @@
-[![Build Status](https://travis-ci.org/rinfo/fst.svg?branch=develop)](https://travis-ci.org/rinfo/fst) _Källkoden byggs och testas varje natt_
 
-##FST (Föreskriftshantering som tjänst)##
+[![Build Status](https://travis-ci.org/rinfo/fst.svg?branch=develop)](https://travis-ci.org/rinfo/fst) _FST source code is built and tested nightly and on every commit._
+
+For current technical documentation in English, see [FST wiki](https://github.com/rinfo/fst/wiki)._
+
+
+#FST (Föreskriftshantering som tjänst)#
 
 FST är en webbtjänst för att publicera rättsinformationsdokument och dess metadata. Tjänsten har utvecklats för svenska myndigheter som vill publicera föreskrifter och andra dokument som öppna data. 
 
 FST är ett komplement till befintliga IT-lösningar: användare laddar upp befintliga dokument och tillhörande metadata i ett enkelt webbgränssnitt. Den inmatade informationen omvandlas automatiskt till ett strukturerat format och publiceras via ett ATOM/RSS-nyhetsflöde.
 
 
-###Att komma igång och använda FST###
+##Att komma igång och använda FST##
 
 Användarhandledningen är till för dig som ska använda FST när tjänsten är installerad.
 Texten är på svenska och riktar sig till jurister, webbredaktörer och andra handläggare:
@@ -25,9 +29,7 @@ För den tekniskt kunnige som vill installera FST på en publik server har vi en
 
 [Installera FST som tjänst på en server](https://github.com/rinfo/fst/wiki/Server-installation-FST) 
 
-###Dokumentation###
-
-_For current technical documentation, see the [FST wiki](https://github.com/rinfo/fst/wiki)._
+##Dokumentation##
 
 Den aktuella tekniska dokumentationen finns på [FST:s wiki](https://github.com/rinfo/fst/wiki). 
 
@@ -38,11 +40,11 @@ Centrala delar är [begreppsmodellen för svensk rättsinformation](http://dev.l
 
 _Observera att projektdokumentationen från Rättsinformationsprojektet inte är uppdaterad._
 
-###Kontakt###
+##Kontakt##
 
 För mer information kontakta helene.lundgren@dom.se.
 
-###Licens###
+##Licens##
  
 FST ges ut under BSD-licensen. Det betyder att du får
 använda och vidareutveckla koden om du vill, även i kommersiella
