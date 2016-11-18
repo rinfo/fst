@@ -1,7 +1,7 @@
 
 [![Build Status](https://travis-ci.org/rinfo/fst.svg?branch=develop)](https://travis-ci.org/rinfo/fst) _FST source code is built and tested nightly and on every commit._
 
-For current technical documentation in English, see [FST wiki](https://github.com/rinfo/fst/wiki)._
+_For current technical documentation in English, see [FST wiki](https://github.com/rinfo/fst/wiki)._
 
 
 #FST (Föreskriftshantering som tjänst)#
