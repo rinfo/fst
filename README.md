@@ -9,7 +9,7 @@ FST är ett komplement till befintliga IT-lösningar: användare laddar upp befi
 
 ###Att komma igång och använda FST###
 
-Användarhandledningen är till för dig som ska använda FST när tjänstan är installerad.
+Användarhandledningen är till för dig som ska använda FST när tjänsten är installerad.
 Texten är på svenska och riktar sig till handläggare och jurister:
 
 [Användarhandledning](https://github.com/rinfo/fst/blob/develop/doc/anvandarhandledning_fst.pdf)
@@ -27,7 +27,9 @@ För den tekniskt kunnige som vill installera FST på en publik server har vi en
 
 ###Dokumentation###
 
-Den aktuella tekniska dokumentationen finns på [FST:s wiki](https://github.com/rinfo/fst/wiki). _For current technical documentation, see the [FST Wiki](https://github.com/rinfo/fst/wiki)._
+_For current technical documentation, see the [FST wiki](https://github.com/rinfo/fst/wiki)._
+
+Den aktuella tekniska dokumentationen finns på [FST:s wiki](https://github.com/rinfo/fst/wiki). 
 
 FST är implementerat med webbramverket [Django](https://www.djangoproject.com/), ett beprövat ramverk med öppen källkod och utmärkt [dokumentation](https://docs.djangoproject.com/en/1.10/). Genom att följa [denna guide](https://docs.djangoproject.com/en/1.10/intro/tutorial01/) får du en god överblick av hur FST:s kod fungerar i praktiken. Här finns också en introduktion till [Django admin](https://docs.djangoproject.com/en/1.10/ref/contrib/admin/), som vi har använt för FST:s användargränssnitt.
 
