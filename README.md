@@ -10,7 +10,7 @@ FST är ett komplement till befintliga IT-lösningar: användare laddar upp befi
 ###Att komma igång och använda FST###
 
 Användarhandledningen är till för dig som ska använda FST när tjänsten är installerad.
-Texten är på svenska och riktar sig till handläggare och jurister:
+Texten är på svenska och riktar sig till jurister, webbredaktörer och andra handläggare:
 
 [Användarhandledning](https://github.com/rinfo/fst/blob/develop/doc/anvandarhandledning_fst.pdf)
 
@@ -36,7 +36,7 @@ FST är implementerat med webbramverket [Django](https://www.djangoproject.com/)
 De grundläggande tekniska specifikationer som FST utgår från finns här: http://dev.lagrummet.se/dokumentation/#specifikationer. 
 Centrala delar är [begreppsmodellen för svensk rättsinformation](http://dev.lagrummet.se/dokumentation/model.pdf), [användandet av nyhetsflöden för publicering](http://dev.lagrummet.se/dokumentation/system/atom-insamling.pdf) och [principerna för att skapa persistenta identifierare](http://dev.lagrummet.se/dokumentation/system/uri-principer.pdf). Dessa tre styr på ett grundläggande sätt den tekniska utformningen av FST. 
 
-_Observera att delar av den icke-tekniska projektdokumentationen från Rättsinformationsprojektet inte är uppdaterad._
+_Observera att projektdokumentationen från Rättsinformationsprojektet inte är uppdaterad._
 
 ###Kontakt###
 
@@ -47,6 +47,6 @@ För mer information kontakta helene.lundgren@dom.se.
 FST ges ut under BSD-licensen. Det betyder att du får
 använda och vidareutveckla koden om du vill, även i kommersiella
 sammanhang, men att den inte kommer med några garantier för funktion
-eller lämplighet. Se BSD-licensen för mer information om möjligheter
+eller lämplighet. Se [BSD-licensen](https://github.com/rinfo/fst/blob/master/LICENSE.TXT) för mer information om möjligheter
 att använda dig av programkoden.
 
