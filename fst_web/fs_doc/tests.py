@@ -19,15 +19,23 @@ NS_ATOMLE = "http://purl.org/atompub/link-extensions/1.0"
 NS_AT = "http://purl.org/atompub/tombstones/1.0"
 
 class SimpleTest(TestCase):
-    """Simulate browser using Django test client """
+    """Verify that FST requries login"""
 
     def setUp(self):
         self.client = Client()
 
+    def test_initial_redirect(self):
+        """Verify that accessing the site redirects to '/admin'"""
+        response = self.client.get('/',follow=False)
+        # Check that there is a redirect for '/'
+        self.assertEqual(response.status_code, 302)
+
     def test_admin_is_accesible(self):
+        """Verify that admin is accessible"""
         response = self.client.get('/admin/',follow=True)
         # Check that HTTP response is 200 OK.
         self.assertEqual(response.status_code, 200)
+
 
 
 class AdminSuperUserTestCase(TestCase):
@@ -53,6 +61,31 @@ class AdminSuperUserTestCase(TestCase):
         post_data = {}
         response = self.client.post(reverse('admin:index'), post_data)
         self.assertContains(response, "auth")
+        self.assertContains(response, "fs_doc")
+
+class EditorUserTestCase(TestCase):
+    """Test admin functionality for logged in ordinary user """
+
+    fixtures = ['exempeldata.json']
+
+    def setUp(self):
+        self.username = 'editor'  # This user already exists in fixture
+        self.pw = 'editor'        # and is not a superuser
+        self.assertTrue(self.client.login(
+            username=self.username,
+            password=self.pw),
+                        "Logging in user %s, pw %s failed." %
+                        (self.username, self.pw))
+
+    def tearDown(self):
+        self.client.logout()
+
+    def test_editor_access(self):
+        #"""Verify that editor does NOT have access to system tables"""
+
+        post_data = {}
+        response = self.client.post(reverse('admin:index'), post_data)
+        self.assertNotContains(response, "auth")
         self.assertContains(response, "fs_doc")
 
 
