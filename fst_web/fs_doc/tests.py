@@ -36,6 +36,12 @@ class SimpleTest(TestCase):
         # Check that HTTP response is 200 OK.
         self.assertEqual(response.status_code, 200)
 
+    def test_admin_is_accesible(self):
+        """Verify that admin is accessible"""
+        response = self.client.get('/admin/',follow=True)
+        # Check that HTTP response is 200 OK.
+        self.assertEqual(response.status_code, 200)
+
 
 
 class AdminSuperUserTestCase(TestCase):
@@ -63,6 +69,7 @@ class AdminSuperUserTestCase(TestCase):
         self.assertContains(response, "auth")
         self.assertContains(response, "fs_doc")
 
+
 class EditorUserTestCase(TestCase):
     """Test admin functionality for logged in ordinary user """
 
@@ -87,6 +94,38 @@ class EditorUserTestCase(TestCase):
         response = self.client.post(reverse('admin:index'), post_data)
         self.assertNotContains(response, "auth")
         self.assertContains(response, "fs_doc")
+
+    def test_report_beslutsdatum(self):
+        """Verify that editor can access report"""
+        # Find named report
+        response = self.client.get('/admin/beslutsdatum')
+        # Find expected documents from sample data
+        self.assertContains(response, "EXFS 2009:1")
+        self.assertContains(response, "EXFS 2009:2")
+        # Obviously bogus document isn't there
+        self.assertNotContains(response, "NonExisting 1066:1")
+
+    def test_report_ikrafttradande(self):
+        """Verify that editor can access report"""
+        # Find named report
+        response = self.client.get('/admin/ikrafttradande')
+        # Find expected documents from sample data
+        self.assertContains(response, "EXFS 2009:1")
+        self.assertContains(response, "EXFS 2009:2")
+        # Obviously bogus document isn't there
+        self.assertNotContains(response, "NonExisting 1066:1")
+
+    def test_report_not_published(self):
+        """Verify that editor can access report"""
+        # Find named report
+        response = self.client.get('/admin/not_published')
+        # Find expected documents from sample data
+        self.assertContains(response, "EXFS 2009:2")
+        self.assertContains(response, "EXFS 2009:3")
+        # NOT expected document from sample data isn't there
+        self.assertNotContains(response, "EXFS 2011:2")
+        # Obviously bogus document isn't there
+        self.assertNotContains(response, "NonExisting 1066:1")
 
 
 class WebTestCase(TestCase):
@@ -147,43 +186,6 @@ class WebTestCase(TestCase):
         self.assertContains(
             response,
             "<h2>EXFS 2011:1 Exempelmyndighetens allmänna råd om adminstration")
-
-    # def test_artal(self):
-    #     #"""Verify that listing by year load
-    #     #with correct sample data for all document types"""
-    #
-    #     response = self.client.get('/admin/artal/')
-    #     self.failUnlessEqual(response.status_code, 200)
-    #     # Headers for years
-    #     self.assertContains(response, "<h2>2009</h2>")
-    #     self.assertContains(response, "<h2>2011</h2>")
-    #     # Documents listed by year
-    #     self.assertContains(response, '<li><a href="/publ/exfs/2009:3/">')
-    #     self.assertContains(response, '<li><a href="/publ/exfs/2011:1/">')
-
-    # def test_amnesord(self):
-    #     """Verify that listing by year load
-    #     with correct sample data for all document types"""
-    #
-    #     response = self.client.get('/admin/amnesord/')
-    #     self.failUnlessEqual(response.status_code, 200)
-    #     # Headers for keywords
-    #     self.assertContains(response, "<h2>Administration</h2>")
-    #     self.assertContains(response, "<h2>Budgetering</h2>")
-    #     # Documents listed by keywords
-    #     self.assertContains(response, '<li><a href="/publ/exfs/2009:3/">')
-    #     self.assertContains(response, '<li><a href="/publ/exfs/2011:1/">')
-
-    # def test_beslutsdatum(self):
-    #     """Verify that listing by year load
-    #     with correct sample data for all document types"""
-    #
-    #     response = self.client.get('/admin/beslutsdatum')
-    #     self.failUnlessEqual(response.status_code, 200)
-    #     # Documents listed by keywords
-    #     self.assertContains(response, '<li><a href="/publ/exfs/2009:3/">')
-    #     self.assertContains(response, '<li><a href="/publ/exfs/2011:2/">')
-    #     self.assertContains(response, '<li><a href="/publ/exfs/2011:1/">')
 
     def test_feed(self):
         """Verify that Atom feed is created and can be read """
