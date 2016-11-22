@@ -10,6 +10,8 @@ FST är en webbtjänst för att publicera rättsinformationsdokument och dess me
 
 FST är ett komplement till befintliga IT-lösningar: användare laddar upp befintliga dokument och tillhörande metadata i ett enkelt webbgränssnitt. Den inmatade informationen omvandlas automatiskt till ett strukturerat format och publiceras via ett ATOM/RSS-nyhetsflöde.
 
+<img src="https://cloud.githubusercontent.com/assets/1655/20525721/0c70cf22-b0c1-11e6-831c-c1ef9e226362.png" width="30%"></img> <img src="https://cloud.githubusercontent.com/assets/1655/20525743/1fdcabbc-b0c1-11e6-96bd-d9c0e216912d.png" width="30%"></img>
+<img src="https://cloud.githubusercontent.com/assets/1655/20525766/3b734c1e-b0c1-11e6-9ce1-beb623110572.png" width="30%"></img>
 
 ##Att komma igång och använda FST##
 
