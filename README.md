@@ -46,7 +46,7 @@ FST är öppen källkod. Det innebär att det står var och en fritt att anpassa
 
 Github:s har en kort guide som beskriver hur man [skapar en kopia av ett projekt och fortsätter att samarbeta med originalet](https://guides.github.com/activities/forking/). Termen för detta är att "forka" ett öppet källkodsprojekt. Vi rekommenderar alla som är intresserade av att delta mer aktivt att läsa på och göra på det sättet. 
 
-Aktuell tekniska dokumentation för FST finns på [FST:s wiki](https://github.com/rinfo/fst/wiki). 
+Aktuell teknisk dokumentation för FST finns på [FST:s wiki](https://github.com/rinfo/fst/wiki). 
 
 
 ##Kontakt##
