@@ -97,34 +97,37 @@ class EditorUserTestCase(TestCase):
 
     def test_report_beslutsdatum(self):
         """Verify that editor can access report"""
+
         # Find named report
         response = self.client.get('/admin/beslutsdatum')
-        # Find expected documents from sample data
+        # These documents should be listed in the report
         self.assertContains(response, "EXFS 2009:1")
         self.assertContains(response, "EXFS 2009:2")
-        # Obviously bogus document isn't there
+        # This document does not exist and should not be found
         self.assertNotContains(response, "NonExisting 1066:1")
 
     def test_report_ikrafttradande(self):
         """Verify that editor can access report"""
+
         # Find named report
         response = self.client.get('/admin/ikrafttradande')
-        # Find expected documents from sample data
+        # These documents should be listed in the report
         self.assertContains(response, "EXFS 2009:1")
         self.assertContains(response, "EXFS 2009:2")
-        # Obviously bogus document isn't there
+        # This document does not exist and should not be found
         self.assertNotContains(response, "NonExisting 1066:1")
 
     def test_report_not_published(self):
         """Verify that editor can access report"""
+
         # Find named report
         response = self.client.get('/admin/not_published')
-        # Find expected documents from sample data
+        # These documents should be listed in the report
         self.assertContains(response, "EXFS 2009:2")
         self.assertContains(response, "EXFS 2009:3")
-        # NOT expected document from sample data isn't there
+        # This document exists but should not be listed
         self.assertNotContains(response, "EXFS 2011:2")
-        # Obviously bogus document isn't there
+        # This document does not exist and should not be found
         self.assertNotContains(response, "NonExisting 1066:1")
 
 
