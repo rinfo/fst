@@ -8,6 +8,14 @@ General Django settings for FST webservice
 ROOT = os.path.abspath(os.path.dirname(__file__))
 make_root_path = lambda *args: os.path.join(ROOT, *args)
 
+# Read SECRET_KEY from file at project level
+# To replace secret key with a new one, run: 'python manage.py generate_secret_key --replace'
+
+PARENT_DIR = os.path.abspath(os.path.join(ROOT, os.pardir))
+SECRET_FILE = os.path.join(PARENT_DIR, 'secretkey.txt')
+with open(SECRET_FILE) as f:
+    SECRET_KEY = f.read().strip()
+
 # Encoding of files read from disk (template and initial SQL files).
 FILE_CHARSET = 'utf-8'
 
