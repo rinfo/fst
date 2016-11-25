@@ -23,7 +23,7 @@
             "forfattningssamling": 1, 
             "lopnummer": "1", 
             "content_md5": "5c2c3fc272e57cb1f1c5d9d3d1aeec3b", 
-            "is_published": false, 
+            "is_published": true, 
             "titel": "F\u00f6reskrifter om administration hos statliga myndigheter"
         }
     }, 
@@ -83,7 +83,7 @@
             "forfattningssamling": 1, 
             "lopnummer": "1", 
             "content_md5": "043a600c1b5bec6664c62c7a45bf9ff9", 
-            "is_published": false, 
+            "is_published": true, 
             "titel": "Exempelmyndighetens allm\u00e4nna r\u00e5d om adminstration"
         }
     }, 

@@ -71,13 +71,13 @@ class AdminSuperUserTestCase(TestCase):
 
 
 class EditorUserTestCase(TestCase):
-    """Test admin functionality for logged in ordinary user """
+    """Test functionality for logged in editor user """
 
     fixtures = ['exempeldata.json']
 
     def setUp(self):
         self.username = 'editor'  # This user already exists in fixture
-        self.pw = 'editor'        # and is not a superuser
+        self.pw = 'editor'        # and is NOT a superuser
         self.assertTrue(self.client.login(
             username=self.username,
             password=self.pw),
@@ -100,10 +100,11 @@ class EditorUserTestCase(TestCase):
 
         # Find named report
         response = self.client.get('/admin/beslutsdatum')
-        # These documents should be listed in the report
-        self.assertContains(response, "EXFS 2009:1")
-        self.assertContains(response, "EXFS 2009:2")
-        # This document does not exist and should not be found
+        # This document should be listed
+        self.assertContains(response, "EXFS 2011:1")
+        # This document is not published and should not be listed
+        self.assertNotContains(response, "EXFS 2009:2")
+         # This document does not exist and should not be listed
         self.assertNotContains(response, "NonExisting 1066:1")
 
     def test_report_ikrafttradande(self):
@@ -111,10 +112,11 @@ class EditorUserTestCase(TestCase):
 
         # Find named report
         response = self.client.get('/admin/ikrafttradande')
-        # These documents should be listed in the report
-        self.assertContains(response, "EXFS 2009:1")
-        self.assertContains(response, "EXFS 2009:2")
-        # This document does not exist and should not be found
+        # This document should be listed
+        self.assertContains(response, "EXFS 2011:1")
+        # This document is not published and should not be listed
+        self.assertNotContains(response, "EXFS 2009:2")
+        # This document does not exist and should not be listed
         self.assertNotContains(response, "NonExisting 1066:1")
 
     def test_report_not_published(self):
@@ -126,7 +128,7 @@ class EditorUserTestCase(TestCase):
         self.assertContains(response, "EXFS 2009:2")
         self.assertContains(response, "EXFS 2009:3")
         # This document exists but should not be listed
-        self.assertNotContains(response, "EXFS 2011:2")
+        self.assertNotContains(response, "EXFS 2009:1")
         # This document does not exist and should not be found
         self.assertNotContains(response, "NonExisting 1066:1")
 

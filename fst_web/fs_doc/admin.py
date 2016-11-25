@@ -375,32 +375,14 @@ def amnesord(request):
     return _response(request, 'per_amnesord.html', locals())
 
 
-def arsutgava(request):
-    """Display documents grouped by year """
-
-    def get_key(obj):
-        for num, rest, in re.findall(r'(\d+)(.*)',
-                                                     obj.lopnummer):
-            num = int(num)
-            break
-        else:
-            num, rest= lopnummer, ''
-        return (obj.arsutgava, num)
-
-    f_list = list(Myndighetsforeskrift.objects.all())
-    a_list = list(AllmannaRad.objects.all())
-    fs_documents = list(chain(f_list, a_list))
-    fs_documents.sort(key=get_key,reverse = True)
-    return _response(request, 'per_identifierare.html', locals())
-
 def ikrafttradande(request):
     """Display documents grouped by year """
         
     def get_ikrafttradandedatum(obj):
         return obj.ikrafttradandedatum
     
-    f_list = list(Myndighetsforeskrift.objects.all())
-    a_list = list(AllmannaRad.objects.all())
+    f_list = list(Myndighetsforeskrift.objects.all().filter(is_published=True))
+    a_list = list(AllmannaRad.objects.all().filter(is_published=True))
     fs_documents = list(chain(f_list, a_list))
     fs_documents.sort(key=get_ikrafttradandedatum,reverse = True)
     return _response(request, 'per_ar.html', locals())
@@ -413,15 +395,13 @@ def beslutsdatum(request):
     Get both 'Myndighetsforeskrift' and 'AllmannaRad'.
     """
 
-    f_list = list(Myndighetsforeskrift.objects.all().order_by(
-        "-beslutsdatum"))
-    a_list = list(AllmannaRad.objects.all().order_by(
-        "-beslutsdatum"))
+    f_list = list(Myndighetsforeskrift.objects.all().filter(is_published=True))
+    a_list = list(AllmannaRad.objects.all().filter(is_published=True))
     all_docs = sorted(
         chain(f_list, a_list),
         key=attrgetter('beslutsdatum'),
         reverse=True)
-    latest_documents = all_docs[:LIST_PER_PAGE_COUNT]
+    latest_documents = all_docs[:LIST_PER_PAGE_COUNT] # TODO Test pagination. Is this necessary?
     return _response(request, 'beslutsdatum.html', locals())
 
 def not_published(request):
@@ -438,7 +418,7 @@ def not_published(request):
         chain(f_list, a_list),
         key=attrgetter('beslutsdatum'),
         reverse=True)
-    latest_documents = all_docs[:LIST_PER_PAGE_COUNT]
+    latest_documents = all_docs[:LIST_PER_PAGE_COUNT] # TODO Test pagination. Is this necessary?
     return _response(request, 'not_published.html', locals())
 
 
