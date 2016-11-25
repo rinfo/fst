@@ -284,10 +284,61 @@ class FeedTestCase(TestCase):
                 beraknad_rdfmd5 = md5.hexdigest()
                 self.assertEqual(beraknad_rdfmd5, avlast_md5)
 
+    def test_delete_related_metadata(self):
+        """Verify that related metadata is deleted when document is deleted"""
+
+        dom = self._get_parsed_feed('/feed/')
+        # Check that two document entries exist
+        self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'entry')), 2)
+
+        # Get metadata for one document
+        foreskrift2 = models.Myndighetsforeskrift.objects.get(
+            forfattningssamling__slug="exfs", arsutgava="2009", lopnummer="2")
+        related_meta = models.RDFPost.get_for(foreskrift2)
+        self.assertIsInstance(related_meta, models.RDFPost, "Missing metadata")
+        # Delete document
+        foreskrift2.delete()
+        # Check that related metadata was also deleted
+        related_meta = models.RDFPost.get_for(foreskrift2)
+        self.assertIsNone(related_meta, "Metadata not deleted")
+
+        dom = self._get_parsed_feed('/feed/')
+        # Only one document entry exists
+        self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'entry')), 1)
+
+    def test_delete_related_metadata_and_atomentry(self):
+        """Verify that related metadata and feedentry is deleted when document is deleted"""
+
+        dom = self._get_parsed_feed('/feed/')
+        # Check that two document entries exist
+        self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'entry')), 2)
+
+        # Get metadata for one document
+        foreskrift1 = models.Myndighetsforeskrift.objects.get(
+            forfattningssamling__slug="exfs", arsutgava="2009", lopnummer="1")
+        related_meta = models.RDFPost.get_for(foreskrift1)
+        related_entry = models.AtomEntry.get_for(foreskrift1)
+        self.assertIsInstance(related_meta, models.RDFPost, "Missing metadata")
+        self.assertIsInstance(related_entry, models.AtomEntry, "Missing Atom entry")
+        # Delete document
+        foreskrift1.delete()
+        # Check that related metadata was also deleted
+        related_meta = models.RDFPost.get_for(foreskrift1)
+        self.assertIsNone(related_meta, "Metadata not deleted")
+        # Check that related Atom entry was also deleted
+        related_entry = models.AtomEntry.get_for(foreskrift1)
+        self.assertIsNone(related_entry, "Atom Entry not deleted")
+
+        dom = self._get_parsed_feed('/feed/')
+        # Only one document entry exists
+        self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'entry')), 1)
+
     def test_delete_feedentry(self):
         """Verify that entries can be deleted and NOT replaced by special entry"""
 
         dom = self._get_parsed_feed('/feed/')
+
+
 
         # Check that two document entries exist
         self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'entry')), 2)
@@ -304,6 +355,7 @@ class FeedTestCase(TestCase):
 
         # Special entry signaling deletion should NOT exist since this is a fh:complete feed
         self.assertFalse(dom.getElementsByTagNameNS(NS_AT, 'deleted-entry'))
+
 
     def _get_parsed_feed(self, path):
         # Get Atom feed
