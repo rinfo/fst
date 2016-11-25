@@ -749,9 +749,12 @@ class AtomEntry(models.Model, GenericUniqueMixin):
 
 def delete_entry(sender, instance, **kwargs):
     """Delete associated Atom entry when a document is deleted."""
+
+    existing_meta = RDFPost.get_for(instance)
+    if existing_meta:
+        existing_meta.delete()
     existing_entry = AtomEntry.get_for(instance)
     if existing_entry:
-        existing_entry.rdf_post.delete()
         existing_entry.delete()
      #deleted_entry = AtomEntry(
          #content_object=instance,
