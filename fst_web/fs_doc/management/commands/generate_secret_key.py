@@ -51,3 +51,5 @@ class Command(BaseCommand):
         secret = open(key_filepath, 'w')
         secret.write(generated_key)
         secret.close()
+        self.stderr.write("A new secret key was generated")
+
