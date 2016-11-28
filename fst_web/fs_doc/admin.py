@@ -1,28 +1,38 @@
 # -*- coding: utf-8 -*-
 """Layout and behavior of fs_doc admin app"""
-
-from os import path
-from datetime import datetime
 from itertools import chain
 from operator import attrgetter
-import re
 from django.db import models
 from django import forms
 from django.contrib import admin
-from django.contrib.admin import widgets
-from django.core.files import File
-from django.conf import settings
-from django.shortcuts import render_to_response, get_object_or_404
-from django.template import  loader, Context, RequestContext
-from django.contrib import admin
+from django.shortcuts import render_to_response
 from fst_web.adminplus.sites import AdminSitePlus
-from fst_web.fs_doc.models import *
 
+from fst_web.fs_doc.models import AllmannaRad
+from fst_web.fs_doc.models import Amnesord
+from fst_web.fs_doc.models import AtomEntry
+from fst_web.fs_doc.models import Bemyndigandereferens
+from fst_web.fs_doc.models import Bilaga
+from fst_web.fs_doc.models import CelexReferens
+from fst_web.fs_doc.models import Forfattningssamling
+from fst_web.fs_doc.models import KonsolideradForeskrift
+from fst_web.fs_doc.models import Myndighet
+from fst_web.fs_doc.models import Myndighetsforeskrift
+from fst_web.fs_doc.models import RDFPost
+from fst_web.fs_doc.models import OvrigtDokument
+from fst_web.fs_doc.models import to_slug
+from fst_web.fs_doc.models import get_file_md5
+from fst_web.fs_doc.models import generate_atom_entry_for
+from fst_web.fs_doc.models import generate_rdf_post_for
+
+# Adminplus fails to add these, so we must do it ourselves
+from django.contrib.auth.admin import User, Group, UserAdmin
 
 # Add admin enhancements from AdminPlus
 admin.site = AdminSitePlus()
 
-LIST_PER_PAGE_COUNT = 25 # Number of documents before automatic pagination
+LIST_PER_PAGE_COUNT = 25  # Number of documents before automatic pagination
+
 
 class ForfattningssamlingAdmin(admin.ModelAdmin):
     list_display = ('titel', 'kortnamn', 'identifierare')
@@ -58,7 +68,6 @@ class BemyndigandereferensAdmin(admin.ModelAdmin):
 
 
 class HasFileForm(forms.ModelForm):
-
     FILE_FIELD_KEY = 'file'
 
     def save(self, commit=True):
@@ -91,13 +100,10 @@ class OvrigtDokumentInline(HasFileInline):
 
 
 class HasContentFileForm(HasFileForm):
-
     FILE_FIELD_KEY = 'content'
 
 
 class FSDokumentAdminMixin(object):
-
-
     view_on_site = False  # Hide link to raw metadata
 
     def save_model(self, request, obj, form, change):
@@ -119,7 +125,7 @@ class FSDokumentAdminMixin(object):
             kwargs["initial"] = Forfattningssamling.objects.filter(id=1)
         return super(
             FSDokumentAdminMixin, self).formfield_for_foreignkey(
-                db_field, request, **kwargs)
+            db_field, request, **kwargs)
 
     def make_published(self, request, queryset):
         """Puslish selected documents by creating Atom entries."""
@@ -139,11 +145,12 @@ class FSDokumentAdminMixin(object):
 
         if db_field.name in ["andringar", "upphavningar"]:
             kwargs['widget'] = admin.widgets.FilteredSelectMultiple(
-                      "dokument", (db_field.name in self.filter_vertical))
+                "dokument", (db_field.name in self.filter_vertical))
         elif db_field.name == "celexreferenser":
             kwargs['widget'] = \
-            admin.widgets.FilteredSelectMultiple(
-                u"celex-referenser", (db_field.name in self.filter_vertical))
+                admin.widgets.FilteredSelectMultiple(
+                    u"celex-referenser",
+                    (db_field.name in self.filter_vertical))
         else:
             kwargs['widget'] = admin.widgets.FilteredSelectMultiple(
                 db_field.verbose_name, (db_field.name in self.filter_vertical))
@@ -151,7 +158,6 @@ class FSDokumentAdminMixin(object):
 
 
 class AllmannaRadAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
-
     form = HasContentFileForm
 
     list_display = ('identifierare',
@@ -166,7 +172,7 @@ class AllmannaRadAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                    'ikrafttradandedatum',
                    'is_published',
                    'amnesord',
-                   #'andrar',
+                   # 'andrar',
                    'omtryck')
     ordering = ('-beslutsdatum', 'titel')
     search_fields = ('titel', 'arsutgava', 'lopnummer')
@@ -185,7 +191,7 @@ class AllmannaRadAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                  ('content', 'omtryck'),
                  ('titel', 'sammanfattning'),
                  ('beslutsdatum', 'utkom_fran_tryck', 'ikrafttradandedatum'),
-                 ),
+             ),
              'classes': ['wide', 'extrapretty']}
          ),
         (u'Dokument som detta dokument ändrar',
@@ -229,7 +235,6 @@ class AllmannaRadAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
 
 
 class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
-
     form = HasContentFileForm
 
     list_display = ('identifierare',
@@ -244,10 +249,10 @@ class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                    'ikrafttradandedatum',
                    'is_published',
                    'amnesord',
-                   #'andrar',
+                   # 'andrar',
                    'omtryck')
     ordering = ('-beslutsdatum', 'titel')
-    search_fields = ('titel',  'arsutgava', 'lopnummer')
+    search_fields = ('titel', 'arsutgava', 'lopnummer')
     inlines = [BilagaInline, OvrigtDokumentInline]
     readonly_fields = ('is_published', 'identifierare',)
     save_on_top = True
@@ -265,9 +270,9 @@ class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                  ('beslutsdatum', 'utkom_fran_tryck', 'ikrafttradandedatum'),
                  ('utgivare', 'beslutad_av'),
                  'bemyndiganden'
-                 ),
+             ),
              'classes': ['wide', 'extrapretty']
-             }),
+         }),
         (u'Dokument som detta dokument ändrar',
          {
              'fields': ('andringar',),
@@ -314,10 +319,9 @@ class MyndighetsforeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
                     attrs={'cols': 100, 'rows': 5, 'class': 'docx'})
         return super(MyndighetsforeskriftAdmin, self).formfield_for_dbfield(
             db_field, **kwargs)
-    
+
 
 class KonsolideradForeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
-
     form = HasContentFileForm
 
     model = KonsolideradForeskrift
@@ -342,7 +346,7 @@ class KonsolideradForeskriftAdmin(FSDokumentAdminMixin, admin.ModelAdmin):
 class AtomEntryAdmin(admin.ModelAdmin):
     list_display = ('entry_id',)
     ordering = ('entry_id',)
-    search_fields = ['entry_id',]
+    search_fields = ['entry_id', ]
 
 
 class RDFPostAdmin(admin.ModelAdmin):
@@ -363,8 +367,8 @@ def amnesord(request):
 
     # Get all keywords used by at least one document
     amnesord = list(
-        Amnesord.objects.filter(fsdokument__isnull = False).
-        order_by("titel").distinct())
+        Amnesord.objects.filter(
+            fsdokument__isnull=False).order_by("titel").distinct())
 
     # Create a dictionary on keywords for all types of documents
     docs_by_keywords = {}
@@ -377,14 +381,14 @@ def amnesord(request):
 
 def ikrafttradande(request):
     """Display documents grouped by year """
-        
+
     def get_ikrafttradandedatum(obj):
         return obj.ikrafttradandedatum
-    
+
     f_list = list(Myndighetsforeskrift.objects.all().filter(is_published=True))
     a_list = list(AllmannaRad.objects.all().filter(is_published=True))
     fs_documents = list(chain(f_list, a_list))
-    fs_documents.sort(key=get_ikrafttradandedatum,reverse = True)
+    fs_documents.sort(key=get_ikrafttradandedatum, reverse=True)
     return _response(request, 'per_ar.html', locals())
 
 
@@ -401,8 +405,10 @@ def beslutsdatum(request):
         chain(f_list, a_list),
         key=attrgetter('beslutsdatum'),
         reverse=True)
-    latest_documents = all_docs[:LIST_PER_PAGE_COUNT] # TODO Test pagination. Is this necessary?
+    # TODO Test pagination. Is this necessary?
+    latest_documents = all_docs[:LIST_PER_PAGE_COUNT]
     return _response(request, 'beslutsdatum.html', locals())
+
 
 def not_published(request):
     """Display start page
@@ -410,15 +416,18 @@ def not_published(request):
     List all documents that are not published
     Get both 'Myndighetsforeskrift' and 'AllmannaRad'.
     """
-    f_list = list(Myndighetsforeskrift.objects.all().filter(is_published=False).order_by(
-        "-beslutsdatum"))
-    a_list = list(AllmannaRad.objects.all().filter(is_published=False) .order_by(
-        "-beslutsdatum"))
+    f_list = list(
+        Myndighetsforeskrift.objects.all().
+        filter(is_published=False).order_by("-beslutsdatum"))
+    a_list = list(
+        AllmannaRad.objects.all().
+        filter(is_published=False).order_by("-beslutsdatum"))
     all_docs = sorted(
         chain(f_list, a_list),
         key=attrgetter('beslutsdatum'),
         reverse=True)
-    latest_documents = all_docs[:LIST_PER_PAGE_COUNT] # TODO Test pagination. Is this necessary?
+    # TODO Test pagination. Is this necessary?
+    latest_documents = all_docs[:LIST_PER_PAGE_COUNT]
     return _response(request, 'not_published.html', locals())
 
 
@@ -427,22 +436,19 @@ admin.site.register_view(
     u'Senast publicerade (per beslutsdatum)',
     view=beslutsdatum)
 
-
 admin.site.register_view(
-    'ikrafttradande', 
+    'ikrafttradande',
     u'Senast publicerade (per år för ikraftträdande)',
     view=ikrafttradande)
-
 
 admin.site.register_view(
     'not_published',
     u'Ej publicerade dokument',
     view=not_published)
 
-
 # TODO - Fix this view so get_admin_url doesn't get called with FSDokument
 # instead of Myndighetsforeskrift or AllmannaRad
-#admin.site.register_view(
+# admin.site.register_view(
 #    'amnesord', amnesord,
 #    u'Lista föreskrifter och allmänna råd (per ämnesord)')
 
@@ -454,14 +460,8 @@ admin.site.register(CelexReferens, CelexReferensAdmin)
 admin.site.register(Forfattningssamling, ForfattningssamlingAdmin)
 admin.site.register(KonsolideradForeskrift, KonsolideradForeskriftAdmin)
 admin.site.register(AtomEntry, AtomEntryAdmin)
-admin.site.register(RDFPost,RDFPostAdmin)
+admin.site.register(RDFPost, RDFPostAdmin)
 admin.site.register(Myndighet)
-
-
-# Adminplus fails to add these, so we must do it ourselves
-from django.contrib.auth.admin import User, Group, UserAdmin
-#from django.contrib.sites.admin import Site
-
 admin.site.register(Group)
-#admin.site.register(Site)
+# admin.site.register(Site)
 admin.site.register(User, UserAdmin)
