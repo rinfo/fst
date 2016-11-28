@@ -3,13 +3,13 @@ import hashlib
 import os
 import shutil
 from xml.dom.minidom import parseString
-from datetime import datetime
 from django.test import TestCase
 from django.test.client import Client
 from rdflib import Graph, Literal, URIRef, RDF
 from django.core.urlresolvers import reverse
 from fst_web.fs_doc import models
-from fst_web.fs_doc.models import generate_atom_entry_for, generate_rdf_post_for
+from fst_web.fs_doc.models import generate_atom_entry_for
+from fst_web.fs_doc.models import generate_rdf_post_for
 from fst_web.fs_doc.rdfviews import DCT, DCES, RPUBL, RINFO_BASE
 
 
@@ -17,6 +17,7 @@ NS_ATOM = "http://www.w3.org/2005/Atom"
 NS_ATOM_FH = "http://purl.org/syndication/history/1.0"
 NS_ATOMLE = "http://purl.org/atompub/link-extensions/1.0"
 NS_AT = "http://purl.org/atompub/tombstones/1.0"
+
 
 class SimpleTest(TestCase):
     """Verify that FST requries login"""
@@ -26,26 +27,19 @@ class SimpleTest(TestCase):
 
     def test_initial_redirect(self):
         """Verify that accessing the site redirects to '/admin'"""
-        response = self.client.get('/',follow=False)
+        response = self.client.get('/', follow=False)
         # Check that there is a redirect for '/'
         self.assertEqual(response.status_code, 302)
 
     def test_admin_is_accesible(self):
         """Verify that admin is accessible"""
-        response = self.client.get('/admin/',follow=True)
+        response = self.client.get('/admin/', follow=True)
         # Check that HTTP response is 200 OK.
         self.assertEqual(response.status_code, 200)
-
-    def test_admin_is_accesible(self):
-        """Verify that admin is accessible"""
-        response = self.client.get('/admin/',follow=True)
-        # Check that HTTP response is 200 OK.
-        self.assertEqual(response.status_code, 200)
-
 
 
 class AdminSuperUserTestCase(TestCase):
-    #"""Test admin functionality for logged in superuser """
+    """Test admin functionality for logged in superuser """
 
     fixtures = ['exempeldata.json']
 
@@ -55,14 +49,14 @@ class AdminSuperUserTestCase(TestCase):
         self.assertTrue(self.client.login(
             username=self.username,
             password=self.pw),
-                        "Logging in user %s, pw %s failed." %
-                        (self.username, self.pw))
+            "Logging in user %s, pw %s failed." %
+            (self.username, self.pw))
 
     def tearDown(self):
         self.client.logout()
 
     def test_superuser_access(self):
-        #"""Verify that superuser has access to system tables"""
+        """Verify that superuser has access to system tables"""
 
         post_data = {}
         response = self.client.post(reverse('admin:index'), post_data)
@@ -81,8 +75,8 @@ class EditorUserTestCase(TestCase):
         self.assertTrue(self.client.login(
             username=self.username,
             password=self.pw),
-                        "Logging in user %s, pw %s failed." %
-                        (self.username, self.pw))
+            "Logging in user %s, pw %s failed." %
+            (self.username, self.pw))
 
     def tearDown(self):
         self.client.logout()
@@ -104,7 +98,7 @@ class EditorUserTestCase(TestCase):
         self.assertContains(response, "EXFS 2011:1")
         # This document is not published and should not be listed
         self.assertNotContains(response, "EXFS 2009:2")
-         # This document does not exist and should not be listed
+        # This document does not exist and should not be listed
         self.assertNotContains(response, "NonExisting 1066:1")
 
     def test_report_ikrafttradande(self):
@@ -175,7 +169,6 @@ class WebTestCase(TestCase):
         response = self.client.get('/')
         self.failUnlessEqual(response.status_code, 302)
 
-        
     def test_foreskrift(self):
         """Verify that detail page for documents load
         with correct sample data for all document types"""
@@ -338,8 +331,6 @@ class FeedTestCase(TestCase):
 
         dom = self._get_parsed_feed('/feed/')
 
-
-
         # Check that two document entries exist
         self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'entry')), 2)
 
@@ -355,7 +346,6 @@ class FeedTestCase(TestCase):
 
         # Special entry signaling deletion should NOT exist since this is a fh:complete feed
         self.assertFalse(dom.getElementsByTagNameNS(NS_AT, 'deleted-entry'))
-
 
     def _get_parsed_feed(self, path):
         # Get Atom feed
@@ -431,7 +421,7 @@ class RDFTestCase(TestCase):
         self.assertTrue(list(graph.objects(ref, RPUBL.andrar)))
 
     def _get_foreskrift_graph(self, fs_slug, arsutgava, lopnummer):
-        return self._get_graph_for_type(models.Myndighetsforeskrift, \
+        return self._get_graph_for_type(models.Myndighetsforeskrift,
                                         fs_slug, arsutgava, lopnummer)
 
     def _get_allmana_rad_graph(self, fs_slug, arsutgava, lopnummer):
