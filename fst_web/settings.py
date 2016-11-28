@@ -1,20 +1,17 @@
 # -*- coding: utf-8 -*-
+import os
+
 """
 General Django settings for FST webservice
 """
-import os
-
 
 ROOT = os.path.abspath(os.path.dirname(__file__))
-
-
-def make_root_path(args):
-    os.path.join(ROOT, *args)
-
+make_root_path = lambda *args: os.path.join(ROOT, *args)
 
 # Read SECRET_KEY from file at project level
-# To replace secret key with a new one, run:
-# 'python manage.py generate_secret_key --replace'
+# To replace secret key with a new one,
+# run: 'python manage.py generate_secret_key --replace'
+
 PARENT_DIR = os.path.abspath(os.path.join(ROOT, os.pardir))
 SECRET_FILE = os.path.join(PARENT_DIR, 'secretkey.txt')
 with open(SECRET_FILE) as f:
@@ -60,10 +57,12 @@ STATIC_ROOT = ''
 # URL prefix for admin static files -- CSS, JavaScript and images.
 STATIC_URL = '/static/'
 
-# Additional locations of static files
-STATICFILES_DIRS = (
+# NOTE! This is deprecated in Django 1.4
+# URL prefix for admin static files -- CSS, JavaScript and images.
+ADMIN_MEDIA_PREFIX = '/media/'
 
-)
+# Additional locations of static files
+STATICFILES_DIRS = ()
 
 # List of finder classes that know how to find static files in
 # various locations.
@@ -71,7 +70,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
-    )
+)
 
 # Default. More documentaton here:
 # http://docs.djangoproject.com/en/dev/ref/contrib/sites/
@@ -84,7 +83,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    )
+)
 
 ROOT_URLCONF = 'fst_web.urls'
 
@@ -107,12 +106,12 @@ INSTALLED_APPS = (
     # Application specific here    'fst_web.fs_doc',
     'fst_web.fs_doc',
     'fst_web.adminplus',
-    )
+)
 
 # Ensure that users are logged out automatically if inactive for
 # specified time.
 SESSION_SAVE_EVERY_REQUEST = True  # Refresh cookie on new activity
-SESSION_COOKIE_AGE = 30 * 60   # Cookie expires after this number of seconds
+SESSION_COOKIE_AGE = 30 * 60  # Cookie expires after this number of seconds
 
 # Specify how detailed log output you want
 LOG_LEVEL = "WARNING"
@@ -137,14 +136,14 @@ PASSWORD_HASHERS = (
 )
 
 # Look for instance-specific settings
-# TODO: declare specific imports here
+# TODO - declare specific imports
 try:
     from .local_settings import *  # Use local settings if they exist
 except ImportError:
     from .demo_settings import *  # else fall back to demo settings
 
 TEMPLATES = [
-    {
+ {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [make_root_path('templates')],
         'OPTIONS': {
@@ -165,9 +164,9 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 # Project-specific:
                 "fst_web.context_processors.add_request_vars",
-                ],
-            },
+            ],
         },
+    },
 ]
 
 # Setup standard logging: daily rotating files for requests, app logging,
@@ -183,12 +182,12 @@ LOGGING = {
         'simple': {
             'format': '%(levelname)s %(asctime)s %(message)s'
         },
-        },
+    },
     'handlers': {
         'console': {
             'level': '%s' % LOG_LEVEL,
             'class': 'logging.StreamHandler',
-            },
+        },
         'app_handler': {
             'level': '%s' % LOG_LEVEL,
             'class': 'logging.handlers.RotatingFileHandler',
@@ -196,7 +195,7 @@ LOGGING = {
             'maxBytes': 1024 * 1024 * 5,  # 5 MB
             'backupCount': 5,
             'formatter': 'verbose',
-            },
+        },
         'db_handler': {
             'level': '%s' % LOG_LEVEL,
             'class': 'logging.handlers.RotatingFileHandler',
@@ -204,7 +203,7 @@ LOGGING = {
             'maxBytes': 1024 * 1024 * 5,  # 5 MB
             'backupCount': 5,
             'formatter': 'simple',
-            },
+        },
         'request_handler': {
             'level': '%s' % LOG_LEVEL,
             'class': 'logging.handlers.RotatingFileHandler',
@@ -212,22 +211,24 @@ LOGGING = {
             'maxBytes': 1024 * 1024 * 5,  # 5 MB
             'backupCount': 5,
             'formatter': 'simple',
-            }
-    },
-    'loggers': {
-        '': {'handlers': ['app_handler'],
-             'level': '%s' % LOG_LEVEL,
-             'propagate': False
-             },
-        'django.request': {'handlers': ['request_handler'],
-                           'level': '%s' % LOG_LEVEL,
-                           'propagate': False},
-        'django.db.backends': {
-            'handlers': ['db_handler'],
-            'level': DB_DEBUG_LEVEL,
-            'propagate': False,
         }
-    }
+    },
+    'loggers': {'': {'handlers':
+                         ['app_handler'],
+                     'level': '%s' % LOG_LEVEL,
+                     'propagate': False
+                     },
+                'django.request': {
+                    'handlers': ['request_handler'],
+                    'level': '%s' % LOG_LEVEL,
+                    'propagate': False
+                },
+                'django.db.backends': {
+                    'handlers': ['db_handler'],
+                    'level': DB_DEBUG_LEVEL,
+                    'propagate': False,
+                }
+                }
 }
 
 if EMAIL_HOST_USER:
@@ -235,6 +236,6 @@ if EMAIL_HOST_USER:
         'level': 'ERROR',
         'class': 'django.utils.log.AdminEmailHandler',
         'include_html': False,
-        }
+    }
 
     LOGGING['loggers']['django.request']['handlers'].append('mail_admins')
