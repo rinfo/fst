@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Django definitions of documents and related classes used by FST"""
 
-import errno
+
 import hashlib
 import os
 import tempfile
@@ -11,13 +11,13 @@ from django.core import urlresolvers
 from django.core.files import locks
 from django.core.files.move import file_move_safe
 from django.utils.text import get_valid_filename
-from django.core.files.storage import FileSystemStorage, Storage
+from django.core.files.storage import FileSystemStorage
 from django.core.validators import RegexValidator
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db import models
 from django.db.models.signals import post_delete
-from django.template import loader, Context
+from django.template import loader
 from django.utils.feedgenerator import rfc3339_date
 from fst_web.fs_doc import rdfviews
 
@@ -68,7 +68,7 @@ class OverwritingStorage(FileSystemStorage):
             except Exception as e:
                 if os.path.exists(temp_data_location):
                     os.remove(temp_data_location)
-                raise
+                raise e
         file_move_safe(temp_data_location, full_path, allow_overwrite=True)
         content.close()
         if settings.FILE_UPLOAD_PERMISSIONS is not None:
@@ -612,7 +612,6 @@ class KonsolideradForeskrift(Document):
 
         This is a usability enhancement and not defined by the RDF model.
         """
-
         label = u"Konsoliderad författning"
 
     def to_rdfxml(self):
@@ -739,9 +738,7 @@ class AtomEntry(models.Model, GenericUniqueMixin):
             'deleted': rfc3339_date(self.deleted) if self.deleted else None,
             'doc': self.content_object,
             'rdf_post': self.rdf_post,
-            'rdf_url': \
-            None if self.deleted \
-            else self.content_object.get_absolute_url() + "rdf", \
+            'rdf_url': None if self.deleted else self.content_object.get_absolute_url() + "rdf",
             'fst_instance_url': settings.FST_INSTANCE_URL
         }
         return template.render(context)
@@ -792,8 +789,7 @@ def to_slug(tag):
     http://dev.lagrummet.se/dokumentation/system/uri-principer.pdf
     """
     tag = tag.lower()
-    slug = tag.replace('å', 'aa').replace('ä', 'ae').\
-         replace('ö', 'oe').replace(' ', '_')
+    slug = tag.replace('å', 'aa').replace('ä', 'ae').replace('ö', 'oe').replace(' ', '_')
     return slug
 
 
