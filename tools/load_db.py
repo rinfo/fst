@@ -7,7 +7,6 @@
 
 import sys
 import sqlite3
-import traceback
 
 
 def get_insert_string(row):
@@ -47,7 +46,7 @@ def fill_record(table_name, row, db_connection):
     db_connection.commit()
 
 
-def main(indatafile,db_path):
+def main(indatafile, db_path):
     """Run sample data on empty DB.
 
     The updated DB displays inserted records when used with FST and
@@ -67,19 +66,19 @@ def main(indatafile,db_path):
 
         # With all ID:s in place, we can fill the table in any order
         for table in data.keys():
-            fill_table(table,data,db_connection)
-        
-        #fill_table('fs_doc_fsdokument', data, db_connection)
-        #fill_table('fs_doc_allmannarad', data, db_connection)
-        #fill_table('fs_doc_myndighetsforeskrift', data, db_connection)
-        #fill_table('fs_doc_Myndighet', data, db_connection)
-        #fill_table('fs_doc_Forfattningssamling', data, db_connection)
+            fill_table(table, data, db_connection)
+        # fill_table('fs_doc_fsdokument', data, db_connection)
+        # fill_table('fs_doc_allmannarad', data, db_connection)
+        # fill_table('fs_doc_myndighetsforeskrift', data, db_connection)
+        # fill_table('fs_doc_Myndighet', data, db_connection)
+        # fill_table('fs_doc_Forfattningssamling', data, db_connection)
 
     except:
-        #exc_type, exc_value, ex_tb = sys.exc_info()
-        #print exc_type, exc_value
-        #traceback.print_stack()
+        # exc_type, exc_value, ex_tb = sys.exc_info()
+        # print exc_type, exc_value
+        # traceback.print_stack()
         raise
+
 
 if __name__ == '__main__':
     if len(sys.argv) != 3:
