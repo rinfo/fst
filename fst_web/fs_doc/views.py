@@ -4,7 +4,7 @@
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, render_to_response, get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404
 from django.utils.feedgenerator import rfc3339_date
 from fst_web.fs_doc.models import KonsolideradForeskrift, AllmannaRad
 from fst_web.fs_doc.models import Myndighetsforeskrift
@@ -44,12 +44,20 @@ def fs_dokument(request, fs_dokument_slug):
     rdf_post = get_object_or_404(RDFPost, slug=fs_dokument_slug)
     document_content = rdf_post.content_object
     if isinstance(document_content, AllmannaRad):
-        return _response(request, 'allmanna_rad.html', dict(doc=document_content))
+        return _response(
+            request,
+            'allmanna_rad.html',
+            dict(doc=document_content))
     elif isinstance(document_content, Myndighetsforeskrift):
-        return _response(request, 'foreskrift.html', dict(doc=document_content))
+        return _response(
+            request,
+            'foreskrift.html',
+            dict(doc=document_content))
     elif isinstance(document_content, KonsolideradForeskrift):
         return _response(
-            request, 'konsoliderad_foreskrift.html', dict(doc=document_content))
+            request,
+            'konsoliderad_foreskrift.html',
+            dict(doc=document_content))
     else:
         pass
 
