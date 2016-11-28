@@ -300,19 +300,22 @@ class FeedTestCase(TestCase):
         self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'entry')), 1)
 
     def test_delete_related_metadata_and_atomentry(self):
-        """Verify that related metadata and feedentry is deleted when document is deleted"""
+        """Metadata and feedentry should be deleted when document is deleted"""
 
         dom = self._get_parsed_feed('/feed/')
         # Check that two document entries exist
-        self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'entry')), 2)
+        self.assertEquals(len(dom.getElementsByTagNameNS(
+            NS_ATOM, 'entry')), 2)
 
         # Get metadata for one document
         foreskrift1 = models.Myndighetsforeskrift.objects.get(
             forfattningssamling__slug="exfs", arsutgava="2009", lopnummer="1")
         related_meta = models.RDFPost.get_for(foreskrift1)
         related_entry = models.AtomEntry.get_for(foreskrift1)
-        self.assertIsInstance(related_meta, models.RDFPost, "Missing metadata")
-        self.assertIsInstance(related_entry, models.AtomEntry, "Missing Atom entry")
+        self.assertIsInstance(related_meta, models.RDFPost,
+                              "Missing metadata")
+        self.assertIsInstance(related_entry, models.AtomEntry,
+                              "Missing Atom entry")
         # Delete document
         foreskrift1.delete()
         # Check that related metadata was also deleted
@@ -327,7 +330,10 @@ class FeedTestCase(TestCase):
         self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'entry')), 1)
 
     def test_delete_feedentry(self):
-        """Verify that entries can be deleted and NOT replaced by special entry"""
+        """Verify that deleted entries are NOT replaced by special entry.
+
+        FST uses complete feeds and shouldn't do this..
+        """
 
         dom = self._get_parsed_feed('/feed/')
 
@@ -344,7 +350,7 @@ class FeedTestCase(TestCase):
         # Only one document entry exists
         self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'entry')), 1)
 
-        # Special entry signaling deletion should NOT exist since this is a fh:complete feed
+        # There is no special entry signaling deletion
         self.assertFalse(dom.getElementsByTagNameNS(NS_AT, 'deleted-entry'))
 
     def _get_parsed_feed(self, path):
