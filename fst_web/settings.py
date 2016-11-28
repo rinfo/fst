@@ -1,16 +1,20 @@
 # -*- coding: utf-8 -*-
-import os
-
 """
 General Django settings for FST webservice
 """
+import os
+
 
 ROOT = os.path.abspath(os.path.dirname(__file__))
-make_root_path = lambda *args: os.path.join(ROOT, *args)
+
+
+def make_root_path(args):
+    os.path.join(ROOT, *args)
+
 
 # Read SECRET_KEY from file at project level
-# To replace secret key with a new one, run: 'python manage.py generate_secret_key --replace'
-
+# To replace secret key with a new one, run:
+# 'python manage.py generate_secret_key --replace'
 PARENT_DIR = os.path.abspath(os.path.join(ROOT, os.pardir))
 SECRET_FILE = os.path.join(PARENT_DIR, 'secretkey.txt')
 with open(SECRET_FILE) as f:
@@ -56,15 +60,9 @@ STATIC_ROOT = ''
 # URL prefix for admin static files -- CSS, JavaScript and images.
 STATIC_URL = '/static/'
 
-# NOTE! This is deprecated in Django 1.4
-# URL prefix for admin static files -- CSS, JavaScript and images.
-ADMIN_MEDIA_PREFIX = '/media/'
-
 # Additional locations of static files
 STATICFILES_DIRS = (
-# Put strings here, like "/home/html/static" or "C:/www/django/static".
-# Always use forward slashes, even on Windows.
-# Don't forget to use absolute paths, not relative paths.
+
 )
 
 # List of finder classes that know how to find static files in
@@ -101,11 +99,11 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
-    #'django.contrib.staticfiles',
+    # 'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
-    #'django.contrib.admindocs',
+    # 'django.contrib.admindocs',
     # Application specific here    'fst_web.fs_doc',
     'fst_web.fs_doc',
     'fst_web.adminplus',
@@ -122,9 +120,9 @@ DB_DEBUG_LEVEL = "WARNING"  # Silence noisy debug output
 
 EMAIL_HOST_USER = None  # Email notifications are enabled in local settings
 
-#MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES +
+# MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES +
 # ('debug_toolbar.middleware.DebugToolbarMiddleware',)
-#INSTALLED_APPS = INSTALLED_APPS + ('debug_toolbar',)
+# INSTALLED_APPS = INSTALLED_APPS + ('debug_toolbar',)
 # INTERNAL_IPS = ('127.0.0.1',) #
 
 # New for Django 1.4: list all possible password algorithms.
@@ -139,6 +137,7 @@ PASSWORD_HASHERS = (
 )
 
 # Look for instance-specific settings
+# TODO: declare specific imports here
 try:
     from .local_settings import *  # Use local settings if they exist
 except ImportError:
@@ -166,10 +165,9 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 # Project-specific:
                 "fst_web.context_processors.add_request_vars",
-            ],
-
+                ],
+            },
         },
-    },
 ]
 
 # Setup standard logging: daily rotating files for requests, app logging,
@@ -216,21 +214,19 @@ LOGGING = {
             'formatter': 'simple',
             }
     },
-    'loggers': {'': {'handlers':
-                         ['app_handler'],
-                     'level': '%s' % LOG_LEVEL,
-                     'propagate': False
-    },
-                'django.request': {
-                    'handlers': ['request_handler'],
-                    'level': '%s' % LOG_LEVEL,
-                    'propagate': False
-                },
-                'django.db.backends': {
-                    'handlers': ['db_handler'],
-                    'level': DB_DEBUG_LEVEL,
-                    'propagate': False,
-                    }
+    'loggers': {
+        '': {'handlers': ['app_handler'],
+             'level': '%s' % LOG_LEVEL,
+             'propagate': False
+             },
+        'django.request': {'handlers': ['request_handler'],
+                           'level': '%s' % LOG_LEVEL,
+                           'propagate': False},
+        'django.db.backends': {
+            'handlers': ['db_handler'],
+            'level': DB_DEBUG_LEVEL,
+            'propagate': False,
+        }
     }
 }
 
@@ -242,4 +238,3 @@ if EMAIL_HOST_USER:
         }
 
     LOGGING['loggers']['django.request']['handlers'].append('mail_admins')
-
