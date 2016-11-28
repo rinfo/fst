@@ -38,18 +38,20 @@ class Command(BaseCommand):
             existing_key = open(key_filepath).read().strip()
             # Key not empty ?
             if existing_key and not options['replace']:
-                self.stderr.write("There is already a secret key in `{}`".format(key_filename))
-                self.stderr.write("You can replace it using 'generate_secret_key --replace'")
+                self.stderr.write(
+                    "Secret key exists in `{}`".format(key_filename))
+                self.stderr.write(
+                    "You can replace it using 'generate_secret_key --replace'")
                 return
         except IOError:
             # No key found
             pass
 
         import random
-        generated_key = ''.join([random.SystemRandom().choice(string.ascii_letters + string.digits + string.punctuation)
+        generated_key = ''.join([random.SystemRandom().choice(
+            string.ascii_letters + string.digits + string.punctuation)
                                  for _ in range(50)])
         secret = open(key_filepath, 'w')
         secret.write(generated_key)
         secret.close()
         self.stderr.write("A new secret key was generated")
-
