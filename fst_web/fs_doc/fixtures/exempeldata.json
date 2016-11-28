@@ -3,8 +3,8 @@
         "pk": 1, 
         "model": "sites.site", 
         "fields": {
-            "domain": "127.0.0.1:8000", 
-            "name": "localhost"
+            "domain": "example.com", 
+            "name": "example.com"
         }
     }, 
     {
@@ -23,7 +23,7 @@
             "forfattningssamling": 1, 
             "lopnummer": "1", 
             "content_md5": "5c2c3fc272e57cb1f1c5d9d3d1aeec3b", 
-            "is_published": false, 
+            "is_published": true, 
             "titel": "F\u00f6reskrifter om administration hos statliga myndigheter"
         }
     }, 
@@ -77,14 +77,13 @@
             "sammanfattning": "", 
             "ikrafttradandedatum": "2011-06-04", 
             "amnesord": [
-                1, 
                 3
             ], 
             "utkom_fran_tryck": "2011-05-20", 
             "forfattningssamling": 1, 
             "lopnummer": "1", 
             "content_md5": "043a600c1b5bec6664c62c7a45bf9ff9", 
-            "is_published": false, 
+            "is_published": true, 
             "titel": "Exempelmyndighetens allm\u00e4nna r\u00e5d om adminstration"
         }
     }, 
@@ -95,11 +94,10 @@
             "andringar": [], 
             "utgivare": null, 
             "amnesord": [
-                1, 
                 3
             ], 
             "upphavningar": [], 
-            "content": "allmanna_rad/EXFS-2011-1.pdf", 
+            "content": "allmanna_rad/EXFS_2011-1_Allmant_rad.pdf",
             "konsolideringar": [], 
             "beslutad_av": null
         }
@@ -121,7 +119,7 @@
             "celexreferenser": [
                 3
             ], 
-            "content": "foreskrift/EXFS-2009-1.pdf", 
+            "content": "foreskrift/EXFS_2009-1_Grund.pdf",
             "konsolideringar": [], 
             "beslutad_av": null
         }
@@ -146,7 +144,7 @@
                 2, 
                 3
             ], 
-            "content": "foreskrift/EXFS-2009-2.pdf", 
+            "content": "foreskrift/EXFS_2009-2_Andring_omtryck.pdf",
             "konsolideringar": [], 
             "beslutad_av": null
         }
@@ -166,7 +164,7 @@
             ], 
             "upphavningar": [], 
             "celexreferenser": [], 
-            "content": "foreskrift/EXFS-2009-3.pdf", 
+            "content": "foreskrift/EXFS_2009-3_Grund.pdf",
             "konsolideringar": [], 
             "beslutad_av": null
         }
@@ -193,7 +191,7 @@
         "fields": {
             "foreskrift": 1, 
             "titel": "Bilaga 1", 
-            "file": "bilaga/EXFS-2009-1-bilaga.pdf", 
+            "file": "bilaga/EXFS_2009-1-bilaga.pdf",
             "file_md5": "1f6bb720ec9c725ef5d3b2508be53d87"
         }
     }, 
@@ -252,7 +250,7 @@
             "senaste_andringsforfattning": 2, 
             "titel": "F\u00f6reskrifter om budgetering hos statliga myndigheter", 
             "grundforfattning": 1, 
-            "content": "konsoliderad_foreskrift/EXFS-2009-1_2009-2.pdf", 
+            "content": "konsoliderad_foreskrift/EXFS_2009-1_2009-2.pdf",
             "konsolideringsdatum": "2011-05-30", 
             "content_md5": "76687aa72a292d289f6091e4b19597f7"
         }
@@ -294,10 +292,13 @@
         "pk": 1, 
         "model": "fs_doc.rdfpost", 
         "fields": {
-            "md5": "08a5c58cf886acc8af75ef5e0a36387e", 
-            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<rdf:RDF\n  xmlns=\"http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#\"\n  xmlns:dct=\"http://purl.org/dc/terms/\"\n  xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n  xmlns:dces=\"http://purl.org/dc/elements/1.1/\"\n>\n  <Myndighetsforeskrift rdf:about=\"http://rinfo.lagrummet.se/publ/exfs/2009:1\">\n    <dces:subject xml:lang=\"sv\">Administration</dces:subject>\n    <ikrafttradandedatum rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-03-30</ikrafttradandedatum>\n    <dct:identifier>EXFS 2009:1</dct:identifier>\n    <dct:title xml:lang=\"sv\">F\u00f6reskrifter om administration hos statliga myndigheter</dct:title>\n    <genomforDirektiv rdf:resource=\"http://rinfo.lagrummet.se/ext/eur-lex/31979L0409\"/>\n    <bemyndigande>\n      <Forfattningsreferens>\n        <angerGrundforfattning rdf:resource=\"http://rinfo.lagrummet.se/publ/sfs/1962:700\"/>\n        <angerKapitelnummer>4</angerKapitelnummer>\n        <angerParagrafnummer>8</angerParagrafnummer>\n      </Forfattningsreferens>\n    </bemyndigande>\n    <bemyndigande>\n      <Forfattningsreferens>\n        <angerGrundforfattning rdf:resource=\"http://rinfo.lagrummet.se/publ/sfs/1234:1\"/>\n        <angerParagrafnummer>11</angerParagrafnummer>\n      </Forfattningsreferens>\n    </bemyndigande>\n    <dct:publisher rdf:resource=\"http://rinfo.lagrummet.se/org/egenmyndigheten\"/>\n    <utkomFranTryck rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-02-01</utkomFranTryck>\n    <forfattningssamling rdf:resource=\"http://rinfo.lagrummet.se/serier/fs/exfs\"/>\n    <lopnummer>1</lopnummer>\n    <beslutsdatum rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-01-30</beslutsdatum>\n    <bilaga>\n      <rdf:Description rdf:about=\"http://rinfo.lagrummet.se/publ/exfs/2009:1#bilaga_1\">\n        <dct:title>Bilaga 1</dct:title>\n      </rdf:Description>\n    </bilaga>\n    <arsutgava>2009</arsutgava>\n  </Myndighetsforeskrift>\n</rdf:RDF>\n", 
+            "md5": "0db40350d48b95d5c840e516e1aa6d6b", 
+            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<rdf:RDF\n  xmlns=\"http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#\"\n  xmlns:dct=\"http://purl.org/dc/terms/\"\n  xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n  xmlns:dces=\"http://purl.org/dc/elements/1.1/\"\n>\n  <Myndighetsforeskrift rdf:about=\"http://rinfo.lagrummet.se/publ/exfs/2009:1\">\n    <utkomFranTryck rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-02-01</utkomFranTryck>\n    <bilaga>\n      <rdf:Description rdf:about=\"http://rinfo.lagrummet.se/publ/exfs/2009:1#bilaga_1\">\n        <dct:title>Bilaga 1</dct:title>\n      </rdf:Description>\n    </bilaga>\n    <forfattningssamling rdf:resource=\"http://rinfo.lagrummet.se/serie/fs/exfs\"/>\n    <dct:publisher rdf:resource=\"http://rinfo.lagrummet.se/org/exempelmyndigheten\"/>\n    <arsutgava>2009</arsutgava>\n    <ikrafttradandedatum rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-03-30</ikrafttradandedatum>\n    <genomforDirektiv rdf:resource=\"http://rinfo.lagrummet.se/ext/eur-lex/31979L0409\"/>\n    <dct:identifier>EXFS 2009:1</dct:identifier>\n    <beslutsdatum rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-01-30</beslutsdatum>\n    <dct:title xml:lang=\"sv\">F\u00f6reskrifter om administration hos statliga myndigheter</dct:title>\n    <dces:subject xml:lang=\"sv\">Administration</dces:subject>\n    <bemyndigande>\n      <Forfattningsreferens rdf:nodeID=\"EKHYWeqT3\">\n        <angerGrundforfattning rdf:resource=\"http://rinfo.lagrummet.se/publ/sfs/1962:700\"/>\n        <angerKapitelnummer>4</angerKapitelnummer>\n        <angerParagrafnummer>8</angerParagrafnummer>\n      </Forfattningsreferens>\n    </bemyndigande>\n    <bemyndigande>\n      <Forfattningsreferens rdf:nodeID=\"EKHYWeqT2\">\n        <angerGrundforfattning rdf:resource=\"http://rinfo.lagrummet.se/publ/sfs/1234:1\"/>\n        <angerParagrafnummer>11</angerParagrafnummer>\n      </Forfattningsreferens>\n    </bemyndigande>\n    <lopnummer>1</lopnummer>\n  </Myndighetsforeskrift>\n</rdf:RDF>\n", 
             "object_id": 1, 
-            "content_type": 11, 
+            "content_type": [
+                "fs_doc", 
+                "myndighetsforeskrift"
+            ], 
             "slug": "exfs/2009:1"
         }
     }, 
@@ -305,10 +306,13 @@
         "pk": 2, 
         "model": "fs_doc.rdfpost", 
         "fields": {
-            "md5": "eb5b50e493de9bec1d5c5aa8200fdf93", 
-            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<rdf:RDF\n  xmlns=\"http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#\"\n  xmlns:dct=\"http://purl.org/dc/terms/\"\n  xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n  xmlns:dces=\"http://purl.org/dc/elements/1.1/\"\n>\n  <Myndighetsforeskrift rdf:about=\"http://rinfo.lagrummet.se/publ/exfs/2009:2\">\n    <ikrafttradandedatum rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-05-01</ikrafttradandedatum>\n    <dces:subject xml:lang=\"sv\">Administration</dces:subject>\n    <dct:identifier>EXFS 2009:2</dct:identifier>\n    <forfattningssamling rdf:resource=\"http://rinfo.lagrummet.se/serier/fs/exfs\"/>\n    <genomforDirektiv rdf:resource=\"http://rinfo.lagrummet.se/ext/eur-lex/32008L0300\"/>\n    <genomforDirektiv rdf:resource=\"http://rinfo.lagrummet.se/ext/eur-lex/32001L0400\"/>\n    <genomforDirektiv rdf:resource=\"http://rinfo.lagrummet.se/ext/eur-lex/31979L0409\"/>\n    <dct:title xml:lang=\"sv\">F\u00f6reskrifter om \u00e4ndring i f\u00f6reskrifter 2009:1 om administration hos statliga myndigheter</dct:title>\n    <utkomFranTryck rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-04-20</utkomFranTryck>\n    <andrar rdf:resource=\"http://rinfo.lagrummet.se/publ/exfs/2009:1\"/>\n    <omtryckAv rdf:resource=\"http://rinfo.lagrummet.se/publ/exfs/2009:1\"/>\n    <dct:publisher rdf:resource=\"http://rinfo.lagrummet.se/org/egenmyndigheten\"/>\n    <lopnummer>2</lopnummer>\n    <arsutgava>2009</arsutgava>\n    <beslutsdatum rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-04-01</beslutsdatum>\n    <bemyndigande>\n      <Forfattningsreferens>\n        <angerGrundforfattning rdf:resource=\"http://rinfo.lagrummet.se/publ/sfs/1234:1\"/>\n        <angerParagrafnummer>11</angerParagrafnummer>\n      </Forfattningsreferens>\n    </bemyndigande>\n  </Myndighetsforeskrift>\n</rdf:RDF>\n", 
+            "md5": "39501afa984bc3a302962286519ecc60", 
+            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<rdf:RDF\n  xmlns=\"http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#\"\n  xmlns:dct=\"http://purl.org/dc/terms/\"\n  xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n  xmlns:dces=\"http://purl.org/dc/elements/1.1/\"\n>\n  <Myndighetsforeskrift rdf:about=\"http://rinfo.lagrummet.se/publ/exfs/2009:2\">\n    <dct:title xml:lang=\"sv\">F\u00f6reskrifter om \u00e4ndring i f\u00f6reskrifter 2009:1 om administration hos statliga myndigheter</dct:title>\n    <ikrafttradandedatum rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-05-01</ikrafttradandedatum>\n    <bemyndigande>\n      <Forfattningsreferens rdf:nodeID=\"EKHYWeqT6\">\n        <angerGrundforfattning rdf:resource=\"http://rinfo.lagrummet.se/publ/sfs/1234:1\"/>\n        <angerParagrafnummer>11</angerParagrafnummer>\n      </Forfattningsreferens>\n    </bemyndigande>\n    <beslutsdatum rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-04-01</beslutsdatum>\n    <genomforDirektiv rdf:resource=\"http://rinfo.lagrummet.se/ext/eur-lex/31979L0409\"/>\n    <genomforDirektiv rdf:resource=\"http://rinfo.lagrummet.se/ext/eur-lex/32001L0400\"/>\n    <genomforDirektiv rdf:resource=\"http://rinfo.lagrummet.se/ext/eur-lex/32008L0300\"/>\n    <utkomFranTryck rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-04-20</utkomFranTryck>\n    <dces:subject xml:lang=\"sv\">Administration</dces:subject>\n    <omtryckAv rdf:resource=\"http://rinfo.lagrummet.se/publ/exfs/2009:1\"/>\n    <arsutgava>2009</arsutgava>\n    <dct:publisher rdf:resource=\"http://rinfo.lagrummet.se/org/exempelmyndigheten\"/>\n    <lopnummer>2</lopnummer>\n    <dct:identifier>EXFS 2009:2</dct:identifier>\n    <forfattningssamling rdf:resource=\"http://rinfo.lagrummet.se/serie/fs/exfs\"/>\n    <andrar rdf:resource=\"http://rinfo.lagrummet.se/publ/exfs/2009:1\"/>\n  </Myndighetsforeskrift>\n</rdf:RDF>\n", 
             "object_id": 2, 
-            "content_type": 11, 
+            "content_type": [
+                "fs_doc", 
+                "myndighetsforeskrift"
+            ], 
             "slug": "exfs/2009:2"
         }
     }, 
@@ -316,10 +320,13 @@
         "pk": 3, 
         "model": "fs_doc.rdfpost", 
         "fields": {
-            "md5": "a5713a40f54bca41f222b52765405985", 
-            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<rdf:RDF\n  xmlns=\"http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#\"\n  xmlns:dct=\"http://purl.org/dc/terms/\"\n  xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n  xmlns:dces=\"http://purl.org/dc/elements/1.1/\"\n>\n  <Myndighetsforeskrift rdf:about=\"http://rinfo.lagrummet.se/publ/exfs/2009:3\">\n    <forfattningssamling rdf:resource=\"http://rinfo.lagrummet.se/serier/fs/exfs\"/>\n    <utkomFranTryck rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-05-15</utkomFranTryck>\n    <dct:publisher rdf:resource=\"http://rinfo.lagrummet.se/org/egenmyndigheten\"/>\n    <dct:title xml:lang=\"sv\">F\u00f6reskrifter om budgetering hos statliga myndigheter</dct:title>\n    <ikrafttradandedatum rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-05-30</ikrafttradandedatum>\n    <beslutsdatum rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-04-30</beslutsdatum>\n    <lopnummer>3</lopnummer>\n    <bemyndigande>\n      <Forfattningsreferens>\n        <angerGrundforfattning rdf:resource=\"http://rinfo.lagrummet.se/publ/sfs/1234:1\"/>\n        <angerParagrafnummer>13</angerParagrafnummer>\n      </Forfattningsreferens>\n    </bemyndigande>\n    <bemyndigande>\n      <Forfattningsreferens>\n        <angerGrundforfattning rdf:resource=\"http://rinfo.lagrummet.se/publ/sfs/1234:1\"/>\n        <angerParagrafnummer>11</angerParagrafnummer>\n      </Forfattningsreferens>\n    </bemyndigande>\n    <dct:identifier>EXFS 2009:3</dct:identifier>\n    <arsutgava>2009</arsutgava>\n    <dces:subject xml:lang=\"sv\">Budgetering</dces:subject>\n  </Myndighetsforeskrift>\n</rdf:RDF>\n", 
+            "md5": "cde845cd343c647688808177f48c4df2", 
+            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<rdf:RDF\n  xmlns=\"http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#\"\n  xmlns:dct=\"http://purl.org/dc/terms/\"\n  xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n  xmlns:dces=\"http://purl.org/dc/elements/1.1/\"\n>\n  <Myndighetsforeskrift rdf:about=\"http://rinfo.lagrummet.se/publ/exfs/2009:3\">\n    <bemyndigande>\n      <Forfattningsreferens rdf:nodeID=\"EKHYWeqT9\">\n        <angerParagrafnummer>13</angerParagrafnummer>\n        <angerGrundforfattning rdf:resource=\"http://rinfo.lagrummet.se/publ/sfs/1234:1\"/>\n      </Forfattningsreferens>\n    </bemyndigande>\n    <bemyndigande>\n      <Forfattningsreferens rdf:nodeID=\"EKHYWeqT10\">\n        <angerParagrafnummer>11</angerParagrafnummer>\n        <angerGrundforfattning rdf:resource=\"http://rinfo.lagrummet.se/publ/sfs/1234:1\"/>\n      </Forfattningsreferens>\n    </bemyndigande>\n    <dct:identifier>EXFS 2009:3</dct:identifier>\n    <beslutsdatum rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-04-30</beslutsdatum>\n    <utkomFranTryck rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-05-15</utkomFranTryck>\n    <lopnummer>3</lopnummer>\n    <dct:publisher rdf:resource=\"http://rinfo.lagrummet.se/org/exempelmyndigheten\"/>\n    <forfattningssamling rdf:resource=\"http://rinfo.lagrummet.se/serie/fs/exfs\"/>\n    <arsutgava>2009</arsutgava>\n    <ikrafttradandedatum rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2009-05-30</ikrafttradandedatum>\n    <dct:title xml:lang=\"sv\">F\u00f6reskrifter om budgetering hos statliga myndigheter</dct:title>\n    <dces:subject xml:lang=\"sv\">Budgetering</dces:subject>\n  </Myndighetsforeskrift>\n</rdf:RDF>\n", 
             "object_id": 3, 
-            "content_type": 11, 
+            "content_type": [
+                "fs_doc", 
+                "myndighetsforeskrift"
+            ], 
             "slug": "exfs/2009:3"
         }
     }, 
@@ -327,670 +334,202 @@
         "pk": 4, 
         "model": "fs_doc.rdfpost", 
         "fields": {
-            "md5": "f80ea5e3a8d4757ebf8cc293358eeb97", 
-            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<rdf:RDF\n  xmlns=\"http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#\"\n  xmlns:dct=\"http://purl.org/dc/terms/\"\n  xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n>\n  <KonsolideradGrundforfattning rdf:about=\"http://rinfo.lagrummet.se/publ/exfs/2009:1/konsolidering/2011-05-30\">\n    <konsoliderar rdf:resource=\"http://rinfo.lagrummet.se/publ/exfs/2009:1\"/>\n    <dct:identifier>EXFS 2009:1 i lydelse enligt 2011-05-30</dct:identifier>\n    <konsolideringsunderlag rdf:resource=\"http://rinfo.lagrummet.se/publ/exfs/2009:1\"/>\n    <konsolideringsunderlag rdf:resource=\"http://rinfo.lagrummet.se/publ/exfs/2009:2\"/>\n    <dct:issued rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2011-05-30</dct:issued>\n    <dct:title xml:lang=\"sv\">F\u00f6reskrifter om budgetering hos statliga myndigheter</dct:title>\n    <dct:publisher rdf:resource=\"http://rinfo.lagrummet.se/org/egenmyndigheten\"/>\n  </KonsolideradGrundforfattning>\n</rdf:RDF>\n", 
-            "object_id": 1, 
-            "content_type": 21, 
-            "slug": "exfs/2009:1/konsolidering/2011-05-30"
+            "md5": "9484faa6ea7cde03625bc84191ac46e3", 
+            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<rdf:RDF\n  xmlns=\"http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#\"\n  xmlns:dct=\"http://purl.org/dc/terms/\"\n  xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n  xmlns:dces=\"http://purl.org/dc/elements/1.1/\"\n>\n  <AllmannaRad rdf:about=\"http://rinfo.lagrummet.se/publ/exfs/2011:1\">\n    <dct:title xml:lang=\"sv\">Exempelmyndighetens allm\u00e4nna r\u00e5d om adminstration</dct:title>\n    <ikrafttradandedatum rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2011-06-04</ikrafttradandedatum>\n    <dct:identifier>EXFS 2011:1</dct:identifier>\n    <dces:subject xml:lang=\"sv\">Centralisering</dces:subject>\n    <utkomFranTryck rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2011-05-20</utkomFranTryck>\n    <beslutsdatum rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2011-05-01</beslutsdatum>\n    <forfattningssamling rdf:resource=\"http://rinfo.lagrummet.se/serie/fs/exfs\"/>\n    <dct:publisher rdf:resource=\"http://rinfo.lagrummet.se/org/exempelmyndigheten\"/>\n    <arsutgava>2011</arsutgava>\n    <lopnummer>1</lopnummer>\n  </AllmannaRad>\n</rdf:RDF>\n", 
+            "object_id": 4, 
+            "content_type": [
+                "fs_doc", 
+                "allmannarad"
+            ], 
+            "slug": "exfs/2011:1"
         }
     }, 
     {
         "pk": 5, 
         "model": "fs_doc.rdfpost", 
         "fields": {
-            "md5": "19adb336c78d2e7151031312b29ed243", 
-            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<rdf:RDF\n  xmlns=\"http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#\"\n  xmlns:dct=\"http://purl.org/dc/terms/\"\n  xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n  xmlns:dces=\"http://purl.org/dc/elements/1.1/\"\n>\n  <AllmannaRad rdf:about=\"http://rinfo.lagrummet.se/publ/exfs/2011:1\">\n    <dct:publisher rdf:resource=\"http://rinfo.lagrummet.se/org/egenmyndigheten\"/>\n    <lopnummer>1</lopnummer>\n    <ikrafttradandedatum rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2011-06-04</ikrafttradandedatum>\n    <utkomFranTryck rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2011-05-20</utkomFranTryck>\n    <forfattningssamling rdf:resource=\"http://rinfo.lagrummet.se/serier/fs/exfs\"/>\n    <dces:subject xml:lang=\"sv\">Centralisering</dces:subject>\n    <dces:subject xml:lang=\"sv\">Administration</dces:subject>\n    <dct:identifier>EXFS 2011:1</dct:identifier>\n    <dct:title xml:lang=\"sv\">Exempelmyndighetens allm\u00e4nna r\u00e5d om adminstration</dct:title>\n    <arsutgava>2011</arsutgava>\n    <beslutsdatum rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2011-05-01</beslutsdatum>\n  </AllmannaRad>\n</rdf:RDF>\n", 
-            "object_id": 4, 
-            "content_type": 10, 
-            "slug": "exfs/2011:1"
-        }
-    }, 
-    {
-        "pk": 22, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "add_logentry", 
-            "name": "Can add log entry", 
-            "content_type": 8
-        }
-    }, 
-    {
-        "pk": 23, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "change_logentry", 
-            "name": "Can change log entry", 
-            "content_type": 8
-        }
-    }, 
-    {
-        "pk": 24, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "delete_logentry", 
-            "name": "Can delete log entry", 
-            "content_type": 8
-        }
-    }, 
-    {
-        "pk": 4, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "add_group", 
-            "name": "Can add group", 
-            "content_type": 2
-        }
-    }, 
-    {
-        "pk": 5, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "change_group", 
-            "name": "Can change group", 
-            "content_type": 2
-        }
-    }, 
-    {
-        "pk": 6, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "delete_group", 
-            "name": "Can delete group", 
-            "content_type": 2
-        }
-    }, 
-    {
-        "pk": 10, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "add_message", 
-            "name": "Can add message", 
-            "content_type": 4
-        }
-    }, 
-    {
-        "pk": 11, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "change_message", 
-            "name": "Can change message", 
-            "content_type": 4
-        }
-    }, 
-    {
-        "pk": 12, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "delete_message", 
-            "name": "Can delete message", 
-            "content_type": 4
+            "md5": "797b0cbaa1544e343865402c3881a7a8", 
+            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<rdf:RDF\n  xmlns=\"http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#\"\n  xmlns:dct=\"http://purl.org/dc/terms/\"\n  xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n>\n  <KonsolideradGrundforfattning rdf:about=\"http://rinfo.lagrummet.se/publ/exfs/2009:1/konsolidering/2011-05-30\">\n    <dct:publisher rdf:resource=\"http://rinfo.lagrummet.se/org/exempelmyndigheten\"/>\n    <dct:title xml:lang=\"sv\">F\u00f6reskrifter om budgetering hos statliga myndigheter</dct:title>\n    <konsoliderar rdf:resource=\"http://rinfo.lagrummet.se/publ/exfs/2009:1\"/>\n    <dct:issued rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">2011-05-30</dct:issued>\n    <konsolideringsunderlag rdf:resource=\"http://rinfo.lagrummet.se/publ/exfs/2009:1\"/>\n    <konsolideringsunderlag rdf:resource=\"http://rinfo.lagrummet.se/publ/exfs/2009:2\"/>\n    <dct:identifier>EXFS 2009:1 i lydelse enligt 2011-05-30</dct:identifier>\n  </KonsolideradGrundforfattning>\n</rdf:RDF>\n", 
+            "object_id": 1, 
+            "content_type": [
+                "fs_doc", 
+                "konsolideradforeskrift"
+            ], 
+            "slug": "exfs/2009:1/konsolidering/2011-05-30"
         }
     }, 
     {
         "pk": 1, 
-        "model": "auth.permission", 
+        "model": "auth.group", 
         "fields": {
-            "codename": "add_permission", 
-            "name": "Can add permission", 
-            "content_type": 1
-        }
-    }, 
-    {
-        "pk": 2, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "change_permission", 
-            "name": "Can change permission", 
-            "content_type": 1
-        }
-    }, 
-    {
-        "pk": 3, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "delete_permission", 
-            "name": "Can delete permission", 
-            "content_type": 1
-        }
-    }, 
-    {
-        "pk": 7, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "add_user", 
-            "name": "Can add user", 
-            "content_type": 3
-        }
-    }, 
-    {
-        "pk": 8, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "change_user", 
-            "name": "Can change user", 
-            "content_type": 3
-        }
-    }, 
-    {
-        "pk": 9, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "delete_user", 
-            "name": "Can delete user", 
-            "content_type": 3
-        }
-    }, 
-    {
-        "pk": 13, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "add_contenttype", 
-            "name": "Can add content type", 
-            "content_type": 5
-        }
-    }, 
-    {
-        "pk": 14, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "change_contenttype", 
-            "name": "Can change content type", 
-            "content_type": 5
-        }
-    }, 
-    {
-        "pk": 15, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "delete_contenttype", 
-            "name": "Can delete content type", 
-            "content_type": 5
-        }
-    }, 
-    {
-        "pk": 28, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "add_allmannarad", 
-            "name": "Can add allm\u00e4nna r\u00e5d", 
-            "content_type": 10
-        }
-    }, 
-    {
-        "pk": 29, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "change_allmannarad", 
-            "name": "Can change allm\u00e4nna r\u00e5d", 
-            "content_type": 10
-        }
-    }, 
-    {
-        "pk": 30, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "delete_allmannarad", 
-            "name": "Can delete allm\u00e4nna r\u00e5d", 
-            "content_type": 10
-        }
-    }, 
-    {
-        "pk": 49, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "add_amnesord", 
-            "name": "Can add \u00e4mnesord", 
-            "content_type": 17
-        }
-    }, 
-    {
-        "pk": 50, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "change_amnesord", 
-            "name": "Can change \u00e4mnesord", 
-            "content_type": 17
-        }
-    }, 
-    {
-        "pk": 51, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "delete_amnesord", 
-            "name": "Can delete \u00e4mnesord", 
-            "content_type": 17
-        }
-    }, 
-    {
-        "pk": 52, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "add_andringar_fsdokument", 
-            "name": "Can add andringar_fsdokument", 
-            "content_type": 18
-        }
-    }, 
-    {
-        "pk": 53, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "change_andringar_fsdokument", 
-            "name": "Can change andringar_fsdokument", 
-            "content_type": 18
-        }
-    }, 
-    {
-        "pk": 54, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "delete_andringar_fsdokument", 
-            "name": "Can delete andringar_fsdokument", 
-            "content_type": 18
-        }
-    }, 
-    {
-        "pk": 70, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "add_atomentry", 
-            "name": "Can add atom entry", 
-            "content_type": 24
-        }
-    }, 
-    {
-        "pk": 71, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "change_atomentry", 
-            "name": "Can change atom entry", 
-            "content_type": 24
-        }
-    }, 
-    {
-        "pk": 72, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "delete_atomentry", 
-            "name": "Can delete atom entry", 
-            "content_type": 24
-        }
-    }, 
-    {
-        "pk": 64, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "add_bemyndigandereferens", 
-            "name": "Can add bemyndigandereferens", 
-            "content_type": 22
-        }
-    }, 
-    {
-        "pk": 65, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "change_bemyndigandereferens", 
-            "name": "Can change bemyndigandereferens", 
-            "content_type": 22
-        }
-    }, 
-    {
-        "pk": 66, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "delete_bemyndigandereferens", 
-            "name": "Can delete bemyndigandereferens", 
-            "content_type": 22
-        }
-    }, 
-    {
-        "pk": 40, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "add_bilaga", 
-            "name": "Can add bilaga", 
-            "content_type": 14
-        }
-    }, 
-    {
-        "pk": 41, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "change_bilaga", 
-            "name": "Can change bilaga", 
-            "content_type": 14
-        }
-    }, 
-    {
-        "pk": 42, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "delete_bilaga", 
-            "name": "Can delete bilaga", 
-            "content_type": 14
-        }
-    }, 
-    {
-        "pk": 46, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "add_celexreferens", 
-            "name": "Can add EG-r\u00e4ttsreferens", 
-            "content_type": 16
-        }
-    }, 
-    {
-        "pk": 47, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "change_celexreferens", 
-            "name": "Can change EG-r\u00e4ttsreferens", 
-            "content_type": 16
-        }
-    }, 
-    {
-        "pk": 48, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "delete_celexreferens", 
-            "name": "Can delete EG-r\u00e4ttsreferens", 
-            "content_type": 16
-        }
-    }, 
-    {
-        "pk": 37, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "add_forfattningssamling", 
-            "name": "Can add f\u00f6rfattningssamling", 
-            "content_type": 13
-        }
-    }, 
-    {
-        "pk": 38, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "change_forfattningssamling", 
-            "name": "Can change f\u00f6rfattningssamling", 
-            "content_type": 13
-        }
-    }, 
-    {
-        "pk": 39, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "delete_forfattningssamling", 
-            "name": "Can delete f\u00f6rfattningssamling", 
-            "content_type": 13
-        }
-    }, 
-    {
-        "pk": 25, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "add_fsdokument", 
-            "name": "Can add fs dokument", 
-            "content_type": 9
-        }
-    }, 
-    {
-        "pk": 26, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "change_fsdokument", 
-            "name": "Can change fs dokument", 
-            "content_type": 9
-        }
-    }, 
-    {
-        "pk": 27, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "delete_fsdokument", 
-            "name": "Can delete fs dokument", 
-            "content_type": 9
-        }
-    }, 
-    {
-        "pk": 61, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "add_konsolideradforeskrift", 
-            "name": "Can add konsoliderad f\u00f6reskrift", 
-            "content_type": 21
-        }
-    }, 
-    {
-        "pk": 62, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "change_konsolideradforeskrift", 
-            "name": "Can change konsoliderad f\u00f6reskrift", 
-            "content_type": 21
-        }
-    }, 
-    {
-        "pk": 63, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "delete_konsolideradforeskrift", 
-            "name": "Can delete konsoliderad f\u00f6reskrift", 
-            "content_type": 21
-        }
-    }, 
-    {
-        "pk": 58, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "add_konsolideringar_foreskrift", 
-            "name": "Can add konsolideringar_foreskrift", 
-            "content_type": 20
-        }
-    }, 
-    {
-        "pk": 59, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "change_konsolideringar_foreskrift", 
-            "name": "Can change konsolideringar_foreskrift", 
-            "content_type": 20
-        }
-    }, 
-    {
-        "pk": 60, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "delete_konsolideringar_foreskrift", 
-            "name": "Can delete konsolideringar_foreskrift", 
-            "content_type": 20
-        }
-    }, 
-    {
-        "pk": 34, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "add_myndighet", 
-            "name": "Can add myndighet", 
-            "content_type": 12
-        }
-    }, 
-    {
-        "pk": 35, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "change_myndighet", 
-            "name": "Can change myndighet", 
-            "content_type": 12
-        }
-    }, 
-    {
-        "pk": 36, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "delete_myndighet", 
-            "name": "Can delete myndighet", 
-            "content_type": 12
-        }
-    }, 
-    {
-        "pk": 31, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "add_myndighetsforeskrift", 
-            "name": "Can add myndighetsf\u00f6reskrift", 
-            "content_type": 11
-        }
-    }, 
-    {
-        "pk": 32, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "change_myndighetsforeskrift", 
-            "name": "Can change myndighetsf\u00f6reskrift", 
-            "content_type": 11
-        }
-    }, 
-    {
-        "pk": 33, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "delete_myndighetsforeskrift", 
-            "name": "Can delete myndighetsf\u00f6reskrift", 
-            "content_type": 11
-        }
-    }, 
-    {
-        "pk": 43, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "add_ovrigtdokument", 
-            "name": "Can add \u00f6vrigt dokument", 
-            "content_type": 15
-        }
-    }, 
-    {
-        "pk": 44, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "change_ovrigtdokument", 
-            "name": "Can change \u00f6vrigt dokument", 
-            "content_type": 15
-        }
-    }, 
-    {
-        "pk": 45, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "delete_ovrigtdokument", 
-            "name": "Can delete \u00f6vrigt dokument", 
-            "content_type": 15
-        }
-    }, 
-    {
-        "pk": 67, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "add_rdfpost", 
-            "name": "Can add rdf post", 
-            "content_type": 23
-        }
-    }, 
-    {
-        "pk": 68, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "change_rdfpost", 
-            "name": "Can change rdf post", 
-            "content_type": 23
-        }
-    }, 
-    {
-        "pk": 69, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "delete_rdfpost", 
-            "name": "Can delete rdf post", 
-            "content_type": 23
-        }
-    }, 
-    {
-        "pk": 55, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "add_upphavningar_fsdokument", 
-            "name": "Can add upphavningar_fsdokument", 
-            "content_type": 19
-        }
-    }, 
-    {
-        "pk": 56, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "change_upphavningar_fsdokument", 
-            "name": "Can change upphavningar_fsdokument", 
-            "content_type": 19
-        }
-    }, 
-    {
-        "pk": 57, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "delete_upphavningar_fsdokument", 
-            "name": "Can delete upphavningar_fsdokument", 
-            "content_type": 19
-        }
-    }, 
-    {
-        "pk": 16, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "add_session", 
-            "name": "Can add session", 
-            "content_type": 6
-        }
-    }, 
-    {
-        "pk": 17, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "change_session", 
-            "name": "Can change session", 
-            "content_type": 6
-        }
-    }, 
-    {
-        "pk": 18, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "delete_session", 
-            "name": "Can delete session", 
-            "content_type": 6
-        }
-    }, 
-    {
-        "pk": 19, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "add_site", 
-            "name": "Can add site", 
-            "content_type": 7
-        }
-    }, 
-    {
-        "pk": 20, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "change_site", 
-            "name": "Can change site", 
-            "content_type": 7
-        }
-    }, 
-    {
-        "pk": 21, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "delete_site", 
-            "name": "Can delete site", 
-            "content_type": 7
+            "name": "editor", 
+            "permissions": [
+                [
+                    "add_allmannarad", 
+                    "fs_doc", 
+                    "allmannarad"
+                ], 
+                [
+                    "change_allmannarad", 
+                    "fs_doc", 
+                    "allmannarad"
+                ], 
+                [
+                    "delete_allmannarad", 
+                    "fs_doc", 
+                    "allmannarad"
+                ], 
+                [
+                    "add_andringar_fsdokument", 
+                    "fs_doc", 
+                    "andringar_fsdokument"
+                ], 
+                [
+                    "change_andringar_fsdokument", 
+                    "fs_doc", 
+                    "andringar_fsdokument"
+                ], 
+                [
+                    "delete_andringar_fsdokument", 
+                    "fs_doc", 
+                    "andringar_fsdokument"
+                ], 
+                [
+                    "add_bemyndigandereferens", 
+                    "fs_doc", 
+                    "bemyndigandereferens"
+                ], 
+                [
+                    "change_bemyndigandereferens", 
+                    "fs_doc", 
+                    "bemyndigandereferens"
+                ], 
+                [
+                    "delete_bemyndigandereferens", 
+                    "fs_doc", 
+                    "bemyndigandereferens"
+                ], 
+                [
+                    "add_bilaga", 
+                    "fs_doc", 
+                    "bilaga"
+                ], 
+                [
+                    "change_bilaga", 
+                    "fs_doc", 
+                    "bilaga"
+                ], 
+                [
+                    "delete_bilaga", 
+                    "fs_doc", 
+                    "bilaga"
+                ], 
+                [
+                    "add_celexreferens", 
+                    "fs_doc", 
+                    "celexreferens"
+                ], 
+                [
+                    "change_celexreferens", 
+                    "fs_doc", 
+                    "celexreferens"
+                ], 
+                [
+                    "delete_celexreferens", 
+                    "fs_doc", 
+                    "celexreferens"
+                ], 
+                [
+                    "add_fsdokument", 
+                    "fs_doc", 
+                    "fsdokument"
+                ], 
+                [
+                    "change_fsdokument", 
+                    "fs_doc", 
+                    "fsdokument"
+                ], 
+                [
+                    "delete_fsdokument", 
+                    "fs_doc", 
+                    "fsdokument"
+                ], 
+                [
+                    "add_konsolideradforeskrift", 
+                    "fs_doc", 
+                    "konsolideradforeskrift"
+                ], 
+                [
+                    "change_konsolideradforeskrift", 
+                    "fs_doc", 
+                    "konsolideradforeskrift"
+                ], 
+                [
+                    "delete_konsolideradforeskrift", 
+                    "fs_doc", 
+                    "konsolideradforeskrift"
+                ], 
+                [
+                    "add_konsolideringar_foreskrift", 
+                    "fs_doc", 
+                    "konsolideringar_foreskrift"
+                ], 
+                [
+                    "change_konsolideringar_foreskrift", 
+                    "fs_doc", 
+                    "konsolideringar_foreskrift"
+                ], 
+                [
+                    "delete_konsolideringar_foreskrift", 
+                    "fs_doc", 
+                    "konsolideringar_foreskrift"
+                ], 
+                [
+                    "add_myndighetsforeskrift", 
+                    "fs_doc", 
+                    "myndighetsforeskrift"
+                ], 
+                [
+                    "change_myndighetsforeskrift", 
+                    "fs_doc", 
+                    "myndighetsforeskrift"
+                ], 
+                [
+                    "delete_myndighetsforeskrift", 
+                    "fs_doc", 
+                    "myndighetsforeskrift"
+                ], 
+                [
+                    "add_ovrigtdokument", 
+                    "fs_doc", 
+                    "ovrigtdokument"
+                ], 
+                [
+                    "change_ovrigtdokument", 
+                    "fs_doc", 
+                    "ovrigtdokument"
+                ], 
+                [
+                    "delete_ovrigtdokument", 
+                    "fs_doc", 
+                    "ovrigtdokument"
+                ], 
+                [
+                    "add_upphavningar_fsdokument", 
+                    "fs_doc", 
+                    "upphavningar_fsdokument"
+                ], 
+                [
+                    "change_upphavningar_fsdokument", 
+                    "fs_doc", 
+                    "upphavningar_fsdokument"
+                ], 
+                [
+                    "delete_upphavningar_fsdokument", 
+                    "fs_doc", 
+                    "upphavningar_fsdokument"
+                ]
+            ]
         }
     }, 
     {
@@ -1003,12 +542,12 @@
             "is_active": true, 
             "is_superuser": true, 
             "is_staff": true, 
-            "last_login": "2011-05-30 18:06:33", 
+            "last_login": "2012-03-12T23:35:41.965", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "sha1$39f51$e5178f1fede34dd27cd0879b42dac3ae6c7bbbe5", 
+            "password": "pbkdf2_sha256$10000$Ua1gEYA0NK12$lAjk4s6H0/XawHboAH5WUftG0l9coissRX+40neSXj4=", 
             "email": "admin@exempelmyndigheten.se", 
-            "date_joined": "2011-05-30 17:26:05"
+            "date_joined": "2011-05-30T17:26:05"
         }
     }, 
     {
@@ -1021,28 +560,16 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": true, 
-            "last_login": "2011-05-30 17:30:07", 
-            "groups": [], 
-            "user_permissions": [
-                28, 
-                29, 
-                30, 
-                64, 
-                65, 
-                66, 
-                46, 
-                47, 
-                48, 
-                61, 
-                62, 
-                63, 
-                31, 
-                32, 
-                33
+            "last_login": "2012-03-12T23:23:49.347", 
+            "groups": [
+                [
+                    "editor"
+                ]
             ], 
-            "password": "sha1$9046c$21628ba18bd3a33bdfbb6f6611f16bf12e72e6cc", 
+            "user_permissions": [], 
+            "password": "pbkdf2_sha256$10000$1i3ekXJqdudc$/16sFo8K3dQ5JS0PXyLl+OJtz+iuUXgvx9okohBx3UE=", 
             "email": "", 
-            "date_joined": "2011-05-30 17:30:07"
+            "date_joined": "2011-05-30T17:30:07"
         }
     }
 ]

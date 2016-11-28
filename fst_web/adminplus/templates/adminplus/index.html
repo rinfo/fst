@@ -2,17 +2,24 @@
 
 {% block sidebar %}
   {{ block.super }}
-
-  {% if custom_list %}
-  <div class="module" style="float: left; width: 498px">
+    <div class="module" style="float: left; width: 498px">
     <table style="width: 100%">
-      <caption>Lista föreskrifter och allmänna råd</caption>
+      <caption>Publicerat flöde</caption>
       <tbody>
-        {% for path, name in custom_list %}
-          <tr><td><a href="{{ path }}">{{ name }}</a></td></tr>
-        {% endfor %}
+          <tr><th><a href="{{ path }}/feed">Visa ATOM-flödet</a></th></tr>
       </tbody>
     </table>
-  </div>
+    </div>
+  {% if custom_list %}
+      <div class="module" style="float: left; width: 498px">
+        <table style="width: 100%">
+          <caption>Rapporter</caption>
+          <tbody>
+            {% for path, name in custom_list %}
+              <tr><th><a href="{{ path }}">{{ name }}</a></th></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
   {% endif %}
 {% endblock %}

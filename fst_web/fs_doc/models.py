@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Django definitions of documents and related classes used by FST"""
 
-import errno
+
 import hashlib
 import os
 import tempfile
@@ -11,13 +11,13 @@ from django.core import urlresolvers
 from django.core.files import locks
 from django.core.files.move import file_move_safe
 from django.utils.text import get_valid_filename
-from django.core.files.storage import FileSystemStorage, Storage
+from django.core.files.storage import FileSystemStorage
 from django.core.validators import RegexValidator
-from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db import models
 from django.db.models.signals import post_delete
-from django.template import loader, Context
+from django.template import loader
 from django.utils.feedgenerator import rfc3339_date
 from fst_web.fs_doc import rdfviews
 
@@ -32,7 +32,7 @@ class OverwritingStorage(FileSystemStorage):
          http://djangosnippets.org/comments/cr/15/976/#c1670 (installation)
     """
 
-    def get_available_name(self, name):
+    def get_available_name(self, name, max_length=None):
         return name
 
     def _save(self, name, content):
@@ -40,7 +40,6 @@ class OverwritingStorage(FileSystemStorage):
         Lifted partially from django/core/files/storage.py
         """
         full_path = self.path(name)
-
         directory = os.path.dirname(full_path)
         if not os.path.exists(directory):
             os.makedirs(directory)
@@ -66,17 +65,14 @@ class OverwritingStorage(FileSystemStorage):
                     os.write(fd, chunk)
                 locks.unlock(fd)
                 os.close(fd)
-            except Exception, e:
+            except Exception as e:
                 if os.path.exists(temp_data_location):
                     os.remove(temp_data_location)
-                raise
-
-        file_move_safe(temp_data_location, full_path)
+                raise e
+        file_move_safe(temp_data_location, full_path, allow_overwrite=True)
         content.close()
-
         if settings.FILE_UPLOAD_PERMISSIONS is not None:
             os.chmod(full_path, settings.FILE_UPLOAD_PERMISSIONS)
-
         return name
 
 
@@ -143,8 +139,8 @@ class FSDokument(Document):
     is_published = models.BooleanField(u"Publicerad via FST",
                                        default=False,
                                        help_text="""Grön bock = publicerad. \
-                                       Rött streck = ej publicerad. \
-                                       Glöm inte att publicera dina ändringar!
+                                       Rött kryss = ej publicerad. \
+                                       Kom ihåg att publicera dina ändringar!
                                      """)
 
     titel = models.CharField(
@@ -153,10 +149,10 @@ class FSDokument(Document):
 
     sammanfattning = models.TextField(
         max_length=8192,
-        blank=True,
         unique=False,
+        default="Sammanfattning saknas",
         help_text=
-        """<em>Valfri sammanfattning av dokuments syfte.</em>""")
+        """<em>Ange valfri sammanfattning av dokuments syfte.</em>""")
 
     # NOTE: The FST webservice currently only supports document collections
     # of type 'forfattningssamling'.
@@ -181,7 +177,7 @@ class FSDokument(Document):
     content_md5 = models.CharField(max_length=32,
                                    blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         """Display value for user interface."""
         return u'%s %s' % (self.identifierare, self.titel)
 
@@ -194,8 +190,7 @@ class FSDokument(Document):
     def get_absolute_url(self):
         """"Construct Django URL path from document attributes"""
 
-        return ('fst_web.fs_doc.views.fs_dokument',
-                [self.get_fs_dokument_slug()])
+        return ('fs_dokument', [self.get_fs_dokument_slug()])
 
     def get_admin_url(self):
         """Return URL for editing this document in Django admin."""
@@ -231,13 +226,13 @@ class AllmannaRad(FSDokument):
 
     beslutad_av = models.ForeignKey('Myndighet',
                                     related_name='ar_beslutad_av',
-                                    null=True,  # TODO: add GUI to set this!
-                                    blank=True)
+                                    null=True,
+                                    blank=False)
 
     utgivare = models.ForeignKey('Myndighet',
                                  related_name='ar_utgivare',
-                                 null=True,  # TODO: add GUI to set this!
-                                 blank=True)
+                                 null=True,
+                                 blank=False)
 
     andringar = models.ManyToManyField('self',
                                        blank=True,
@@ -305,17 +300,17 @@ class Myndighetsforeskrift(FSDokument):
                                              related_name = "foreskrifter",
                                              verbose_name =
                                              u"Bidrar till att genomföra \
-                                             dessa EG-direktiv")
+                                             dessa EU-direktiv")
 
     beslutad_av = models.ForeignKey('Myndighet',
                                     related_name='doc_beslutad_av',
-                                    null=True,  # TODO: add GUI to set this!
-                                    blank=True)
+                                    null=True,
+                                    blank=False)
 
     utgivare = models.ForeignKey('Myndighet',
                                  related_name='doc_utgivare',
-                                 null=True,  # TODO: add GUI to set this!
-                                 blank=True)
+                                 null=True,
+                                 blank=False)
 
     andringar = models.ManyToManyField('self',
                                        blank=True,
@@ -374,7 +369,7 @@ class Myndighet(models.Model):
         verbose_name = u"myndighet"
         verbose_name_plural = u"Myndigheter"
 
-    def __unicode__(self):
+    def __str__(self):
         """Display value for user interface."""
         return u'%s' % (self.namn)
 
@@ -412,7 +407,7 @@ class Forfattningssamling(models.Model):
         verbose_name = u"författningssamling"
         verbose_name_plural = u"Författningssamlingar"
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s %s' % (self.titel, self.kortnamn)
 
     def get_rinfo_uri(self):
@@ -443,7 +438,7 @@ class HasFile(models.Model):
     class Meta:
         abstract = True
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s' % (self.titel)
 
 
@@ -488,7 +483,7 @@ class OvrigtDokument(HasFile):
         verbose_name = u"övrigt dokument"
         verbose_name_plural = u"Övriga dokument"
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s' % (self.titel)
 
 
@@ -501,10 +496,10 @@ class CelexReferens(models.Model):
         help_text="Celexnummer, t.ex. <em>31979L0409</em>")
 
     class Meta:
-        verbose_name = u"EG-rättsreferens"
-        verbose_name_plural = u"EG-rättsreferenser"
+        verbose_name = u"EU-rättsreferens"
+        verbose_name_plural = u"EU-rättsreferenser"
 
-    def __unicode__(self):
+    def __str__(self):
         if len(self.titel.strip()) > 0:
             return self.titel
         else:
@@ -523,7 +518,7 @@ class Amnesord(models.Model):
         verbose_name = u"ämnesord"
         verbose_name_plural = u"Ämnesord"
 
-    def __unicode__(self):
+    def __str__(self):
         return self.titel
 
 
@@ -590,7 +585,7 @@ class KonsolideradForeskrift(Document):
         #return ('fst_web.fs_doc.views.fs_dokument',
                 #[self.get_fs_dokument_slug()])
 
-    def __unicode__(self):
+    def __str__(self):
         """Display value for user interface."""
         return u'%s %s' % (self.identifierare, self.titel)
 
@@ -617,7 +612,6 @@ class KonsolideradForeskrift(Document):
 
         This is a usability enhancement and not defined by the RDF model.
         """
-
         label = u"Konsoliderad författning"
 
     def to_rdfxml(self):
@@ -653,7 +647,7 @@ class Bemyndigandereferens(models.Model):
         verbose_name = u"bemyndigandereferens"
         verbose_name_plural = u"Bemyndigandereferenser"
 
-    def __unicode__(self):
+    def __str__(self):
         if self.kapitelnummer:
             kap_text = " kap."
         else:
@@ -682,7 +676,7 @@ class GenericUniqueMixin(object):
 class RDFPost(models.Model, GenericUniqueMixin):
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField('object_id', db_index=True)
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
+    content_object = GenericForeignKey('content_type', 'object_id')
 
     slug = models.CharField(max_length=64)
     data = models.TextField()
@@ -690,6 +684,8 @@ class RDFPost(models.Model, GenericUniqueMixin):
 
     class Meta:
         unique_together = ('content_type', 'object_id')
+        verbose_name = u"RDF-representation"
+        verbose_name_plural = u"Metadata"
 
     def save(self, *args, **kwargs):
         self.md5 = hashlib.md5(self.data).hexdigest()
@@ -711,7 +707,7 @@ class AtomEntry(models.Model, GenericUniqueMixin):
 
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField('object_id', db_index=True)
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
+    content_object = GenericForeignKey('content_type', 'object_id')
 
     entry_id = models.CharField(max_length=512)
 
@@ -720,6 +716,10 @@ class AtomEntry(models.Model, GenericUniqueMixin):
     deleted = models.DateTimeField(blank=True, null=True)
 
     rdf_post = models.OneToOneField(RDFPost, null=True, blank=True)
+
+    class Meta:
+        verbose_name = u"Flödespost"
+        verbose_name_plural = u"Poster i ATOM-flödet"
 
     def to_entryxml(self):
         """XML representation of entry according to Atom standard.
@@ -731,55 +731,44 @@ class AtomEntry(models.Model, GenericUniqueMixin):
             # AtomEntry-objects with the delete property set.
             return ""
         template = loader.get_template('foreskrift_entry.xml')
-        context = Context({
+        context = {
             'entry_id': self.entry_id,
             'updated': rfc3339_date(self.updated),
             'published': rfc3339_date(self.published),
             'deleted': rfc3339_date(self.deleted) if self.deleted else None,
-
             'doc': self.content_object,
             'rdf_post': self.rdf_post,
-            'rdf_url': \
-            None if self.deleted \
-            else self.content_object.get_absolute_url() + "rdf", \
+            'rdf_url': None if self.deleted else self.content_object.get_absolute_url() + "rdf",
             'fst_instance_url': settings.FST_INSTANCE_URL
-        })
+        }
         return template.render(context)
 
 
 def delete_entry(sender, instance, **kwargs):
-    """Delete associated Atom entry when a document is deleted."""
+    """Delete associated metadata and atom entry when a document is deleted."""
+
+    existing_meta = RDFPost.get_for(instance)
+    if existing_meta:
+        existing_meta.delete()
     existing_entry = AtomEntry.get_for(instance)
     if existing_entry:
-        existing_entry.rdf_post.delete()
         existing_entry.delete()
-     #deleted_entry = AtomEntry(
-         #content_object=instance,
-         #updated=datetime.now(),
-         #published=datetime.now(),
-         #deleted=datetime.now(),
-         #entry_id=instance.get_rinfo_uri())
-
-     #deleted_entry.save()
-
-     #class Meta:
-         #unique_together = ('content_type', 'object_id')
 
 
-#post_delete.connect(
-    #delete_entry,
-    #sender=Myndighetsforeskrift,
-    #dispatch_uid="fs_doc.Myndighetsforeskrift.create_delete_signal")
+post_delete.connect(
+    delete_entry,
+    sender=Myndighetsforeskrift,
+    dispatch_uid="fs_doc.Myndighetsforeskrift.create_delete_signal")
 
-#post_delete.connect(
-    #delete_entry,
-    #sender=AllmannaRad,
-    #dispatch_uid="fs_doc.AllmannaRad.create_delete_signal")
+post_delete.connect(
+    delete_entry,
+    sender=AllmannaRad,
+    dispatch_uid="fs_doc.AllmannaRad.create_delete_signal")
 
-#post_delete.connect(
-    #delete_entry,
-    #sender=KonsolideradForeskrift,
-    #dispatch_uid="fs_doc.KonsolideradForeskrift.create_delete_signal")
+post_delete.connect(
+    delete_entry,
+    sender=KonsolideradForeskrift,
+    dispatch_uid="fs_doc.KonsolideradForeskrift.create_delete_signal")
 
 
 def get_file_md5(opened_file):
@@ -799,9 +788,8 @@ def to_slug(tag):
     As specified by:
     http://dev.lagrummet.se/dokumentation/system/uri-principer.pdf
     """
-    tag = tag.lower().encode("utf-8")
-    slug = tag.replace('å', 'aa').replace('ä', 'ae').\
-         replace('ö', 'oe').replace(' ', '_')
+    tag = tag.lower()
+    slug = tag.replace('å', 'aa').replace('ä', 'ae').replace('ö', 'oe').replace(' ', '_')
     return slug
 
 

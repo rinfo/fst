@@ -3,12 +3,13 @@ import hashlib
 import os
 import shutil
 from xml.dom.minidom import parseString
-from datetime import datetime
 from django.test import TestCase
+from django.test.client import Client
 from rdflib import Graph, Literal, URIRef, RDF
 from django.core.urlresolvers import reverse
 from fst_web.fs_doc import models
-from fst_web.fs_doc.models import generate_atom_entry_for, generate_rdf_post_for
+from fst_web.fs_doc.models import generate_atom_entry_for
+from fst_web.fs_doc.models import generate_rdf_post_for
 from fst_web.fs_doc.rdfviews import DCT, DCES, RPUBL, RINFO_BASE
 
 
@@ -18,69 +19,112 @@ NS_ATOMLE = "http://purl.org/atompub/link-extensions/1.0"
 NS_AT = "http://purl.org/atompub/tombstones/1.0"
 
 
-#class AdminSuperUserTestCase(TestCase):
-    #"""Test admin functionality for logged in superuser """
+class SimpleTest(TestCase):
+    """Verify that FST requries login"""
 
-    #fixtures = ['exempeldata.json']
+    def setUp(self):
+        self.client = Client()
 
-    #def setUp(self):
-        #self.username = 'admin'  # This user already exists in fixture
-        #self.pw = 'admin'        # and is a superuser
-        #self.assertTrue(self.client.login(
-            #username=self.username,
-            #password=self.pw),
-                        #"Logging in user %s, pw %s failed." %
-                        #(self.username, self.pw))
+    def test_initial_redirect(self):
+        """Verify that accessing the site redirects to '/admin'"""
+        response = self.client.get('/', follow=False)
+        # Check that there is a redirect for '/'
+        self.assertEqual(response.status_code, 302)
 
-    #def tearDown(self):
-        #self.client.logout()
-
-    #def test_superuser_access(self):
-        #"""Verify that superuser has access to system tables"""
-
-        #post_data = {}
-        #response = self.client.post(reverse('admin:index'), post_data)
-        #self.assertContains(response, "auth")
-        #self.assertContains(response, "sites")
-        #self.assertContains(response, "fs_doc")
+    def test_admin_is_accesible(self):
+        """Verify that admin is accessible"""
+        response = self.client.get('/admin/', follow=True)
+        # Check that HTTP response is 200 OK.
+        self.assertEqual(response.status_code, 200)
 
 
-#class AdminTestCase(TestCase):
-    #"""Test admin functionality for logged in staff user """
+class AdminSuperUserTestCase(TestCase):
+    """Test admin functionality for logged in superuser """
 
-    #fixtures = ['exempeldata.json']
+    fixtures = ['exempeldata.json']
 
-    #def setUp(self):
-        #self.username = 'editor'  # This user already exists in fixture
-        #self.pw = 'editor'        # and is a regular staff user
-        #self.assertTrue(self.client.login(
-            #username=self.username,
-            #password=self.pw),
-                        #"Logging in user %s, pw %s failed." %
-                        #(self.username, self.pw))
+    def setUp(self):
+        self.username = 'admin'  # This user already exists in fixture
+        self.pw = 'admin'        # and is a superuser
+        self.assertTrue(self.client.login(
+            username=self.username,
+            password=self.pw),
+            "Logging in user %s, pw %s failed." %
+            (self.username, self.pw))
 
-    #def tearDown(self):
-        #self.client.logout()
+    def tearDown(self):
+        self.client.logout()
 
-    #def test_access(self):
-        #"""Verify that ordinary user has restricted access"""
+    def test_superuser_access(self):
+        """Verify that superuser has access to system tables"""
 
-        #post_data = {}
-        #response = self.client.post(
-            #reverse('admin:index'), post_data)
-        #self.assertContains(response, "fs_doc")    # Permissions for this
-        #self.assertNotContains(response, "auth")   # No access
-        #self.assertNotContains(response, "sites")  # No access
+        post_data = {}
+        response = self.client.post(reverse('admin:index'), post_data)
+        self.assertContains(response, "auth")
+        self.assertContains(response, "fs_doc")
 
-    #def test_translation_allmannarad(self):
-        #"""Verify existence of translated labels with Swedish characters """
 
-        #post_data = {}
-        #response = self.client.post(reverse(
-            #'admin:fs_doc_allmannarad_add'), post_data)
-        ## The expected field labels show up somewhere
-        #self.assertContains(response, "Årsutgåva")
-        #self.assertContains(response, "Löpnummer")
+class EditorUserTestCase(TestCase):
+    """Test functionality for logged in editor user """
+
+    fixtures = ['exempeldata.json']
+
+    def setUp(self):
+        self.username = 'editor'  # This user already exists in fixture
+        self.pw = 'editor'        # and is NOT a superuser
+        self.assertTrue(self.client.login(
+            username=self.username,
+            password=self.pw),
+            "Logging in user %s, pw %s failed." %
+            (self.username, self.pw))
+
+    def tearDown(self):
+        self.client.logout()
+
+    def test_editor_access(self):
+        """Verify that editor does NOT have access to system tables"""
+
+        post_data = {}
+        response = self.client.post(reverse('admin:index'), post_data)
+        self.assertNotContains(response, "auth")
+        self.assertContains(response, "fs_doc")
+
+    def test_report_beslutsdatum(self):
+        """Verify that editor can access report"""
+
+        # Find named report
+        response = self.client.get('/admin/beslutsdatum')
+        # This document should be listed
+        self.assertContains(response, "EXFS 2011:1")
+        # This document is not published and should not be listed
+        self.assertNotContains(response, "EXFS 2009:2")
+        # This document does not exist and should not be listed
+        self.assertNotContains(response, "NonExisting 1066:1")
+
+    def test_report_ikrafttradande(self):
+        """Verify that editor can access report"""
+
+        # Find named report
+        response = self.client.get('/admin/ikrafttradande')
+        # This document should be listed
+        self.assertContains(response, "EXFS 2011:1")
+        # This document is not published and should not be listed
+        self.assertNotContains(response, "EXFS 2009:2")
+        # This document does not exist and should not be listed
+        self.assertNotContains(response, "NonExisting 1066:1")
+
+    def test_report_not_published(self):
+        """Verify that editor can access report"""
+
+        # Find named report
+        response = self.client.get('/admin/not_published')
+        # These documents should be listed in the report
+        self.assertContains(response, "EXFS 2009:2")
+        self.assertContains(response, "EXFS 2009:3")
+        # This document exists but should not be listed
+        self.assertNotContains(response, "EXFS 2009:1")
+        # This document does not exist and should not be found
+        self.assertNotContains(response, "NonExisting 1066:1")
 
 
 class WebTestCase(TestCase):
@@ -97,19 +141,19 @@ class WebTestCase(TestCase):
             os.mkdir(testdocs)
 
         # Move documents from fixtures to temporary test folder
-        shutil.copy(os.path.join(base, "fixtures/foreskrift/EXFS-2009-1.pdf"),
+        shutil.copy(os.path.join(base, "fixtures/foreskrift/EXFS_2009-1_Grund.pdf"),
                     testdocs)
         shutil.copy(os.path.join(base,
-                                 "fixtures/bilaga/EXFS-2009-1-bilaga.pdf"),
+                                 "fixtures/bilaga/EXFS_2009-1-bilaga.pdf"),
                     testdocs)
         shutil.copy(os.path.join(base,
-                                 "fixtures/foreskrift/EXFS-2009-2.pdf"),
+                                 "fixtures/foreskrift/EXFS_2009-2_Andring_omtryck.pdf"),
                     testdocs)
         shutil.copy(os.path.join(base,
-                                 "fixtures/foreskrift/EXFS-2009-3.pdf"),
+                                 "fixtures/foreskrift/EXFS_2009-3_Grund.pdf"),
                     testdocs)
         shutil.copy(os.path.join(base,
-                                 "fixtures/allmanna_rad/EXFS-2011-1.pdf"),
+                                 "fixtures/allmanna_rad/EXFS_2011-1_Allmant_rad.pdf"),
                     testdocs)
 
     def tearDown(self):
@@ -125,7 +169,6 @@ class WebTestCase(TestCase):
         response = self.client.get('/')
         self.failUnlessEqual(response.status_code, 302)
 
-        
     def test_foreskrift(self):
         """Verify that detail page for documents load
         with correct sample data for all document types"""
@@ -141,32 +184,6 @@ class WebTestCase(TestCase):
         self.assertContains(
             response,
             "<h2>EXFS 2011:1 Exempelmyndighetens allmänna råd om adminstration")
-
-    #def test_artal(self):
-        #"""Verify that listing by year load
-        #with correct sample data for all document types"""
-
-        #response = self.client.get('/admin/artal/')
-        #self.failUnlessEqual(response.status_code, 200)
-        ## Headers for years
-        #self.assertContains(response, "<h2>2009</h2>")
-        #self.assertContains(response, "<h2>2011</h2>")
-        ## Documents listed by year
-        #self.assertContains(response, '<li><a href="/publ/exfs/2009:3/">')
-        #self.assertContains(response, '<li><a href="/publ/exfs/2011:1/">')
-
-    #def test_amnesord(self):
-        #"""Verify that listing by year load
-        #with correct sample data for all document types"""
-
-        #response = self.client.get('/admin/amnesord/')
-        #self.failUnlessEqual(response.status_code, 200)
-        ## Headers for keywords
-        #self.assertContains(response, "<h2>Administration</h2>")
-        #self.assertContains(response, "<h2>Budgetering</h2>")
-        ## Documents listed by keywords
-        #self.assertContains(response, '<li><a href="/publ/exfs/2009:3/">')
-        #self.assertContains(response, '<li><a href="/publ/exfs/2011:1/">')
 
     def test_feed(self):
         """Verify that Atom feed is created and can be read """
@@ -187,9 +204,16 @@ class WebTestCase(TestCase):
         # Get document to publish
         foreskrift = models.Myndighetsforeskrift.objects.get(
             forfattningssamling__slug="exfs", arsutgava="2009", lopnummer="1")
-        generate_rdf_post_for(foreskrift)
         # Publish document. TODO - use explicit publish method here!
         generate_atom_entry_for(foreskrift)
+
+        # Feed now should have exactly one entry element
+        response = self.client.get('/feed/')
+        self.failUnlessEqual(response.status_code, 200)
+        self.assertEqual(response['content-type'],
+                         'application/atom+xml; charset=utf-8')
+        dom = parseString(response.content)
+        self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'entry')), 1)
 
         # Check that RDF representation exists
         response = self.client.get('/publ/exfs/2009:1/rdf')
@@ -209,8 +233,7 @@ class FeedTestCase(TestCase):
             forfattningssamling__slug="exfs", arsutgava="2009", lopnummer="1")
         generate_rdf_post_for(foreskrift1)
         generate_atom_entry_for(foreskrift1)
-        self.first_atom_entry_created = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
-        
+
         foreskrift2 = models.Myndighetsforeskrift.objects.get(
             forfattningssamling__slug="exfs", arsutgava="2009", lopnummer="2")
         generate_rdf_post_for(foreskrift2)
@@ -226,12 +249,6 @@ class FeedTestCase(TestCase):
         # Feed has two published entries
         self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'entry')), 2)
 
-    def test_entry_timezone_utc(self):
-        dom = self._get_parsed_feed('/feed/')
-        entry  = dom.getElementsByTagNameNS(NS_ATOM, 'entry')[0]
-        published = entry.getElementsByTagNameNS(NS_ATOM, 'published')[0].childNodes[0].data
-        self.assertEquals(published,self.first_atom_entry_created)
-        
     def test_feed_is_complete(self):
         dom = self._get_parsed_feed('/feed/')
         self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM_FH,
@@ -260,8 +277,63 @@ class FeedTestCase(TestCase):
                 beraknad_rdfmd5 = md5.hexdigest()
                 self.assertEqual(beraknad_rdfmd5, avlast_md5)
 
+    def test_delete_related_metadata(self):
+        """Verify that related metadata is deleted when document is deleted"""
+
+        dom = self._get_parsed_feed('/feed/')
+        # Check that two document entries exist
+        self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'entry')), 2)
+
+        # Get metadata for one document
+        foreskrift2 = models.Myndighetsforeskrift.objects.get(
+            forfattningssamling__slug="exfs", arsutgava="2009", lopnummer="2")
+        related_meta = models.RDFPost.get_for(foreskrift2)
+        self.assertIsInstance(related_meta, models.RDFPost, "Missing metadata")
+        # Delete document
+        foreskrift2.delete()
+        # Check that related metadata was also deleted
+        related_meta = models.RDFPost.get_for(foreskrift2)
+        self.assertIsNone(related_meta, "Metadata not deleted")
+
+        dom = self._get_parsed_feed('/feed/')
+        # Only one document entry exists
+        self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'entry')), 1)
+
+    def test_delete_related_metadata_and_atomentry(self):
+        """Metadata and feedentry should be deleted when document is deleted"""
+
+        dom = self._get_parsed_feed('/feed/')
+        # Check that two document entries exist
+        self.assertEquals(len(dom.getElementsByTagNameNS(
+            NS_ATOM, 'entry')), 2)
+
+        # Get metadata for one document
+        foreskrift1 = models.Myndighetsforeskrift.objects.get(
+            forfattningssamling__slug="exfs", arsutgava="2009", lopnummer="1")
+        related_meta = models.RDFPost.get_for(foreskrift1)
+        related_entry = models.AtomEntry.get_for(foreskrift1)
+        self.assertIsInstance(related_meta, models.RDFPost,
+                              "Missing metadata")
+        self.assertIsInstance(related_entry, models.AtomEntry,
+                              "Missing Atom entry")
+        # Delete document
+        foreskrift1.delete()
+        # Check that related metadata was also deleted
+        related_meta = models.RDFPost.get_for(foreskrift1)
+        self.assertIsNone(related_meta, "Metadata not deleted")
+        # Check that related Atom entry was also deleted
+        related_entry = models.AtomEntry.get_for(foreskrift1)
+        self.assertIsNone(related_entry, "Atom Entry not deleted")
+
+        dom = self._get_parsed_feed('/feed/')
+        # Only one document entry exists
+        self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'entry')), 1)
+
     def test_delete_feedentry(self):
-        """Verify that entries can be deleted and NOT replaced by special entry"""
+        """Verify that deleted entries are NOT replaced by special entry.
+
+        FST uses complete feeds and shouldn't do this..
+        """
 
         dom = self._get_parsed_feed('/feed/')
 
@@ -278,7 +350,7 @@ class FeedTestCase(TestCase):
         # Only one document entry exists
         self.assertEquals(len(dom.getElementsByTagNameNS(NS_ATOM, 'entry')), 1)
 
-        # Special entry signaling deletion should NOT exist since this is a fh:complete feed
+        # There is no special entry signaling deletion
         self.assertFalse(dom.getElementsByTagNameNS(NS_AT, 'deleted-entry'))
 
     def _get_parsed_feed(self, path):
@@ -355,7 +427,7 @@ class RDFTestCase(TestCase):
         self.assertTrue(list(graph.objects(ref, RPUBL.andrar)))
 
     def _get_foreskrift_graph(self, fs_slug, arsutgava, lopnummer):
-        return self._get_graph_for_type(models.Myndighetsforeskrift, \
+        return self._get_graph_for_type(models.Myndighetsforeskrift,
                                         fs_slug, arsutgava, lopnummer)
 
     def _get_allmana_rad_graph(self, fs_slug, arsutgava, lopnummer):
