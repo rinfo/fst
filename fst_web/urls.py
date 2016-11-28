@@ -45,10 +45,14 @@ urlpatterns = [
         name='atomfeed'),
 
     # Tell web crawlers how to behave via robots.txt
-    url(r'^robots\.txt$', TemplateView, {'template': 'robots.txt', 'mimetype': 'text/plain'}),
+    url(r'^robots\.txt$', TemplateView, {
+        'template': 'robots.txt',
+        'mimetype': 'text/plain'}),
 
-    # Add application favicon. Gets rid of lots of annoying log messages.
-    url(r'^favicon\.ico$', RedirectView, {'url': '/static/images/favicon.ico'}),
+    # Add application favicon. Gets rid of annoying log messages.
+    url(r'^favicon\.ico$',
+        RedirectView,
+        {'url': '/static/images/favicon.ico'}),
 
     # Enable Django admin
     url(r'^admin/', include(admin.site.urls)),
