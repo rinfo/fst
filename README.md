@@ -29,7 +29,7 @@ Guiden är på engelska och förutsätter viss vana vid att installera programva
 
 För den tekniskt kunnige som vill installera FST på en publik server har vi en detaljerad guide på engelska:  
 
-[Installera FST som tjänst på en server](https://github.com/rinfo/fst/wiki/Server-installation-FST) 
+[Installera FST som tjänst på en server](https://github.com/rinfo/fst/wiki/Install-FST-on-server) 
 
 ##Dokumentation##
 
