@@ -1,9 +1,9 @@
 language: python
 python:
-  - "3.5"
+  - "3.5.2"
 
 env:
-  - DJANGO_VERSION=1.10.3
+  - DJANGO_VERSION=1.10.4
 
 install: 
  - pip install -r requirements.txt 
