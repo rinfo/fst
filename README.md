@@ -15,10 +15,15 @@ FST är ett komplement till befintliga IT-lösningar: användare laddar upp befi
 
 ##Att komma igång och använda FST##
 
+För den som ska pröva och utvärdera FST finns en kort introduktion. Texten vänder sig främst till dig som är verksamhetsansvarig eller projektledare. 
+
+[Introduktion för verksamhetsansvariga och projektledare](https://github.com/rinfo/fst/blob/master/doc/FST_info_verksamhetsansvarig.pd)
+
+
 Användarhandledningen är till för dig som ska använda FST när tjänsten är installerad.
 Texten är på svenska och riktar sig till jurister, webbredaktörer och andra handläggare:
 
-[Användarhandledning](https://github.com/rinfo/fst/blob/develop/doc/anvandarhandledning_fst.pdf)
+[Användarhandledning](https://github.com/rinfo/fst/blob/master/doc/anvandarhandledning_fst.pdf)
 
 
 Här finns en kort guide för den som vill installera och provköra FST på sin egen dator. 
@@ -46,7 +51,7 @@ _Observera att projektdokumentationen från Rättsinformationsprojektet inte är
 
 FST är öppen källkod. Det innebär att det står var och en fritt att anpassa kodbasen efter egna behov.
 
-Github:s har en kort guide som beskriver hur man [skapar en kopia av ett projekt och fortsätter att samarbeta med originalet](https://guides.github.com/activities/forking/). Termen för detta är att "forka" ett öppet källkodsprojekt. Vi rekommenderar alla som är intresserade av att delta mer aktivt att läsa på och göra på det sättet. 
+Github har en kort guide som beskriver hur man [skapar en kopia av ett projekt och fortsätter att samarbeta med originalet](https://guides.github.com/activities/forking/). Vi rekommenderar alla som är intresserade av att delta mer aktivt att läsa på och göra på det sättet. 
 
 Aktuell teknisk dokumentation för FST finns på [FST:s wiki](https://github.com/rinfo/fst/wiki). 
 
