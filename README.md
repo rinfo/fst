@@ -15,7 +15,7 @@ FST är ett komplement till befintliga IT-lösningar: användare laddar upp befi
 
 ##Att komma igång och använda FST##
 
-För den som ska pröva och utvärdera FST finns en kort introduktion. Texten vänder sig främst till dig som är verksamhetsansvarig eller projektledare. 
+För den som ska pröva och utvärdera FST finns en kort introduktion. Texten vänder sig främst till dig som är verksamhetsansvarig eller projektledare:
 
 [Introduktion för verksamhetsansvariga och projektledare](https://github.com/rinfo/fst/blob/master/doc/FST_info_verksamhetsansvarig.pd)
 
