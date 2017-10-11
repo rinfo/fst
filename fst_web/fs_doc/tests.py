@@ -6,7 +6,7 @@ from xml.dom.minidom import parseString
 from django.test import TestCase
 from django.test.client import Client
 from rdflib import Graph, Literal, URIRef, RDF
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from fst_web.fs_doc import models
 from fst_web.fs_doc.models import generate_atom_entry_for
 from fst_web.fs_doc.models import generate_rdf_post_for

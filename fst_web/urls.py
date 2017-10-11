@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
 from django.contrib import admin
+from django.urls import path
 from django.conf.urls import url, include
 from django.views.generic.base import TemplateView, RedirectView
 from django.views.static import serve
@@ -55,6 +56,7 @@ urlpatterns = [
         {'url': '/static/images/favicon.ico'}),
 
     # Enable Django admin
-    url(r'^admin/', include(admin.site.urls)),
+    path('admin/', admin.site.urls),
 ]
+
 urlpatterns += staticfiles_urlpatterns()

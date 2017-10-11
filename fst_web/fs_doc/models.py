@@ -7,7 +7,7 @@ import os
 import tempfile
 from datetime import datetime
 from django.conf import settings
-from django.core import urlresolvers
+from django.urls import reverse
 from django.core.files import locks
 from django.core.files.move import file_move_safe
 from django.utils.text import get_valid_filename
@@ -157,7 +157,7 @@ class FSDokument(Document):
     # NOTE: The FST webservice currently only supports document collections
     # of type 'forfattningssamling'.
     forfattningssamling = models.ForeignKey('Forfattningssamling',
-        verbose_name=u"författningssamling")
+        verbose_name=u"författningssamling",on_delete=models.DO_NOTHING)
 
     beslutsdatum = models.DateField("Beslutsdatum")
 
@@ -196,7 +196,7 @@ class FSDokument(Document):
         """Return URL for editing this document in Django admin."""
 
         content_type = ContentType.objects.get_for_model(self)
-        edit_url = urlresolvers.reverse(
+        edit_url = reverse(
             "admin:fs_doc_" + content_type.model + "_change",
             args=(self.id,))
         return edit_url
@@ -227,12 +227,12 @@ class AllmannaRad(FSDokument):
     beslutad_av = models.ForeignKey('Myndighet',
                                     related_name='ar_beslutad_av',
                                     null=True,
-                                    blank=False)
+                                    blank=False.bit_length(),on_delete=models.DO_NOTHING)
 
     utgivare = models.ForeignKey('Myndighet',
                                  related_name='ar_utgivare',
                                  null=True,
-                                 blank=False)
+                                 blank=False,on_delete=models.DO_NOTHING)
 
     andringar = models.ManyToManyField('self',
                                        blank=True,
@@ -305,12 +305,12 @@ class Myndighetsforeskrift(FSDokument):
     beslutad_av = models.ForeignKey('Myndighet',
                                     related_name='doc_beslutad_av',
                                     null=True,
-                                    blank=False)
+                                    blank=False,on_delete=models.DO_NOTHING)
 
     utgivare = models.ForeignKey('Myndighet',
                                  related_name='doc_utgivare',
                                  null=True,
-                                 blank=False)
+                                 blank=False,on_delete=models.DO_NOTHING)
 
     andringar = models.ManyToManyField('self',
                                        blank=True,
@@ -444,7 +444,7 @@ class HasFile(models.Model):
 
 class Bilaga(HasFile):
     foreskrift = models.ForeignKey('FSDokument',
-                                   related_name='bilagor')
+                                   related_name='bilagor',on_delete=models.DO_NOTHING)
 
     titel = models.CharField("Titel",
                              max_length = 512,
@@ -470,7 +470,7 @@ class Bilaga(HasFile):
 
 class OvrigtDokument(HasFile):
     foreskrift = models.ForeignKey('FSDokument',
-                                   related_name='ovriga_dokument')
+                                   related_name='ovriga_dokument',on_delete=models.DO_NOTHING)
 
     titel = models.CharField("Titel", max_length=512,
                              help_text="""T.ex. <em>Besluts-PM för ...</em>""")
@@ -526,22 +526,22 @@ class Amnesord(models.Model):
 # problems using self-referential M2M models with Django admin
 
 class Andringar_fsdokument(models.Model):
-    from_doc = models.ForeignKey('FSDokument', related_name='changing')
-    to_doc = models.ForeignKey('FSDokument', related_name='changed')
+    from_doc = models.ForeignKey('FSDokument', related_name='changing',on_delete=models.DO_NOTHING)
+    to_doc = models.ForeignKey('FSDokument', related_name='changed',on_delete=models.DO_NOTHING)
 
 
 class Upphavningar_fsdokument(models.Model):
-    from_doc = models.ForeignKey('FSDokument', related_name='cancelling')
-    to_doc = models.ForeignKey('FSDokument', related_name='cancelled')
+    from_doc = models.ForeignKey('FSDokument', related_name='cancelling',on_delete=models.DO_NOTHING)
+    to_doc = models.ForeignKey('FSDokument', related_name='cancelled',on_delete=models.DO_NOTHING)
 
 
 class Konsolideringar_foreskrift(models.Model):
     # NOTE: if AllmannaRad can be "konsoliderade", generalize this to
     # FSDokument instead of Myndighetsforeskrift
     from_doc = models.ForeignKey('Myndighetsforeskrift',
-                                 related_name = 'consolidating')
+                                 related_name = 'consolidating',on_delete=models.DO_NOTHING)
     to_doc = models.ForeignKey('Myndighetsforeskrift',
-                               related_name ='consolidated')
+                               related_name ='consolidated',on_delete=models.DO_NOTHING)
 
 
 class KonsolideradForeskrift(Document):
@@ -563,11 +563,11 @@ class KonsolideradForeskrift(Document):
 
     grundforfattning = models.ForeignKey(
         'Myndighetsforeskrift',
-        related_name='grundforfattning')
+        related_name='grundforfattning',on_delete=models.DO_NOTHING)
 
     senaste_andringsforfattning = models.ForeignKey(
         'Myndighetsforeskrift',
-        related_name='senaste_andringsforfattning')
+        related_name='senaste_andringsforfattning',on_delete=models.DO_NOTHING)
 
     class Meta:
         verbose_name = u"konsoliderad föreskrift"
@@ -674,7 +674,7 @@ class GenericUniqueMixin(object):
 
 
 class RDFPost(models.Model, GenericUniqueMixin):
-    content_type = models.ForeignKey(ContentType)
+    content_type = models.ForeignKey(ContentType,on_delete=models.DO_NOTHING)
     object_id = models.PositiveIntegerField('object_id', db_index=True)
     content_object = GenericForeignKey('content_type', 'object_id')
 
@@ -705,7 +705,7 @@ class AtomEntry(models.Model, GenericUniqueMixin):
     For create/update, see 'ModelAdmin.save_model()' in 'rinfo/admin.py'.
     """
 
-    content_type = models.ForeignKey(ContentType)
+    content_type = models.ForeignKey(ContentType,on_delete=models.DO_NOTHING)
     object_id = models.PositiveIntegerField('object_id', db_index=True)
     content_object = GenericForeignKey('content_type', 'object_id')
 
@@ -715,7 +715,7 @@ class AtomEntry(models.Model, GenericUniqueMixin):
     published = models.DateTimeField()
     deleted = models.DateTimeField(blank=True, null=True)
 
-    rdf_post = models.OneToOneField(RDFPost, null=True, blank=True)
+    rdf_post = models.OneToOneField(RDFPost, null=True, blank=True,on_delete=models.DO_NOTHING)
 
     class Meta:
         verbose_name = u"Flödespost"
